@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.CallLogger" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
+    <style name="Theme.CallLogger" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/Yellowish</item>
         <item name="colorPrimaryVariant">@color/Orangish</item>
@@ -13,5 +13,7 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
         <item name="android:windowLightStatusBar">true</item>
+
     </style>
+
 </resources>
