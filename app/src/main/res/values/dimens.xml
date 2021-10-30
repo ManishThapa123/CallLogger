@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Default screen dimenss, per the Android Design guidelines. -->
+
+    <dimen name="dimens_2">2dp</dimen>
+    <dimen name="dimens_4">4dp</dimen>
+    <dimen name="dimens_6">6dp</dimen>
+    <dimen name="dimens_8">8dp</dimen>
+    <dimen name="dimens_10">10dp</dimen>
+    <dimen name="dimens_12">12dp</dimen>
+    <dimen name="dimens_14">14dp</dimen>
+    <dimen name="dimens_16">16dp</dimen>
+    <dimen name="dimens_18">18dp</dimen>
+    <dimen name="dimens_20">20dp</dimen>
+    <dimen name="dimens_22">22dp</dimen>
+    <dimen name="dimens_24">24dp</dimen>
+    <dimen name="dimens_26">26dp</dimen>
+    <dimen name="dimens_28">28dp</dimen>
+    <dimen name="dimens_30">30dp</dimen>
+    <dimen name="dimens_32">32dp</dimen>
+    <dimen name="dimens_34">34dp</dimen>
+    <dimen name="dimens_36">36dp</dimen>
+    <dimen name="dimens_40">40dp</dimen>
+    <dimen name="dimens_50">50dp</dimen>
+    <dimen name="dimens_60">60dp</dimen>
+    <dimen name="menu_item_icon_size">24dp</dimen>
+
+    <dimen name="activityPadding">16dp</dimen>
+    <dimen name="placeholderImage">60dp</dimen>
+    <dimen name="placeholderTextHeight">8dp</dimen>
+    <dimen name="padding_10">10dp</dimen>
+    <dimen name="design_bottom_navigation_active_text_size" tools:override="true">12dp</dimen>
+    <dimen name="design_bottom_navigation_text_size" tools:override="true">12dp</dimen>
+
+</resources>
+
