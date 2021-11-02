@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clipToPadding="false"
+    android:padding="@dimen/dimens_2">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dimens_12"
+        android:elevation="@dimen/dimens_20"
+        app:cardCornerRadius="@dimen/dimens_12"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/dimens_16">
+
+            <ImageView
+                android:id="@+id/callTypeImage"
+                android:layout_width="@dimen/dimens_32"
+                android:layout_height="@dimen/dimens_32"
+                android:src="@drawable/call_outgoing_icon"
+                app:layout_constraintBottom_toBottomOf="@id/phoneNumber"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/personName" />
+
+            <TextView
+                android:id="@+id/personName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimens_6"
+                android:fontFamily="@font/poppins"
+                android:text="Siddharth Pandey"
+                android:textColor="@color/teal_200"
+                android:textSize="14sp"
+                app:layout_constraintStart_toEndOf="@+id/callTypeImage"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/phoneNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimens_6"
+                android:fontFamily="@font/poppins"
+                android:text="+919910375702"
+                android:textColor="@color/black"
+                android:textSize="@dimen/dimens_12"
+                app:layout_constraintStart_toStartOf="@id/personName"
+                app:layout_constraintTop_toBottomOf="@id/personName" />
+
+            <ImageButton
+                android:id="@+id/imgCopyToClipboard"
+                android:layout_width="@dimen/dimens_22"
+                android:layout_height="@dimen/dimens_22"
+                android:layout_marginStart="@dimen/dimens_8"
+                android:background="@drawable/ic_copy_number"
+                app:layout_constraintBottom_toBottomOf="@id/phoneNumber"
+                app:layout_constraintEnd_toEndOf="@id/personName"
+                app:layout_constraintEnd_toStartOf="@+id/imgMessage"
+                app:layout_constraintStart_toEndOf="@id/personName"
+                app:layout_constraintTop_toTopOf="@id/personName" />
+
+            <ImageButton
+                android:id="@+id/imgMessage"
+                android:layout_width="@dimen/dimens_22"
+                android:layout_height="@dimen/dimens_22"
+                android:background="@drawable/ic_message"
+                app:layout_constraintBottom_toBottomOf="@id/phoneNumber"
+                app:layout_constraintEnd_toStartOf="@id/imgWhatsApp"
+                app:layout_constraintStart_toEndOf="@+id/imgCopyToClipboard"
+                app:layout_constraintTop_toTopOf="@id/personName" />
+
+            <ImageButton
+                android:id="@+id/imgWhatsApp"
+                android:layout_width="@dimen/dimens_22"
+                android:layout_height="@dimen/dimens_22"
+                android:background="@drawable/ic_whatsapp"
+                app:layout_constraintBottom_toBottomOf="@id/phoneNumber"
+                app:layout_constraintEnd_toStartOf="@id/imgCall"
+                app:layout_constraintStart_toEndOf="@+id/imgMessage"
+                app:layout_constraintTop_toTopOf="@id/personName" />
+
+            <ImageButton
+                android:id="@+id/imgCall"
+                android:layout_width="@dimen/dimens_22"
+                android:layout_height="@dimen/dimens_22"
+                android:background="@drawable/call_icon"
+                android:backgroundTint="@color/teal_200"
+                app:layout_constraintBottom_toBottomOf="@id/phoneNumber"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imgWhatsApp"
+                app:layout_constraintTop_toTopOf="@id/personName" />
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/grayish"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/phoneNumber" />
+
+            <LinearLayout
+                android:id="@+id/lLCallDetailsTable"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimens_8"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="@+id/imgCall"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/divider">
+
+                <include layout="@layout/call_details_additional_details" />
+
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/callDetailsRoot"
+    android:padding="@dimen/dimens_8"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/txtSerialNumber"
+        android:textSize="@dimen/dimens_12"
+        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@color/black"
+        android:text="1)"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/txtDaysAgo"
+        android:textSize="@dimen/dimens_12"
+        app:layout_constraintStart_toEndOf="@id/txtSerialNumber"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toStartOf="@+id/txtDate"
+        android:text="4 days ago"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/txtDate"
+        android:textSize="@dimen/dimens_12"
+        app:layout_constraintStart_toEndOf="@id/txtDaysAgo"
+        app:layout_constraintEnd_toStartOf="@id/txtTime"
+        android:textColor="@color/black"
+        android:text="29 Oct, 2021"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/txtTime"
+        app:layout_constraintStart_toEndOf="@id/txtDate"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textColor="@color/black"
+        android:textSize="@dimen/dimens_12"
+        android:text="12:02 PM"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

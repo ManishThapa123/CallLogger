@@ -1,14 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".ui.CallLogs.CallLogsFragment1">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+       android:layout_marginStart="@dimen/dimens_12"
+        android:layout_marginEnd="@dimen/dimens_12"
+        android:layout_marginTop="@dimen/dimens_8"
+        android:elevation="@dimen/dimens_16"
+        app:cardCornerRadius="@dimen/dimens_16">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dimens_8"
+            android:layout_marginEnd="@dimen/dimens_8"
+            android:backgroundTint="@color/white"
+            android:drawableStart="@drawable/ic_search"
+            android:drawablePadding="@dimen/dimens_8"
+            android:fontFamily="@font/poppins"
+            android:gravity="bottom"
+            android:hint="Search"
+            android:textSize="14sp" />
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvCallDetailsFragmentOne"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:orientation="vertical"
+        android:layout_marginTop="4dp"
+        android:overScrollMode="never"
+        tools:listitem="@layout/item_adapter_layout_one" />
+<!--    <include layout="@layout/item_adapter_layout_one" />-->
 
-</FrameLayout>
+</LinearLayout>

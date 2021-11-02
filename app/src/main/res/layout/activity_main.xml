@@ -13,58 +13,53 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:layoutDirection="ltr"
         app:tabMode="scrollable"
         app:tabInlineLabel="true"
-        app:tabTextAppearance="@style/TextAppearance.AppCompat.Small"
-        app:tabSelectedTextColor="@color/Orangish">
+        app:tabIndicatorAnimationMode="elastic"
+        app:tabTextAppearance="@style/MyCustomTabText"
+        app:tabSelectedTextColor="@color/teal_200">
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/tabAll"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:icon="@drawable/call_icon"
             android:text="All" />
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/tabIncoming"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:icon="@drawable/call_received_icon"
             android:text="Incoming" />
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/tabOutgoing"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:icon="@drawable/call_outgoing_icon"
             android:text="Outgoing" />
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/tabMissed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:icon="@drawable/call_missed_icon"
             android:text="Missed" />
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/tabRejected"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:icon="@drawable/call_not_interested"
             android:text="Rejected" />
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/tabNeverAttended"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:icon="@drawable/call_never_attented"
+            android:icon="@drawable/call_not_received"
             android:text="Never Attended" />
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/tabNotPickedUp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:icon="@drawable/call_never_picked_up"
+            android:icon="@drawable/call_disabled"
             android:text="Not Picked up by client" />
 
     </com.google.android.material.tabs.TabLayout>
@@ -76,6 +71,18 @@
         android:animateLayoutChanges="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tabLayout" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:borderWidth="0dp"
+        app:maxImageSize="34dp"
+        android:layout_margin="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:src="@drawable/baseline_dialpad_white_24dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
