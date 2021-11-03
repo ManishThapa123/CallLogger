@@ -23,8 +23,8 @@
 
             <ImageView
                 android:id="@+id/callTypeImage"
-                android:layout_width="@dimen/dimens_32"
-                android:layout_height="@dimen/dimens_32"
+                android:layout_width="@dimen/dimens_28"
+                android:layout_height="@dimen/dimens_28"
                 android:src="@drawable/call_outgoing_icon"
                 app:layout_constraintBottom_toBottomOf="@id/phoneNumber"
                 app:layout_constraintStart_toStartOf="parent"
@@ -32,7 +32,9 @@
 
             <TextView
                 android:id="@+id/personName"
-                android:layout_width="0dp"
+                android:layout_width="160dp"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dimens_6"
                 android:fontFamily="@font/poppins"
@@ -61,7 +63,6 @@
                 android:layout_marginStart="@dimen/dimens_8"
                 android:background="@drawable/ic_copy_number"
                 app:layout_constraintBottom_toBottomOf="@id/phoneNumber"
-                app:layout_constraintEnd_toEndOf="@id/personName"
                 app:layout_constraintEnd_toStartOf="@+id/imgMessage"
                 app:layout_constraintStart_toEndOf="@id/personName"
                 app:layout_constraintTop_toTopOf="@id/personName" />

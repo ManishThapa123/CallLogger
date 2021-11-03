@@ -26,8 +26,8 @@
 
             <ImageView
                 android:id="@+id/callTypeImage"
-                android:layout_width="@dimen/dimens_32"
-                android:layout_height="@dimen/dimens_32"
+                android:layout_width="@dimen/dimens_28"
+                android:layout_height="@dimen/dimens_28"
                 android:src="@drawable/call_outgoing_icon"
 
                 app:layout_constraintBottom_toBottomOf="@id/phoneNumber"
