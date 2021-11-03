@@ -32,11 +32,11 @@
 
             <TextView
                 android:id="@+id/personName"
-                android:layout_width="160dp"
+                android:layout_width="140dp"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dimens_6"
+                android:layout_marginStart="@dimen/dimens_4"
                 android:fontFamily="@font/poppins"
                 android:text="Siddharth Pandey"
                 android:textColor="@color/teal_200"

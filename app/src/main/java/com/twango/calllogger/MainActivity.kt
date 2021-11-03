@@ -1,17 +1,20 @@
 package com.twango.calllogger
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.widget.TableLayout
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.twango.calllogger.databinding.ActivityMainBinding
@@ -25,13 +28,52 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var context: Context? = null
 
+    private val requestManageCallsPermission = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { permissionGranted: Boolean ->
+        if (permissionGranted) {
+            Log.d("Permission", "Permission Granted")
+            requestPermissionsToReadContacts()
+        } else {
+            requestPermissionsToManageCalls()
+            Log.d("Permission", "Permission Rejected")
+        }
+
+    }
+    private val requestReadContactsPermission = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { permissionGranted: Boolean ->
+        if (permissionGranted) {
+            Log.d("Permission", "Permission Granted")
+        } else {
+            Log.d("Permission", "Permission Rejected")
+        }
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+        //For Navigation Drawer and Tool bar
+        setSupportActionBar(binding.contentMain.toolBar)
+        val toggle = ActionBarDrawerToggle(
+            this,
+            binding.drawerLayout,
+            binding.contentMain.toolBar,
+            R.string.open,
+            R.string.close
+        )
+        binding.drawerLayout.addDrawerListener(toggle)
+        toggle.isDrawerIndicatorEnabled = true
+        toggle.syncState()
+
+        //To request Permission
+        requestPermissionsToManageCalls()
         setUpAdapter()
-        binding.floatingActionButton.setOnClickListener {
+        binding.contentMain.floatingActionButton.setOnClickListener {
             val intent = Intent(Intent.ACTION_DIAL)
             intent.data = Uri.parse("tel:")
             startActivity(intent)
@@ -43,6 +85,7 @@ class MainActivity : AppCompatActivity() {
         for (i in 1..7) {
             when (i) {
                 6, 7 -> {
+
                     val fragment = CallLogsFragment2.newInstance("$i")
                     fragsList.add(fragment)
                 }
@@ -53,10 +96,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
         val adapter = CallLogsViewPagerAdapter(fragsList, this)
-        binding.fragmentViewPager.adapter = adapter
+        binding.contentMain.fragmentViewPager.adapter = adapter
 
         TabLayoutMediator(
-            binding.tabLayout, binding.fragmentViewPager) { tab, position ->
+            binding.contentMain.tabLayout, binding.contentMain.fragmentViewPager
+        ) { tab, position ->
             binding.apply {
                 when (position) {
                     0 -> {
@@ -107,26 +151,29 @@ class MainActivity : AppCompatActivity() {
                         )
                     }
 
-                } } }.attach()
+                }
+            }
+        }.attach()
 
-        binding.tabLayout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener{
+        binding.contentMain.tabLayout.addOnTabSelectedListener(object :
+            TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-               when(tab?.text){
-                   "Never Attended" ->{
-                       binding.apply {
-                           floatingActionButton.hide()
-                           Handler(Looper.getMainLooper()).postDelayed({
-                               floatingActionButton.show()
-                           }, 600)
+                when (tab?.text) {
+                    "Never Attended" -> {
+                        binding.apply {
+                            contentMain.floatingActionButton.hide()
+                            Handler(Looper.getMainLooper()).postDelayed({
+                                contentMain.floatingActionButton.show()
+                            }, 600)
 
-                       }
-                   }
+                        }
+                    }
 
-               }
+                }
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
-                Log.d("unselectedTab","${tab?.text}")
+                Log.d("unselectedTab", "${tab?.text}")
             }
 
             override fun onTabReselected(tab: TabLayout.Tab?) {
@@ -134,6 +181,32 @@ class MainActivity : AppCompatActivity() {
             }
 
         })
+    }
+
+    private fun requestPermissionsToReadContacts() {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.READ_CONTACTS
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            Log.d("Permission", "Permission Granted")
+        } else
+            requestReadContactsPermission.launch(
+                Manifest.permission.READ_CONTACTS
+            )
+    }
+
+    private fun requestPermissionsToManageCalls() {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.READ_PHONE_STATE
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            Log.d("Permission", "Permission Granted")
+        } else
+            requestManageCallsPermission.launch(
+                Manifest.permission.READ_PHONE_STATE
+            )
     }
 
 }

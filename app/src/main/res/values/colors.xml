@@ -14,4 +14,9 @@
     <color name="Orangish">#FFB423</color>
     <color name="Yellowish">#FDDB3A</color>
     <color name="Whitish">#F0FFF3</color>
+    <!--    Color Palette 2-->
+    <color name="green">#5CB85C</color>
+    <color name="green_dark">#347634</color>
+    <color name="grey">#818a91</color>
+    <color name="grey_dark">#4B5359</color>
 </resources>

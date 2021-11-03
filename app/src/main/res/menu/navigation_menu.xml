@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="Home"
+       android:icon="@drawable/ic_home" />
+    <item android:title="Dashboard"
+        android:icon="@drawable/ic_dashboard"/>
+    <item android:title="Contact"
+        android:icon="@drawable/ic_contact"/>
+    <item android:title="My Leads"
+        android:icon="@drawable/ic_add_person"
+        android:iconTint="@color/black"/>
+    <item android:title="Compare"
+        android:icon="@drawable/ic_compare"/>
+    <item android:title="Contact Report"
+        android:icon="@drawable/ic_contact_report"/>
+    <item android:title="Settings"
+        android:icon="@drawable/ic_settings"/>
+    <item android:title="About"
+        android:icon="@drawable/ic_about"/>
+</menu>
