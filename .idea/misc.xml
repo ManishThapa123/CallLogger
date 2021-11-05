@@ -17,11 +17,13 @@
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/font/poppins_bold.xml" value="0.25277777777777777" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/layout/activity_main.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/layout/call_details_additional_details.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/layout/call_details_fragment.xml" value="0.264" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/layout/content_main.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/layout/fragment_call_logs1.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/layout/fragment_call_logs2.xml" value="0.24010416666666667" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/layout/item_adapter_layout_one.xml" value="0.264" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/layout/item_adapter_layout_two.xml" value="0.264" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/layout/item_call_details.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/layout/navigation_header.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/menu/navigation_menu.xml" value="0.25416666666666665" />
       </map>
