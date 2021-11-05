@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.twango.calllogger.databinding.ActivityMainBinding
+import com.twango.calllogger.helper.GlobalMethods
 import com.twango.calllogger.ui.CallLogs.CallLogsFragment1
 import com.twango.calllogger.ui.CallLogs.CallLogsFragment2
 import com.twango.calllogger.ui.CallLogs.CallLogsViewPagerAdapter
@@ -35,6 +36,7 @@ class MainActivity : AppCompatActivity() {
             Log.d("Permission", "Permission Granted")
             requestPermissionsToReadContacts()
         } else {
+            //ask again
             requestPermissionsToManageCalls()
             Log.d("Permission", "Permission Rejected")
         }
@@ -45,8 +47,12 @@ class MainActivity : AppCompatActivity() {
     ) { permissionGranted: Boolean ->
         if (permissionGranted) {
             Log.d("Permission", "Permission Granted")
+            GlobalMethods.checkIfAutoStartPermissionAvailable(this)
+            GlobalMethods.getAutoStartPermission(this)
         } else {
+            //ask again
             Log.d("Permission", "Permission Rejected")
+            requestPermissionsToReadContacts()
         }
 
     }
@@ -78,6 +84,7 @@ class MainActivity : AppCompatActivity() {
             intent.data = Uri.parse("tel:")
             startActivity(intent)
         }
+
     }
 
     private fun setUpAdapter() {
@@ -150,7 +157,6 @@ class MainActivity : AppCompatActivity() {
                             R.drawable.call_disabled
                         )
                     }
-
                 }
             }
         }.attach()
@@ -165,10 +171,8 @@ class MainActivity : AppCompatActivity() {
                             Handler(Looper.getMainLooper()).postDelayed({
                                 contentMain.floatingActionButton.show()
                             }, 600)
-
                         }
                     }
-
                 }
             }
 
