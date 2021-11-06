@@ -68,6 +68,16 @@ abstract class CallDetailsAdapter : ListAdapter<SampleEntity,
                 phoneNumber.text = callData.userNumber
                 callDuration.text = callData.callDuration
                 callTime.text = callData.time
+
+                imgMessage.setOnClickListener {
+                    sendMessageToUser(callData)
+                }
+                imgWhatsApp.setOnClickListener {
+                    sendWhatsAppToUser(callData)
+                }
+                imgCall.setOnClickListener {
+                    callUser(callData)
+                }
             }
         }
     }
@@ -84,4 +94,7 @@ abstract class CallDetailsAdapter : ListAdapter<SampleEntity,
     }
 
     abstract fun getContext(): Context
+    abstract fun sendMessageToUser(callData: SampleEntity)
+    abstract fun sendWhatsAppToUser(callData: SampleEntity)
+    abstract fun callUser(callData: SampleEntity)
 }

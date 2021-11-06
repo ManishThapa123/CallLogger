@@ -1,15 +1,22 @@
 package com.twango.calllogger.ui.CallLogs
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.twango.callLogger.api.models.entities.SampleEntity
 import com.twango.calllogger.databinding.FragmentCallLogs1Binding
+import com.twango.calllogger.helper.GlobalMethods
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -18,6 +25,12 @@ class CallLogsFragment1 : Fragment() {
     private lateinit var binding: FragmentCallLogs1Binding
     private lateinit var callDetailsAdapter: CallDetailsAdapter
     private val callDetailsViewModel: CallLogsViewModel by viewModels()
+    private val requestPermission =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { permissionGranted:Boolean ->
+            if (permissionGranted){
+                GlobalMethods.showToast(requireContext(),"Permission Granted")
+            }else GlobalMethods.showToast(requireContext(),"Permission Rejected")
+        }
 
     companion object {
         fun newInstance(type: String): Fragment {
@@ -53,6 +66,26 @@ class CallLogsFragment1 : Fragment() {
         callDetailsAdapter = object : CallDetailsAdapter() {
             override fun getContext(): Context {
                 return requireContext()
+            }
+
+            override fun sendMessageToUser(callData: SampleEntity) {
+                GlobalMethods.sendSmsToUser(callData.userNumber!!,requireContext())
+            }
+
+            override fun sendWhatsAppToUser(callData: SampleEntity) {
+            GlobalMethods.openNumberInWhatsapp(callData.userNumber!!,requireContext())
+            }
+
+            override fun callUser(callData: SampleEntity) {
+                if (ContextCompat.checkSelfPermission(requireContext(),
+                        Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED){
+                    Log.d("Permission", "Permission Granted")
+                    //Write condition for calling
+                    GlobalMethods.callUser(callData.userNumber!!,requireContext())
+                }else
+                // You can directly ask for the permission.
+                    requestPermission.launch(
+                        Manifest.permission.CALL_PHONE)
             }
         }
         binding.rvCallDetailsFragmentOne.apply {

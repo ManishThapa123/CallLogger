@@ -2,13 +2,29 @@ package com.twango.calllogger.helper
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.judemanutd.autostarter.AutoStartPermissionHelper
 
 @SuppressLint("StaticFieldLeak")
 object GlobalMethods {
+    /**
+     * Make a standard toast that just contains text.
+     *
+     * @param context  The context to use.  Usually your {@link android.app.Application}
+     *                 or {@link android.app.Activity} object.
+     * @param message     The text to show.  Can be formatted text.
+     *
+     */
+    fun showToast(context: Context, message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+    }
+
     /**
      * In order to check if the device is supported by the library.
      * If false, the method will return true as long as the permission exist,
@@ -59,6 +75,56 @@ object GlobalMethods {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Log.w(tag, "Version.BaseOS: ${Build.VERSION.BASE_OS}")
             Log.w(tag, "Version.SecurityPatch: ${Build.VERSION.SECURITY_PATCH}")
+        }
+    }
+
+    /**
+     * In order to open a number in whats app, using the implicit Intent.
+     * [phoneNumberWithCountryCode] is a required param.
+     */
+    fun openNumberInWhatsapp(phoneNumberWithCountryCode: String, context: Context) {
+        val url = "https://api.whatsapp.com/send?phone=$phoneNumberWithCountryCode"
+        try {
+            context.packageManager.getPackageInfo("com.whatsapp", PackageManager.GET_ACTIVITIES)
+            val i = Intent(Intent.ACTION_VIEW)
+            i.data = Uri.parse(url)
+            context.startActivity(i)
+        } catch (e: PackageManager.NameNotFoundException) {
+            Toast.makeText(context, "Whatsapp is not installed in your phone.", Toast.LENGTH_SHORT)
+                .show()
+            e.printStackTrace()
+        }
+    }
+    /**
+     * This function is called to send an Sms to the user, using the implicit Intent.
+     * [phoneNumberWithCountryCode] is the user phone number required to send an SMS to.
+     */
+    fun sendSmsToUser(phoneNumberWithCountryCode: String, context: Context) {
+        try {
+            val uri = Uri.parse("smsto:$phoneNumberWithCountryCode")
+            val intent = Intent(Intent.ACTION_SENDTO, uri)
+            intent.putExtra("sms_body", "Hello,")
+            context.startActivity(intent)
+        } catch (e: Exception) {
+            Toast.makeText(context, "Please try again..", Toast.LENGTH_SHORT)
+                .show()
+            e.printStackTrace()
+        }
+    }
+
+    /**
+     * This function is called to make a call to the user, using the implicit Intent.
+     * [phoneNumberWithCountryCode] is the user phone number to which the call has to be made.
+     */
+    fun callUser(phoneNumberWithCountryCode: String,context: Context){
+        try {
+            val dialIntent = Intent(Intent.ACTION_DIAL)
+            dialIntent.data = Uri.parse("tel:" + phoneNumberWithCountryCode)
+            context.startActivity(dialIntent)
+        }catch (e: Exception){
+            Toast.makeText(context, "Couldn't place your call...", Toast.LENGTH_SHORT)
+                .show()
+            e.printStackTrace()
         }
     }
 }
