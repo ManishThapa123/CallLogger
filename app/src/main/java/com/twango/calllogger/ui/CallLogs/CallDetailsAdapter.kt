@@ -10,6 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.twango.callLogger.api.models.entities.SampleEntity
 import com.twango.calllogger.R
 import com.twango.calllogger.databinding.ItemAdapterLayoutOneBinding
+import com.twango.calllogger.helper.GlobalMethods.convertMillisToTime
+import com.twango.calllogger.helper.GlobalMethods.convertSeconds
+import java.time.LocalTime
 
 abstract class CallDetailsAdapter : ListAdapter<SampleEntity,
         CallDetailsAdapter.ViewHolder>(object : DiffUtil.ItemCallback<SampleEntity>() {
@@ -31,7 +34,7 @@ abstract class CallDetailsAdapter : ListAdapter<SampleEntity,
             context = getContext()
             binding.apply {
                 when (callData.callType) {
-                    "OUTGOING" -> {
+                    "2" -> {
                         callTypeImage.setImageDrawable(
                             ContextCompat.getDrawable(
                                 context!!,
@@ -39,7 +42,7 @@ abstract class CallDetailsAdapter : ListAdapter<SampleEntity,
                             )
                         )
                     }
-                    "INCOMING" -> {
+                    "1" -> {
                         callTypeImage.setImageDrawable(
                             ContextCompat.getDrawable(
                                 context!!,
@@ -47,7 +50,7 @@ abstract class CallDetailsAdapter : ListAdapter<SampleEntity,
                             )
                         )
                     }
-                    "MISSED" -> {
+                    "3" -> {
                         callTypeImage.setImageDrawable(
                             ContextCompat.getDrawable(
                                 context!!,
@@ -55,19 +58,19 @@ abstract class CallDetailsAdapter : ListAdapter<SampleEntity,
                             )
                         )
                     }
-                    "REJECTED" -> {
+                    "5" -> {
                         callTypeImage.setImageDrawable(
                             ContextCompat.getDrawable(
                                 context!!,
-                                R.drawable.call_not_interested
+                                R.drawable.call_disabled
                             )
                         )
                     }
                 }
-                personName.text = callData.userName
+                personName.text = callData.userName ?:"Unknown"
                 phoneNumber.text = callData.userNumber
-                callDuration.text = callData.callDuration
-                callTime.text = callData.time
+                callDuration.text = convertSeconds(callData.callDuration!!.toInt())
+                callTime.text = convertMillisToTime(callData.time!!)
 
                 imgMessage.setOnClickListener {
                     sendMessageToUser(callData)

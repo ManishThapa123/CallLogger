@@ -15,7 +15,9 @@
     <item android:title="Contact Report"
         android:icon="@drawable/ic_contact_report"/>
     <item android:title="Settings"
-        android:icon="@drawable/ic_settings"/>
+        android:icon="@drawable/ic_settings"
+        android:id="@+id/navSettings"/>
     <item android:title="About"
+        android:id="@+id/navAbout"
         android:icon="@drawable/ic_about"/>
 </menu>

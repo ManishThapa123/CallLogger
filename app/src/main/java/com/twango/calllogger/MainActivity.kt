@@ -9,7 +9,9 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
@@ -18,49 +20,29 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.twango.calllogger.databinding.ActivityMainBinding
+import com.twango.calllogger.databinding.NavigationHeaderBinding
 import com.twango.calllogger.helper.GlobalMethods
 import com.twango.calllogger.ui.CallLogs.CallLogsFragment1
 import com.twango.calllogger.ui.CallLogs.CallLogsFragment2
+import com.twango.calllogger.ui.CallLogs.CallLogsViewModel
 import com.twango.calllogger.ui.CallLogs.CallLogsViewPagerAdapter
+import com.twango.calllogger.ui.Onboarding.OnBoardingActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var context: Context? = null
+    private val callDetailsViewModel: CallLogsViewModel by viewModels()
+    private lateinit var headerBinding: NavigationHeaderBinding
 
-    private val requestManageCallsPermission = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { permissionGranted: Boolean ->
-        if (permissionGranted) {
-            Log.d("Permission", "Permission Granted")
-            requestPermissionsToReadContacts()
-        } else {
-            //ask again
-            requestPermissionsToManageCalls()
-            Log.d("Permission", "Permission Rejected")
-        }
-
-    }
-    private val requestReadContactsPermission = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { permissionGranted: Boolean ->
-        if (permissionGranted) {
-            Log.d("Permission", "Permission Granted")
-            GlobalMethods.checkIfAutoStartPermissionAvailable(this)
-            GlobalMethods.getAutoStartPermission(this)
-        } else {
-            //ask again
-            Log.d("Permission", "Permission Rejected")
-            requestPermissionsToReadContacts()
-        }
-
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
+        val headerView: View = binding.navView.getHeaderView(0)
+        headerBinding = NavigationHeaderBinding.bind(headerView)
         setContentView(view)
 
         //For Navigation Drawer and Tool bar
@@ -76,15 +58,40 @@ class MainActivity : AppCompatActivity() {
         toggle.isDrawerIndicatorEnabled = true
         toggle.syncState()
 
-        //To request Permission
-        requestPermissionsToManageCalls()
+        //Call it here phonebook.
         setUpAdapter()
+        callDetailsViewModel.getAutoRunPermissionSavedState()
+        callDetailsViewModel.permissionState.observe({lifecycle}){
+            if (!it){
+                GlobalMethods.checkIfAutoStartPermissionAvailable(this)
+                  GlobalMethods.getAutoStartPermission(this)
+                callDetailsViewModel.saveAutoRunPermissionSavedState()
+            }
+        }
+
         binding.contentMain.floatingActionButton.setOnClickListener {
             val intent = Intent(Intent.ACTION_DIAL)
             intent.data = Uri.parse("tel:")
             startActivity(intent)
         }
 
+        binding.navView.setNavigationItemSelectedListener {
+           when(it.itemId){
+               R.id.navSettings -> {
+                   val intent = Intent(this, OnBoardingActivity::class.java)
+                   intent.flags =
+                       Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                   startActivity(intent)
+               }
+               R.id.navAbout -> {
+                   val intent = Intent(this, OnBoardingActivity::class.java)
+                   intent.flags =
+                       Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                   startActivity(intent)
+               }
+           }
+            true
+        }
     }
 
     private fun setUpAdapter() {
@@ -92,7 +99,6 @@ class MainActivity : AppCompatActivity() {
         for (i in 1..7) {
             when (i) {
                 6, 7 -> {
-
                     val fragment = CallLogsFragment2.newInstance("$i")
                     fragsList.add(fragment)
                 }
@@ -103,6 +109,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
         val adapter = CallLogsViewPagerAdapter(fragsList, this)
+        binding.contentMain.fragmentViewPager.offscreenPageLimit = 7
         binding.contentMain.fragmentViewPager.adapter = adapter
 
         TabLayoutMediator(
@@ -140,21 +147,21 @@ class MainActivity : AppCompatActivity() {
                         tab.text = "Rejected"
                         tab.icon = AppCompatResources.getDrawable(
                             this@MainActivity,
-                            R.drawable.call_not_interested
+                            R.drawable.call_disabled
                         )
                     }
                     5 -> {
                         tab.text = "Never Attended"
                         tab.icon = AppCompatResources.getDrawable(
                             this@MainActivity,
-                            R.drawable.call_not_received
+                            R.drawable.call_never_attented
                         )
                     }
                     6 -> {
                         tab.text = "Not Picked up by client"
                         tab.icon = AppCompatResources.getDrawable(
                             this@MainActivity,
-                            R.drawable.call_disabled
+                            R.drawable.call_never_picked_up
                         )
                     }
                 }
@@ -164,8 +171,8 @@ class MainActivity : AppCompatActivity() {
         binding.contentMain.tabLayout.addOnTabSelectedListener(object :
             TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                when (tab?.text) {
-                    "Never Attended" -> {
+                when (tab?.position) {
+                    5 -> {
                         binding.apply {
                             contentMain.floatingActionButton.hide()
                             Handler(Looper.getMainLooper()).postDelayed({
@@ -186,31 +193,8 @@ class MainActivity : AppCompatActivity() {
 
         })
     }
-
-    private fun requestPermissionsToReadContacts() {
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.READ_CONTACTS
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            Log.d("Permission", "Permission Granted")
-        } else
-            requestReadContactsPermission.launch(
-                Manifest.permission.READ_CONTACTS
-            )
-    }
-
-    private fun requestPermissionsToManageCalls() {
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.READ_PHONE_STATE
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            Log.d("Permission", "Permission Granted")
-        } else
-            requestManageCallsPermission.launch(
-                Manifest.permission.READ_PHONE_STATE
-            )
-    }
+    //1 requesttomanagecalls
+    //1.1 access call logs
+    //2. access contacts
 
 }

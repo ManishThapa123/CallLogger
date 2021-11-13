@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/purple"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context=".ui.Onboarding.PermissionFragmentFirst">
+
+
+    <LinearLayout
+        android:id="@+id/llCard"
+        android:layout_width="match_parent"
+        android:layout_height="240dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="@dimen/dimens_32"
+        android:layout_marginEnd="@dimen/dimens_32"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/card_drawable"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimens_40"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimens_8"
+                android:layout_marginEnd="@dimen/dimens_8"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/connectionNameCall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_medium"
+                    android:gravity="center"
+                    android:text="Set as a Default Dialer"
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimens_16"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/permissionBodyText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dimens_12"
+                    android:layout_marginEnd="@dimen/dimens_12"
+                    android:fontFamily="@font/poppins"
+                    android:gravity="center"
+                    android:text="By permitting, you accept to initiate calls through Call Logger application. The permission is mandatory to continue."
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/connectionPhotoDiscount"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="-44dp"
+        android:background="#3DAA42"
+        android:elevation="@dimen/dimens_20"
+        android:scaleType="centerInside"
+        android:src="@drawable/call_icon_white"
+        app:riv_corner_radius="45dip"
+        app:riv_mutate_background="true"
+        app:riv_oval="true" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/agreePermission1Button"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/llCard"
+        android:layout_marginStart="@dimen/dimens_36"
+        android:layout_marginTop="@dimen/dimens_24"
+        android:layout_marginEnd="@dimen/dimens_36"
+        android:fontFamily="@font/poppins_medium"
+        android:padding="@dimen/dimens_10"
+        android:text="Yes I Agree"
+        android:textColor="@color/white"
+        app:cornerRadius="@dimen/dimens_20"
+        app:strokeColor="@color/white"
+        app:strokeWidth="@dimen/dimens_2" />
+
+
+</RelativeLayout>

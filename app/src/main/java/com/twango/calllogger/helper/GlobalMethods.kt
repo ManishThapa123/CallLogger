@@ -10,9 +10,13 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.judemanutd.autostarter.AutoStartPermissionHelper
+import java.text.SimpleDateFormat
+import java.util.*
+import javax.inject.Inject
 
 @SuppressLint("StaticFieldLeak")
 object GlobalMethods {
+
     /**
      * Make a standard toast that just contains text.
      *
@@ -50,8 +54,12 @@ object GlobalMethods {
         builder.setTitle("Enable AutoStart")
         builder.setMessage("Please allow auto start to run background sync process.")
         builder.setPositiveButton("Allow") { _, _ ->
+
+//            builder.create().cancel()
             val success = AutoStartPermissionHelper.getInstance().getAutoStartPermission(context)
-            Log.d("getAutoStartPermission", "$success")
+            Log.d("getAutoStartPermission",
+                "$success")
+            builder.create().dismiss()
         }
         builder.setCancelable(false)
         builder.create()
@@ -83,8 +91,8 @@ object GlobalMethods {
      * [phoneNumberWithCountryCode] is a required param.
      */
     fun openNumberInWhatsapp(phoneNumberWithCountryCode: String, context: Context) {
-        val url = "https://api.whatsapp.com/send?phone=$phoneNumberWithCountryCode"
         try {
+            val url = "https://api.whatsapp.com/send?phone=$phoneNumberWithCountryCode"
             context.packageManager.getPackageInfo("com.whatsapp", PackageManager.GET_ACTIVITIES)
             val i = Intent(Intent.ACTION_VIEW)
             i.data = Uri.parse(url)
@@ -95,6 +103,7 @@ object GlobalMethods {
             e.printStackTrace()
         }
     }
+
     /**
      * This function is called to send an Sms to the user, using the implicit Intent.
      * [phoneNumberWithCountryCode] is the user phone number required to send an SMS to.
@@ -116,15 +125,50 @@ object GlobalMethods {
      * This function is called to make a call to the user, using the implicit Intent.
      * [phoneNumberWithCountryCode] is the user phone number to which the call has to be made.
      */
-    fun callUser(phoneNumberWithCountryCode: String,context: Context){
+    fun callUser(phoneNumberWithCountryCode: String, context: Context) {
         try {
             val dialIntent = Intent(Intent.ACTION_DIAL)
-            dialIntent.data = Uri.parse("tel:" + phoneNumberWithCountryCode)
+            dialIntent.data = Uri.parse("tel:$phoneNumberWithCountryCode")
             context.startActivity(dialIntent)
-        }catch (e: Exception){
+        } catch (e: Exception) {
             Toast.makeText(context, "Couldn't place your call...", Toast.LENGTH_SHORT)
                 .show()
             e.printStackTrace()
         }
+    }
+
+    /**
+     * In order to convert the milliseconds to Time Stamp using SimpleDateFormat.
+     */
+    fun convertMillisToDateAndTime(millis: String): String {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        val convertedDate = dateFormat.format(millis.toLong())
+        Log.d("dateInFormat", convertedDate)
+        return convertedDate
+    }
+
+    /**
+     * In order to convert the milliseconds to Hours, minutes format
+     */
+    fun convertMillisToTime(millis: String): String {
+        val dateFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
+        val convertedDate = dateFormat.format(millis.toLong())
+        Log.d("timeInFormat", convertedDate)
+        return convertedDate
+    }
+
+    /**
+     * In order to convert the seconds to Hours, minutes and seconds format
+     */
+    fun convertSeconds(seconds: Int): String {
+        val hour = seconds / 3600
+        val minute = seconds % 3600 / 60
+        val s = seconds % 60
+        val sh = if (hour > 0) "$hour h" else ""
+        val sm =
+            (if (minute in 1..9 && hour > 0) "0" else "") + if (minute > 0) if (hour > 0 && s == 0) minute.toString() else "$minute min" else ""
+        val ss =
+            if (s == 0 && (hour > 0 || minute > 0)) "" else (if (s < 10 && (hour > 0 || minute > 0)) "0" else "") + s.toString() + " " + "sec"
+        return sh + (if (hour > 0) " " else "") + sm + (if (minute > 0) " " else "") + ss
     }
 }

@@ -75,6 +75,8 @@ dependencies {
 
     //Auto start background sync
     implementation 'com.github.judemanutd:autostarter:1.1.0'
+
+    implementation 'com.makeramen:roundedimageview:2.3.0'
 }
 // Allow references to generated code
 kapt {

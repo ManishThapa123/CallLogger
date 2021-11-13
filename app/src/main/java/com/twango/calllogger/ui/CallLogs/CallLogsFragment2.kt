@@ -35,7 +35,7 @@ class CallLogsFragment2 : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        callDetailsViewModel.getCallLogs()
+        callDetailsViewModel.getCallLogs("2")
     }
 
     override fun onCreateView(
@@ -70,5 +70,4 @@ class CallLogsFragment2 : Fragment() {
             callDetailsAdapter.submitList(sampleData)
         }
     }
-
 }

@@ -23,10 +23,5 @@ class CallDetailsFragment : Fragment() {
         return inflater.inflate(R.layout.call_details_fragment, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(CallDetailsViewModel::class.java)
-        // TODO: Use the ViewModel
-    }
 
 }
