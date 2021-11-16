@@ -4,6 +4,7 @@
     <item android:title="Home"
        android:icon="@drawable/ic_home" />
     <item android:title="Dashboard"
+        android:id="@+id/dashBoard"
         android:icon="@drawable/ic_dashboard"/>
     <item android:title="Contact"
         android:icon="@drawable/ic_contact"/>

@@ -1,21 +1,17 @@
 package com.twango.calllogger
 
-import android.Manifest
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -26,6 +22,7 @@ import com.twango.calllogger.ui.CallLogs.CallLogsFragment1
 import com.twango.calllogger.ui.CallLogs.CallLogsFragment2
 import com.twango.calllogger.ui.CallLogs.CallLogsViewModel
 import com.twango.calllogger.ui.CallLogs.CallLogsViewPagerAdapter
+import com.twango.calllogger.ui.Dashboard.DashboardActivity
 import com.twango.calllogger.ui.Onboarding.OnBoardingActivity
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -78,16 +75,21 @@ class MainActivity : AppCompatActivity() {
         binding.navView.setNavigationItemSelectedListener {
            when(it.itemId){
                R.id.navSettings -> {
-                   val intent = Intent(this, OnBoardingActivity::class.java)
-                   intent.flags =
-                       Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                   startActivity(intent)
+//                   val intent = Intent(this, OnBoardingActivity::class.java)
+//                   intent.flags =
+//                       Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+//                   startActivity(intent)
                }
                R.id.navAbout -> {
-                   val intent = Intent(this, OnBoardingActivity::class.java)
-                   intent.flags =
-                       Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+//                   val intent = Intent(this, OnBoardingActivity::class.java)
+//                   intent.flags =
+//                       Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+//                   startActivity(intent)
+               }
+               R.id.dashBoard -> {
+                   val intent = Intent(this, DashboardActivity::class.java)
                    startActivity(intent)
+                   binding.drawerLayout.close()
                }
            }
             true
@@ -193,8 +195,5 @@ class MainActivity : AppCompatActivity() {
 
         })
     }
-    //1 requesttomanagecalls
-    //1.1 access call logs
-    //2. access contacts
 
 }

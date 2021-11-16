@@ -7,7 +7,7 @@
         motion:constraintSetEnd="@+id/end"
         motion:constraintSetStart="@id/start"
         motion:autoTransition="animateToEnd"
-        motion:duration="1000">
+        motion:duration="1500">
        <KeyFrameSet>
            <KeyAttribute
                motion:motionTarget="@+id/imageView"
@@ -41,6 +41,14 @@
                motion:motionTarget="@+id/imageView"
                motion:framePosition="70"
                android:scaleY="30" />
+           <KeyAttribute
+               motion:motionTarget="@+id/imageView"
+               motion:framePosition="85"
+               android:scaleX="40" />
+           <KeyAttribute
+               motion:motionTarget="@+id/imageView"
+               motion:framePosition="85"
+               android:scaleY="40" />
            <KeyAttribute
                motion:motionTarget="@+id/imageView"
                motion:framePosition="100"

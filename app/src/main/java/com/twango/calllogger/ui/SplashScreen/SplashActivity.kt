@@ -34,7 +34,6 @@ class SplashActivity : AppCompatActivity() {
             }
         }
 
-
         binding.splashMotionLayout.setTransitionListener(object : MotionLayout.TransitionListener {
             override fun onTransitionStarted(
                 motionLayout: MotionLayout?,
@@ -51,11 +50,11 @@ class SplashActivity : AppCompatActivity() {
             ) {
 
                 when{
-                    progress > 0.6f ->{
+                    progress > 0.65f ->{
                         binding.imageView.setBackgroundColor(Color.WHITE)
 
                     }
-                    progress > 0.5f ->{
+                    progress > 0.45f ->{
                         binding.imageView2.visibility = View.GONE
                     }
                 }

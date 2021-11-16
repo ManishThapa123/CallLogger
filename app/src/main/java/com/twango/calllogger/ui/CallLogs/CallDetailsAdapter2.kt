@@ -6,18 +6,19 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.twango.callLogger.api.models.entities.CallDetailsWithCount
 import com.twango.callLogger.api.models.entities.SampleEntity
 import com.twango.calllogger.databinding.ItemAdapterLayoutTwoBinding
 
 abstract class CallDetailsAdapter2 :
-    ListAdapter<SampleEntity, CallDetailsAdapter2.ViewHolder>(object :
-        DiffUtil.ItemCallback<SampleEntity>() {
-        override fun areItemsTheSame(oldItem: SampleEntity, newItem: SampleEntity): Boolean {
-            return "${oldItem.userNumber}" == "${newItem.userNumber}"
+    ListAdapter<CallDetailsWithCount, CallDetailsAdapter2.ViewHolder>(object :
+        DiffUtil.ItemCallback<CallDetailsWithCount>() {
+        override fun areItemsTheSame(oldItem: CallDetailsWithCount, newItem: CallDetailsWithCount): Boolean {
+            return "${oldItem.callDetails?.userNumber}" == "${newItem.callDetails?.userNumber}"
         }
 
-        override fun areContentsTheSame(oldItem: SampleEntity, newItem: SampleEntity): Boolean {
-            return "${oldItem.userNumber}" == "${newItem.userNumber}"
+        override fun areContentsTheSame(oldItem: CallDetailsWithCount, newItem: CallDetailsWithCount): Boolean {
+            return "${oldItem.callDetails?.userNumber}" == "${newItem.callDetails?.userNumber}"
         }
 
     }) {
@@ -26,11 +27,12 @@ abstract class CallDetailsAdapter2 :
 
     inner class ViewHolder(val binding: ItemAdapterLayoutTwoBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(callData: SampleEntity, position: Int) {
+        fun bind(callData: CallDetailsWithCount, position: Int) {
             context = getContext()
             binding.apply {
-                personName.text = callData.userName
-                phoneNumber.text = callData.userNumber
+                personName.text = callData.callDetails!!.userName ?: "Unknown"
+                phoneNumber.text = callData.callDetails!!.userNumber
+                totalCalls.text = "Total Calls: ${callData.count}"
             }
         }
     }

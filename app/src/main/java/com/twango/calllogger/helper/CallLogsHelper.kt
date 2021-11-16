@@ -3,6 +3,7 @@ package com.twango.calllogger.helper
 import android.content.Context
 import android.provider.CallLog
 import android.util.Log
+import com.twango.callLogger.api.models.entities.CallDetailsWithCount
 import com.twango.callLogger.api.models.entities.SampleEntity
 import java.util.*
 import javax.inject.Inject
@@ -10,7 +11,8 @@ import kotlin.collections.ArrayList
 
 class CallLogsHelper @Inject constructor(
     private val context: Context,
-    private val preferenceManager: PreferenceManager) {
+    private val preferenceManager: PreferenceManager
+) {
 
     private var allCallLogsList: ArrayList<SampleEntity>? = null
     private var missedCallList: ArrayList<SampleEntity>? = null
@@ -42,11 +44,11 @@ class CallLogsHelper @Inject constructor(
         //When saved use the same date, else create the current date or call an api in this case.
         if (preferenceFirstTimeRegisteredDate) {
             fromDate = preferenceManager.getFirstTimeRegisterMillis()
-        }else{
+        } else {
             fromDate = "1636455990849"
 //            fromDate = createDate(0)
-//            preferenceManager.saveFirstTimeRegisterMillis(fromDate)
-//            Log.d("fromDate2", fromDate)
+//            preferenceManager.saveFirstTimeRegisterMillis(fromDate!!)
+//            Log.d("fromDate2", fromDate!!)
         }
 
         //from date will be the date of registration, the user has signed up.
@@ -96,7 +98,7 @@ class CallLogsHelper @Inject constructor(
         cursor.close()
     }
 
-     fun createDate(int: Int): String {
+    fun createDate(int: Int): String {
         val calendar: Calendar = Calendar.getInstance()
         calendar.add(Calendar.DATE, int)
         return "${calendar.timeInMillis}"
@@ -162,16 +164,71 @@ class CallLogsHelper @Inject constructor(
 //        return output
 //    }
 
-//    fun getOutgoingCallState(number: String?): LongArray? {
-//        val output = LongArray(2)
-//        for (callLogInfo in outGoingCallList!!) {
-//            if (callLogInfo.userNumber.equals(number)) {
-//                output[0]++
-//                output[1] += callLogInfo.callDuration
-//            }
-//        }
-//        return output
-//    }
+    fun getNeverAttended(): MutableList<CallDetailsWithCount> {
+        if (missedCallList == null)
+            loadCallLogs()
+
+        val sortedList = missedCallList!!.sortedWith(compareBy { it.userNumber })
+        val groups = mutableListOf<CallDetailsWithCount>()
+        sortedList.forEach {
+                val last = groups.lastOrNull()
+                if ("${last?.callDetails?.userNumber}" == "${it.userNumber}"){
+                    last!!.count++
+                }else{
+                    groups.add(CallDetailsWithCount(it,1))
+                }
+        }
+        return groups
+    }
+
+    fun getNeverPickedUpByClient(): MutableList<CallDetailsWithCount> {
+        if (outGoingCallList == null)
+            loadCallLogs()
+
+        val sortedList = outGoingCallList!!.sortedWith(compareBy { it.userNumber })
+        val groups = mutableListOf<CallDetailsWithCount>()
+        sortedList.forEach {
+            if(it.callDuration!!.toInt() == 0){
+                val last = groups.lastOrNull()
+                if ("${last?.callDetails?.userNumber}" == "${it.userNumber}"){
+                    last!!.count++
+                }else{
+                    groups.add(CallDetailsWithCount(it,1))
+                }
+            }
+        }
+        return groups
+    }
+
+    fun getOutgoingCallState(number: String?): Int {
+        var output = 0
+        for (callLogInfo in outGoingCallList!!) {
+            if (callLogInfo.userNumber.equals(number)) {
+                output++
+            }
+        }
+        return output
+    }
+
+    fun getOutgoingCallStateDuration(number: String?): String {
+        var output = 0L
+        for (callLogInfo in outGoingCallList!!) {
+            if (callLogInfo.userNumber.equals(number)) {
+                output += callLogInfo.callDuration?.toLong()!!
+            }
+        }
+        return "$output"
+    }
+
+    fun getAllCallsDuration(): String{
+        var output = 0L
+        for (callLogInfo in allCallLogsList!!) {
+            if (callLogInfo.callType!!.toInt() != CallLog.Calls.MISSED_TYPE){
+                output += callLogInfo.callDuration?.toLong()!!
+            }
+        }
+        return "$output"
+    }
 
     fun getMissedCallState(number: String?): Int {
         var output = 0
@@ -183,4 +240,56 @@ class CallLogsHelper @Inject constructor(
         return output
     }
 
+    fun getTotalNotPickedUpByClientCount(): Int{
+        if (outGoingCallList == null)
+            loadCallLogs()
+
+        var output = 0
+        for (callLogInfo in outGoingCallList!!) {
+            if (callLogInfo.callDuration!!.toInt() == 0) {
+                output ++
+            }
+        }
+        return output
+        }
+
+    fun getNeverAttendedCallsCount(): Int{
+        if (missedCallList == null)
+            loadCallLogs()
+
+        var output = 0
+        for (callLogInfo in missedCallList!!) {
+                output ++
+        }
+        return output
+
+    }
+
+    fun highestCaller(): String {
+        if (allCallLogsList == null) {
+            loadCallLogs()
+        }
+        val item = allCallLogsList?.groupBy { it }
+            ?.maxByOrNull { it.value.size }
+            ?.key
+
+        return item?.userName.toString()
+    }
+
+    fun getHighestCallLogsCount(): MutableList<CallDetailsWithCount> {
+        if (allCallLogsList == null) {
+            loadCallLogs()
+        }
+        val sortedList = allCallLogsList!!.sortedWith(compareBy { it.userNumber })
+        val groups = mutableListOf<CallDetailsWithCount>()
+        sortedList.forEach {
+            val last = groups.lastOrNull()
+            if ("${last?.callDetails?.userNumber}" == "${it.userNumber}"){
+                last!!.count++
+            }else{
+                groups.add(CallDetailsWithCount(it,1))
+            }
+        }
+        return groups
+    }
 }

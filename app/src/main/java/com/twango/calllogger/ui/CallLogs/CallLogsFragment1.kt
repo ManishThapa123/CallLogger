@@ -25,6 +25,7 @@ class CallLogsFragment1 : Fragment() {
     private lateinit var binding: FragmentCallLogs1Binding
     private lateinit var callDetailsAdapter: CallDetailsAdapter
     private var typeInString: String? = null
+    private var userNumberToCall: String? = null
     private val callDetailsViewModel: CallLogsViewModel by activityViewModels()
 
     //To request the call phone permission.
@@ -32,6 +33,7 @@ class CallLogsFragment1 : Fragment() {
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { permissionGranted: Boolean ->
             if (permissionGranted) {
                 GlobalMethods.showToast(requireContext(), "Permission Granted")
+                GlobalMethods.callUser(userNumberToCall!!, requireContext())
             } else GlobalMethods.showToast(requireContext(), "Permission Rejected")
         }
 
@@ -104,6 +106,7 @@ class CallLogsFragment1 : Fragment() {
              * When granted the call is made to the user number.
              */
             override fun callUser(callData: SampleEntity) {
+                userNumberToCall = callData.userNumber
                 if (ContextCompat.checkSelfPermission(
                         requireContext(),
                         Manifest.permission.CALL_PHONE

@@ -39,7 +39,7 @@ class PermissionFragmentFirst : Fragment() {
     private val requestReadCallLogsPermission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { permissionGranted: Boolean ->
             if (permissionGranted) {
-                GlobalMethods.showToast(requireContext(), "Permission Granted")
+//                GlobalMethods.showToast(requireContext(), "Permission Granted")
                 val action =
                     PermissionFragmentFirstDirections.actionPermissionFragmentFirstToPermissionFragmentSecond()
                 findNavController().navigate(action)

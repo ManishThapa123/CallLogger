@@ -7,10 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.twango.calllogger.databinding.FragmentCallLogs2Binding
 import dagger.hilt.android.AndroidEntryPoint
+import okhttp3.internal.toImmutableList
 
 /**
  * A simple [Fragment] subclass.
@@ -21,7 +23,8 @@ import dagger.hilt.android.AndroidEntryPoint
 class CallLogsFragment2 : Fragment() {
     private lateinit var binding: FragmentCallLogs2Binding
     private lateinit var callDetailsAdapter: CallDetailsAdapter2
-    private val callDetailsViewModel: CallLogsViewModel by viewModels()
+    private var typeInString: String? = null
+    private val callDetailsViewModel: CallLogsViewModel by activityViewModels()
 
 
     companion object {
@@ -35,7 +38,12 @@ class CallLogsFragment2 : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        callDetailsViewModel.getCallLogs("2")
+        if (!arguments?.getString("type").isNullOrEmpty()) {
+            arguments.let {
+                typeInString = it?.getString("type")
+                callDetailsViewModel.getCallLogs(typeInString!!)
+            }
+        }
     }
 
     override fun onCreateView(
@@ -52,6 +60,7 @@ class CallLogsFragment2 : Fragment() {
         setCallLogsAdapter()
         observeViewModel()
     }
+
     //To attach the adapter
     private fun setCallLogsAdapter() {
         callDetailsAdapter = object : CallDetailsAdapter2() {
@@ -65,9 +74,20 @@ class CallLogsFragment2 : Fragment() {
         }
     }
 
-    private fun observeViewModel(){
-        callDetailsViewModel.sampleData.observe({lifecycle}){sampleData ->
-            callDetailsAdapter.submitList(sampleData)
+    private fun observeViewModel() {
+        when (typeInString?.toInt()) {
+            6->{
+                callDetailsViewModel.neverAttendedCallData.observe({ lifecycle }) { sampleData ->
+                    callDetailsAdapter.submitList(sampleData)
+                }
+            }
+            7 ->{
+                callDetailsViewModel.notPickedUpByClientCallData.observe({ lifecycle }) { sampleData ->
+                    callDetailsAdapter.submitList(sampleData)
+                }
+            }
         }
+
+
     }
 }
