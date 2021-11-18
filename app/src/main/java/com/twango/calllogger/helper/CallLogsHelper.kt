@@ -1,6 +1,7 @@
 package com.twango.calllogger.helper
 
 import android.content.Context
+import android.os.Looper
 import android.provider.CallLog
 import android.util.Log
 import com.twango.callLogger.api.models.entities.CallDetailsWithCount
@@ -171,12 +172,12 @@ class CallLogsHelper @Inject constructor(
         val sortedList = missedCallList!!.sortedWith(compareBy { it.userNumber })
         val groups = mutableListOf<CallDetailsWithCount>()
         sortedList.forEach {
-                val last = groups.lastOrNull()
-                if ("${last?.callDetails?.userNumber}" == "${it.userNumber}"){
-                    last!!.count++
-                }else{
-                    groups.add(CallDetailsWithCount(it,1))
-                }
+            val last = groups.lastOrNull()
+            if ("${last?.callDetails?.userNumber}" == "${it.userNumber}") {
+                last!!.count++
+            } else {
+                groups.add(CallDetailsWithCount(it, 1))
+            }
         }
         return groups
     }
@@ -188,12 +189,12 @@ class CallLogsHelper @Inject constructor(
         val sortedList = outGoingCallList!!.sortedWith(compareBy { it.userNumber })
         val groups = mutableListOf<CallDetailsWithCount>()
         sortedList.forEach {
-            if(it.callDuration!!.toInt() == 0){
+            if (it.callDuration!!.toInt() == 0) {
                 val last = groups.lastOrNull()
-                if ("${last?.callDetails?.userNumber}" == "${it.userNumber}"){
+                if ("${last?.callDetails?.userNumber}" == "${it.userNumber}") {
                     last!!.count++
-                }else{
-                    groups.add(CallDetailsWithCount(it,1))
+                } else {
+                    groups.add(CallDetailsWithCount(it, 1))
                 }
             }
         }
@@ -220,10 +221,10 @@ class CallLogsHelper @Inject constructor(
         return "$output"
     }
 
-    fun getAllCallsDuration(): String{
+    fun getAllCallsDuration(): String {
         var output = 0L
         for (callLogInfo in allCallLogsList!!) {
-            if (callLogInfo.callType!!.toInt() != CallLog.Calls.MISSED_TYPE){
+            if (callLogInfo.callType!!.toInt() != CallLog.Calls.MISSED_TYPE) {
                 output += callLogInfo.callDuration?.toLong()!!
             }
         }
@@ -240,26 +241,26 @@ class CallLogsHelper @Inject constructor(
         return output
     }
 
-    fun getTotalNotPickedUpByClientCount(): Int{
+    fun getTotalNotPickedUpByClientCount(): Int {
         if (outGoingCallList == null)
             loadCallLogs()
 
         var output = 0
         for (callLogInfo in outGoingCallList!!) {
             if (callLogInfo.callDuration!!.toInt() == 0) {
-                output ++
+                output++
             }
         }
         return output
-        }
+    }
 
-    fun getNeverAttendedCallsCount(): Int{
+    fun getNeverAttendedCallsCount(): Int {
         if (missedCallList == null)
             loadCallLogs()
 
         var output = 0
         for (callLogInfo in missedCallList!!) {
-                output ++
+            output++
         }
         return output
 
@@ -284,12 +285,78 @@ class CallLogsHelper @Inject constructor(
         val groups = mutableListOf<CallDetailsWithCount>()
         sortedList.forEach {
             val last = groups.lastOrNull()
-            if ("${last?.callDetails?.userNumber}" == "${it.userNumber}"){
+            if ("${last?.callDetails?.userNumber}" == "${it.userNumber}") {
                 last!!.count++
-            }else{
-                groups.add(CallDetailsWithCount(it,1))
+            } else {
+                groups.add(CallDetailsWithCount(it, 1))
             }
         }
         return groups
+    }
+
+
+    fun getLatestCallLog(shareLatestCallLog: (SampleEntity) -> Unit) {
+
+        loadAllLatestCallLog { shareLatestCallLog(it) }
+
+    }
+
+    private fun loadAllLatestCallLog(latestLog: (SampleEntity) -> Unit) {
+
+        val numberCol = CallLog.Calls.NUMBER
+        val durationCol = CallLog.Calls.DURATION
+        val typeCol = CallLog.Calls.TYPE // 1 - Incoming, 2 - Outgoing, 3 - Missed , 5- Rejected
+        val nameCol = CallLog.Calls.CACHED_NAME
+        val dateCol = CallLog.Calls.DATE
+        val projection = arrayOf(numberCol, durationCol, typeCol, nameCol, dateCol)
+        val mSelectionClause = CallLog.Calls.DATE + " BETWEEN ? AND ?"
+
+        /**
+         * In order to check whether the firstTimeRegistration date has been saved in the preference or not
+         */
+        val preferenceFirstTimeRegisteredDate = preferenceManager.isSavedFirstRegisterTimeStamp()
+        Log.d("FirstTimeDate", "$preferenceFirstTimeRegisteredDate")
+        //When saved use the same date, else create the current date or call an api in this case.
+        if (preferenceFirstTimeRegisteredDate) {
+            fromDate = preferenceManager.getFirstTimeRegisterMillis()
+        } else {
+            fromDate = "1636455990849"
+            //            fromDate = createDate(0)
+//            preferenceManager.saveFirstTimeRegisterMillis(fromDate!!)
+//            Log.d("fromDate2", fromDate!!)
+        }
+
+        //from date will be the date of registration, the user has signed up.
+        val mSelectionArgs = arrayOf(fromDate, createDate(1))
+        GlobalMethods.convertMillisToDateAndTime(fromDate!!)
+        mSelectionArgs.forEach {
+            Log.d("SelectionDate:", it!!)
+        }
+
+        android.os.Handler(Looper.getMainLooper()).postDelayed({
+            val cursor = context.contentResolver.query(
+                CallLog.Calls.CONTENT_URI,
+                projection, mSelectionClause, mSelectionArgs, CallLog.Calls.DATE + " DESC limit 1;"
+            )
+
+            val numberColIdx = cursor!!.getColumnIndex(numberCol)
+            val durationColIdx = cursor.getColumnIndex(durationCol)
+            val typeColIdx = cursor.getColumnIndex(typeCol)
+            val nameColIdx = cursor.getColumnIndex(nameCol)
+            val dateColIdx = cursor.getColumnIndex(dateCol)
+
+            while (cursor.moveToNext()) {
+                val number = cursor.getString(numberColIdx)
+                val duration = cursor.getString(durationColIdx)
+                val type = cursor.getString(typeColIdx)
+                val name = cursor.getString(nameColIdx)
+                val date = cursor.getString(dateColIdx)
+
+                latestLog(SampleEntity(name, number, date, duration, type))
+                Log.d("MY_APP_CALL_LOGS", "$number $duration $type $name")
+            }
+            cursor.close()
+        }, 2000)
+
     }
 }

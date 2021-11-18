@@ -66,6 +66,14 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        callDetailsViewModel.getLastSynced()
+        callDetailsViewModel.lastSynced.observe({lifecycle}){
+            if (!it.isNullOrEmpty()){
+                headerBinding.lastSynced.text = "Last Synced: ${GlobalMethods.convertMillisToDateAndTimeInMinutes(it)}"
+            }
+            else
+                headerBinding.lastSynced.text = ""
+        }
         binding.contentMain.floatingActionButton.setOnClickListener {
             val intent = Intent(Intent.ACTION_DIAL)
             intent.data = Uri.parse("tel:")
@@ -94,6 +102,8 @@ class MainActivity : AppCompatActivity() {
            }
             true
         }
+
+
     }
 
     private fun setUpAdapter() {

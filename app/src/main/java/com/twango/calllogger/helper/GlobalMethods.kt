@@ -1,6 +1,7 @@
 package com.twango.calllogger.helper
 
 import android.annotation.SuppressLint
+import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -9,8 +10,10 @@ import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat.getSystemService
 import com.judemanutd.autostarter.AutoStartPermissionHelper
 import java.text.SimpleDateFormat
+import java.time.Duration
 import java.util.*
 import javax.inject.Inject
 
@@ -147,6 +150,13 @@ object GlobalMethods {
         return convertedDate
     }
 
+    fun convertMillisToDateAndTimeInMinutes(millis: String): String {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd  hh:mm a", Locale.getDefault())
+        val convertedDate = dateFormat.format(millis.toLong())
+        Log.d("dateInFormat", convertedDate)
+        return convertedDate
+    }
+
     /**
      * In order to convert the milliseconds to Hours, minutes format
      */
@@ -171,4 +181,9 @@ object GlobalMethods {
             if (s == 0 && (hour > 0 || minute > 0)) "" else (if (s < 10 && (hour > 0 || minute > 0)) "0" else "") + s.toString() + " " + "sec"
         return sh + (if (hour > 0) " " else "") + sm + (if (minute > 0) " " else "") + ss
     }
+
+    fun convertSecondsInHoursFormat(seconds: Int): String {
+        return String.format("%02d:%02d:%02d", seconds / 3600, seconds % 3600 / 60, seconds % 60)
+    }
+
 }

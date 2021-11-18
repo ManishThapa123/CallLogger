@@ -39,10 +39,14 @@ class CallLogsViewModel @Inject constructor(
     val neverAttendedCallData: LiveData<List<CallDetailsWithCount>> = _neverAttendedCallData
 
     private val _notPickedUpByClientCallData = MutableLiveData<List<CallDetailsWithCount>>()
-    val notPickedUpByClientCallData: LiveData<List<CallDetailsWithCount>> = _notPickedUpByClientCallData
+    val notPickedUpByClientCallData: LiveData<List<CallDetailsWithCount>> =
+        _notPickedUpByClientCallData
 
     private val _permissionState = MutableLiveData<Boolean>()
     val permissionState: LiveData<Boolean> = _permissionState
+
+    private val _lastSynced = MutableLiveData<String?>()
+    val lastSynced: LiveData<String?> = _lastSynced
 
 
     fun getCallLogs(type: String) = viewModelScope.launch {
@@ -107,5 +111,10 @@ class CallLogsViewModel @Inject constructor(
 
     fun saveAutoRunPermissionSavedState() = viewModelScope.launch {
         preferenceManager.saveAutoStartPermissionStart()
+    }
+
+    fun getLastSynced() = viewModelScope.launch {
+        val lastSynced = preferenceManager.getLastSyncedTimeInMillis()
+        _lastSynced.value = lastSynced
     }
 }

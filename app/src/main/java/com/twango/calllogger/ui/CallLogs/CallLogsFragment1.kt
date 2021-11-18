@@ -16,6 +16,11 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.twango.callLogger.api.models.entities.SampleEntity
 import com.twango.calllogger.databinding.FragmentCallLogs1Binding
+import com.twango.calllogger.helper.CallLogsUpdatingManager.allCallLog
+import com.twango.calllogger.helper.CallLogsUpdatingManager.incomingCallLog
+import com.twango.calllogger.helper.CallLogsUpdatingManager.missedCallLog
+import com.twango.calllogger.helper.CallLogsUpdatingManager.outGoingCallLog
+import com.twango.calllogger.helper.CallLogsUpdatingManager.rejectedCallLog
 import com.twango.calllogger.helper.GlobalMethods
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -27,6 +32,7 @@ class CallLogsFragment1 : Fragment() {
     private var typeInString: String? = null
     private var userNumberToCall: String? = null
     private val callDetailsViewModel: CallLogsViewModel by activityViewModels()
+    private var sectionCallLogs: ArrayList<SampleEntity> = ArrayList()
 
     //To request the call phone permission.
     private val requestPermission =
@@ -48,7 +54,7 @@ class CallLogsFragment1 : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        callDetailsViewModel.getAndSaveLatestSyncedTime()
+//        callDetailsViewModel.getAndSaveLatestSyncedTime()
         if (!arguments?.getString("type").isNullOrEmpty()) {
             arguments.let {
                 typeInString = it?.getString("type")
@@ -136,33 +142,69 @@ class CallLogsFragment1 : Fragment() {
         when (typeInString?.toInt()) {
             1 -> {
                 callDetailsViewModel.sampleData.observe({ lifecycle }) { sampleData ->
-                    callDetailsAdapter.submitList(sampleData)
+                    sectionCallLogs = sampleData as ArrayList<SampleEntity> ?: return@observe
+                    callDetailsAdapter.submitList(sectionCallLogs)
+                }
+                allCallLog.observe({lifecycle}){
+//                    GlobalMethods.showToast(requireContext(), "Call Logs Updated")
+                    sectionCallLogs.add(0,it)
+                    callDetailsAdapter.submitList(sectionCallLogs)
+                    callDetailsAdapter.notifyItemRangeChanged(0,sectionCallLogs.size)
                 }
 
             }
             2 -> {
                 callDetailsViewModel.incomingCallData.observe({ lifecycle }) { sampleData ->
-                    callDetailsAdapter.submitList(sampleData)
+                    sectionCallLogs = sampleData as ArrayList<SampleEntity> ?: return@observe
+                    callDetailsAdapter.submitList(sectionCallLogs)
                     Log.d("Type1", typeInString!! + "$sampleData")
+                }
+                incomingCallLog.observe({lifecycle}){
+                    GlobalMethods.showToast(requireContext(), "Incoming Calls Updated")
+                    sectionCallLogs.add(0,it)
+                    callDetailsAdapter.submitList(sectionCallLogs)
+                    callDetailsAdapter.notifyItemRangeChanged(0,sectionCallLogs.size)
                 }
 
             }
             3 -> {
                 callDetailsViewModel.outGoingCallData.observe({ lifecycle }) { sampleData ->
-                    callDetailsAdapter.submitList(sampleData)
+                    sectionCallLogs = sampleData as ArrayList<SampleEntity> ?: return@observe
+                    callDetailsAdapter.submitList(sectionCallLogs)
+                }
+                outGoingCallLog.observe({lifecycle}){
+                    GlobalMethods.showToast(requireContext(), "Outgoing Calls Updated")
+                    sectionCallLogs.add(0,it)
+                    callDetailsAdapter.submitList(sectionCallLogs)
+                    callDetailsAdapter.notifyItemRangeChanged(0,sectionCallLogs.size)
                 }
             }
             4 -> {
                 callDetailsViewModel.missedCallData.observe({ lifecycle }) { sampleData ->
-                    callDetailsAdapter.submitList(sampleData)
+                    sectionCallLogs = sampleData as ArrayList<SampleEntity> ?: return@observe
+                    callDetailsAdapter.submitList(sectionCallLogs)
+                }
+                missedCallLog.observe({lifecycle}){
+                    GlobalMethods.showToast(requireContext(), "Missed Calls Updated")
+                    sectionCallLogs.add(0,it)
+                    callDetailsAdapter.submitList(sectionCallLogs)
+                    callDetailsAdapter.notifyItemRangeChanged(0,sectionCallLogs.size)
                 }
             }
             5 -> {
                 callDetailsViewModel.rejectedCallData.observe({ lifecycle }) { sampleData ->
-                    callDetailsAdapter.submitList(sampleData)
+                    sectionCallLogs = sampleData as ArrayList<SampleEntity> ?: return@observe
+                    callDetailsAdapter.submitList(sectionCallLogs)
+                }
+                rejectedCallLog.observe({lifecycle}){
+                    GlobalMethods.showToast(requireContext(), "Rejected Calls Updated")
+                    sectionCallLogs.add(0,it)
+                    callDetailsAdapter.submitList(sectionCallLogs)
+                    callDetailsAdapter.notifyItemRangeChanged(0,sectionCallLogs.size)
                 }
             }
         }
+
     }
 
 }

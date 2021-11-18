@@ -7,22 +7,25 @@
 
     <ImageView
         android:id="@+id/ic_headerImage"
-        android:layout_width="100dp"
+        android:layout_width="180dp"
         android:layout_height="100dp"
-        android:src="@drawable/ic_add_person"
+        android:layout_marginTop="@dimen/dimens_20"
+        android:src="@drawable/otics_by_eazybee"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tint="@color/Whitish" />
 
     <TextView
+        android:id="@+id/lastSynced"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dimens_12"
         android:fontFamily="@font/poppins_medium"
         android:text="Twango Callyzer"
-        android:textSize="22sp"
         android:textColor="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ic_headerImage" />
