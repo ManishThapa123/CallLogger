@@ -1,6 +1,5 @@
 package com.twango.calllogger.ui.SplashScreen
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
@@ -10,10 +9,9 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.motion.widget.MotionLayout
 import com.twango.calllogger.MainActivity
-import com.twango.calllogger.R
 import com.twango.calllogger.databinding.ActivitySplashBinding
-import com.twango.calllogger.ui.CallLogs.CallLogsViewModel
 import com.twango.calllogger.ui.Onboarding.OnBoardingActivity
+import com.twango.calllogger.ui.SignUpAndLogin.RegisterActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -21,6 +19,7 @@ class SplashActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySplashBinding
     private val splashViewModel: SplashViewModel by viewModels()
     private var isPermissionSaved: Boolean = false
+    private var isLoggedIn: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,11 +27,8 @@ class SplashActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
         splashViewModel.getPermissionSavedState()
-        splashViewModel.permissionState.observe({lifecycle}){isSaved ->
-            if (isSaved){
-                isPermissionSaved = isSaved
-            }
-        }
+        splashViewModel.getLoginState()
+        observeViewModel()
 
         binding.splashMotionLayout.setTransitionListener(object : MotionLayout.TransitionListener {
             override fun onTransitionStarted(
@@ -49,12 +45,12 @@ class SplashActivity : AppCompatActivity() {
                 progress: Float
             ) {
 
-                when{
-                    progress > 0.65f ->{
+                when {
+                    progress > 0.65f -> {
                         binding.imageView.setBackgroundColor(Color.WHITE)
 
                     }
-                    progress > 0.45f ->{
+                    progress > 0.45f -> {
                         binding.imageView2.visibility = View.GONE
                     }
                 }
@@ -62,14 +58,20 @@ class SplashActivity : AppCompatActivity() {
 
             override fun onTransitionCompleted(motionLayout: MotionLayout?, currentId: Int) {
 
-                if (isPermissionSaved){
+                if (isLoggedIn) {
                     // Start activity
                     startActivity(Intent(this@SplashActivity, MainActivity::class.java))
                     // Animate the loading of new activity
 //                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
                     // Close this activity
                     finish()
-                }else{
+                } else if (isPermissionSaved){
+                    startActivity(Intent(this@SplashActivity, RegisterActivity::class.java))
+                    // Animate the loading of new activity
+//                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+                    // Close this activity
+                    finish()
+                }else {
                     // Start activity
                     startActivity(Intent(this@SplashActivity, OnBoardingActivity::class.java))
                     // Animate the loading of new activity
@@ -83,10 +85,24 @@ class SplashActivity : AppCompatActivity() {
                 motionLayout: MotionLayout?,
                 triggerId: Int,
                 positive: Boolean,
-                progress: Float) {
+                progress: Float
+            ) {
             }
 
         })
+    }
+
+    private fun observeViewModel() {
+        splashViewModel.permissionState.observe({ lifecycle }) { isSaved ->
+            if (isSaved) {
+                isPermissionSaved = isSaved
+            }
+        }
+        splashViewModel.loginState.observe({ lifecycle }) { isLoginCredSaved ->
+            if (isLoginCredSaved) {
+                isLoggedIn = isLoginCredSaved
+            }
+        }
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {

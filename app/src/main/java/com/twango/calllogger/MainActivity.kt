@@ -17,13 +17,13 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.twango.calllogger.databinding.ActivityMainBinding
 import com.twango.calllogger.databinding.NavigationHeaderBinding
+import com.twango.calllogger.helper.CallLogsUpdatingManager.allCallLog
 import com.twango.calllogger.helper.GlobalMethods
 import com.twango.calllogger.ui.CallLogs.CallLogsFragment1
 import com.twango.calllogger.ui.CallLogs.CallLogsFragment2
 import com.twango.calllogger.ui.CallLogs.CallLogsViewModel
 import com.twango.calllogger.ui.CallLogs.CallLogsViewPagerAdapter
 import com.twango.calllogger.ui.Dashboard.DashboardActivity
-import com.twango.calllogger.ui.Onboarding.OnBoardingActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -32,7 +32,6 @@ class MainActivity : AppCompatActivity() {
     private var context: Context? = null
     private val callDetailsViewModel: CallLogsViewModel by viewModels()
     private lateinit var headerBinding: NavigationHeaderBinding
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,21 +56,26 @@ class MainActivity : AppCompatActivity() {
 
         //Call it here phonebook.
         setUpAdapter()
+
         callDetailsViewModel.getAutoRunPermissionSavedState()
-        callDetailsViewModel.permissionState.observe({lifecycle}){
-            if (!it){
+        callDetailsViewModel.permissionState.observe({ lifecycle }) {
+            if (!it) {
                 GlobalMethods.checkIfAutoStartPermissionAvailable(this)
-                  GlobalMethods.getAutoStartPermission(this)
+                GlobalMethods.getAutoStartPermission(this)
                 callDetailsViewModel.saveAutoRunPermissionSavedState()
             }
         }
-
+        // call the view model to save the registered date in millis.
+        callDetailsViewModel.saveRegisteredDateAndTime()
         callDetailsViewModel.getLastSynced()
-        callDetailsViewModel.lastSynced.observe({lifecycle}){
-            if (!it.isNullOrEmpty()){
-                headerBinding.lastSynced.text = "Last Synced: ${GlobalMethods.convertMillisToDateAndTimeInMinutes(it)}"
-            }
-            else
+        allCallLog.observe({ lifecycle }) {
+            callDetailsViewModel.getLastSynced()
+        }
+        callDetailsViewModel.lastSynced.observe({ lifecycle }) {
+            if (!it.isNullOrEmpty()) {
+                headerBinding.lastSynced.text =
+                    "Last Synced: ${GlobalMethods.convertMillisToDateAndTimeInMinutes(it)}"
+            } else
                 headerBinding.lastSynced.text = ""
         }
         binding.contentMain.floatingActionButton.setOnClickListener {
@@ -81,29 +85,28 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.navView.setNavigationItemSelectedListener {
-           when(it.itemId){
-               R.id.navSettings -> {
+            when (it.itemId) {
+                R.id.navSettings -> {
+//                    val intent = Intent(this, RegisterActivity::class.java)
+//                    intent.flags =
+//                        Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+//                    startActivity(intent)
+
+                }
+                R.id.navAbout -> {
 //                   val intent = Intent(this, OnBoardingActivity::class.java)
 //                   intent.flags =
 //                       Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
 //                   startActivity(intent)
-               }
-               R.id.navAbout -> {
-//                   val intent = Intent(this, OnBoardingActivity::class.java)
-//                   intent.flags =
-//                       Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-//                   startActivity(intent)
-               }
-               R.id.dashBoard -> {
-                   val intent = Intent(this, DashboardActivity::class.java)
-                   startActivity(intent)
-                   binding.drawerLayout.close()
-               }
-           }
+                }
+                R.id.dashBoard -> {
+                    val intent = Intent(this, DashboardActivity::class.java)
+                    startActivity(intent)
+                    binding.drawerLayout.close()
+                }
+            }
             true
         }
-
-
     }
 
     private fun setUpAdapter() {
@@ -120,6 +123,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
         val adapter = CallLogsViewPagerAdapter(fragsList, this)
         binding.contentMain.fragmentViewPager.offscreenPageLimit = 7
         binding.contentMain.fragmentViewPager.adapter = adapter

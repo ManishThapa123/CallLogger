@@ -6,8 +6,8 @@ import com.twango.callLogger.api.models.entities.SampleEntity
 
 object CallLogsUpdatingManager {
 
-    private val _allCallLog = MutableLiveData<SampleEntity>()
-    val allCallLog: LiveData<SampleEntity> = _allCallLog
+    private val _allCallLog = MutableLiveData<Boolean>()
+    val allCallLog: LiveData<Boolean> = _allCallLog
 
     private val _outGoingCallLog = MutableLiveData<SampleEntity>()
     val outGoingCallLog: LiveData<SampleEntity> = _outGoingCallLog
@@ -21,28 +21,37 @@ object CallLogsUpdatingManager {
     private val _rejectedCallLog = MutableLiveData<SampleEntity>()
     val rejectedCallLog: LiveData<SampleEntity> = _rejectedCallLog
 
+    private val _updateClientNeverPickedUp = MutableLiveData<Boolean>()
+    val updateClientNeverPickedUp: LiveData<Boolean> =_updateClientNeverPickedUp
+
+    private val _updateNeverAttended = MutableLiveData<Boolean>()
+    val updateNeverAttended: LiveData<Boolean> =_updateNeverAttended
 
     fun updateExistingCallLogs(type: String, message: String, sampleEntity: SampleEntity) {
         when (type) {
             "1" -> {
                 //incoming
                 _incomingCallLog.postValue(sampleEntity)
-                _allCallLog.postValue(sampleEntity)
+                _allCallLog.postValue(true)
             }
             "2" -> {
                 //outgoing
                 _outGoingCallLog.postValue(sampleEntity)
-                _allCallLog.postValue(sampleEntity)
+                _allCallLog.postValue(true)
+                if (sampleEntity.callDuration!!.toInt() == 0)
+                    _updateClientNeverPickedUp.postValue(true)
             }
             "3" -> {
                 //missed
                 _missedCallLog.postValue(sampleEntity)
-                _allCallLog.postValue(sampleEntity)
+                _allCallLog.postValue(true)
+                _updateNeverAttended.postValue(true)
+
             }
             "5" -> {
                 //rejected
                 _rejectedCallLog.postValue(sampleEntity)
-                _allCallLog.postValue(sampleEntity)
+                _allCallLog.postValue(true)
             }
         }
     }

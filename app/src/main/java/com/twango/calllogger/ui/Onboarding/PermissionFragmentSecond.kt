@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.twango.calllogger.MainActivity
 import com.twango.calllogger.databinding.FragmentPermissionSecondBinding
+import com.twango.calllogger.ui.SignUpAndLogin.RegisterActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
@@ -31,7 +32,7 @@ class PermissionFragmentSecond : Fragment() {
         if (permissionGranted) {
             Log.d("Permission", "Permission Granted")
             onboardingViewModel.savePermissionAccessStateToPreference()
-            val intent = Intent(requireContext(), MainActivity::class.java)
+            val intent = Intent(requireContext(), RegisterActivity::class.java)
             intent.flags =
                 Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
             startActivity(intent)

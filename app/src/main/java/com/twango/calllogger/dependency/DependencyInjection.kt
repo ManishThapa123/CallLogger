@@ -1,8 +1,12 @@
 package com.twango.calllogger.dependency
 
 import android.content.Context
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
 import com.twango.callLogger.api.CallLoggerAPIInterface
 import com.twango.callLogger.api.CallLoggerClient
+import com.twango.callLogger.api.models.entities.Data
+import com.twango.calllogger.container.CallLoggerApplication
 import com.twango.calllogger.helper.CallLogsHelper
 import com.twango.calllogger.helper.PreferenceManager
 import com.twango.calllogger.repository.BaseRepository
@@ -44,6 +48,13 @@ object DependencyInjection {
     fun providePreferenceManager(@ApplicationContext context: Context): PreferenceManager =
         PreferenceManager(context)
 
+    /**
+     * provides instance of preference manager [PreferenceManager]
+     */
+    @Provides
+    @Singleton
+    fun provideApplication(): CallLoggerApplication =
+       CallLoggerApplication()
 
     /**
      * provides instance of CallLogsHelper
@@ -55,4 +66,11 @@ object DependencyInjection {
         @ApplicationContext context: Context
     ): CallLogsHelper = CallLogsHelper(context, preferenceManager)
 
+    /**
+     * provides instance of adapter which serializes and deserialized [Data]
+     */
+    @Provides
+    @Singleton
+    fun provideClientRegistrationDataAdapter(): JsonAdapter<Data> =
+        Moshi.Builder().build().adapter(Data::class.java)
 }

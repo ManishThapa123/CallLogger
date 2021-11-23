@@ -1,7 +1,7 @@
 package com.twango.calllogger.helper
 
 import android.annotation.SuppressLint
-import android.app.ActivityManager
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -10,12 +10,14 @@ import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.content.res.ResourcesCompat
 import com.judemanutd.autostarter.AutoStartPermissionHelper
+import com.twango.calllogger.R
+import www.sanju.motiontoast.MotionToast
+import www.sanju.motiontoast.MotionToastStyle
+import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.time.Duration
 import java.util.*
-import javax.inject.Inject
 
 @SuppressLint("StaticFieldLeak")
 object GlobalMethods {
@@ -60,8 +62,10 @@ object GlobalMethods {
 
 //            builder.create().cancel()
             val success = AutoStartPermissionHelper.getInstance().getAutoStartPermission(context)
-            Log.d("getAutoStartPermission",
-                "$success")
+            Log.d(
+                "getAutoStartPermission",
+                "$success"
+            )
             builder.create().dismiss()
         }
         builder.setCancelable(false)
@@ -150,6 +154,9 @@ object GlobalMethods {
         return convertedDate
     }
 
+    /**
+     * In order to convert the milliseconds to Time Stamp using SimpleDateFormat.
+     */
     fun convertMillisToDateAndTimeInMinutes(millis: String): String {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd  hh:mm a", Locale.getDefault())
         val convertedDate = dateFormat.format(millis.toLong())
@@ -167,8 +174,18 @@ object GlobalMethods {
         return convertedDate
     }
 
+
     /**
-     * In order to convert the seconds to Hours, minutes and seconds format
+     * In order to convert the milliseconds to Hours, minutes format
+     */
+    fun convertMillisToDate(millis: String): String {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val convertedDate = dateFormat.format(millis.toLong())
+        Log.d("dateInFormat", convertedDate)
+        return convertedDate
+    }
+    /**
+     * In order to convert the seconds to Hours, minutes and seconds format with text included.
      */
     fun convertSeconds(seconds: Int): String {
         val hour = seconds / 3600
@@ -182,8 +199,100 @@ object GlobalMethods {
         return sh + (if (hour > 0) " " else "") + sm + (if (minute > 0) " " else "") + ss
     }
 
+    /**
+     * In order to convert the seconds to Hours, minutes and seconds format
+     */
     fun convertSecondsInHoursFormat(seconds: Int): String {
         return String.format("%02d:%02d:%02d", seconds / 3600, seconds % 3600 / 60, seconds % 60)
+    }
+
+    /**
+     * Make an animated Motion toast that contains text, title and toast type.
+     *
+     * @param activity  The activity to use.  Usually your {@link android.app.Application}
+     *                 or {@link android.app.Activity} object.
+     * @param message     The text to show.  Can be formatted text.
+     * @param title     The title to show.  Can be formatted text.
+     * @param type     The type of motion toast.
+     * @param context  The context to use.  Usually your {@link android.app.Application}
+     *                 or {@link android.app.Activity} object.
+     *
+     */
+    fun showMotionToast(
+        activity: Activity,
+        title: String,
+        message: String,
+        type: String,
+        context: Context
+    ) {
+        when (type) {
+            "success" -> {
+                MotionToast.darkColorToast(
+                    activity,
+                    title,
+                    message,
+                    MotionToastStyle.SUCCESS,
+                    MotionToast.GRAVITY_BOTTOM,
+                    MotionToast.LONG_DURATION,
+                    ResourcesCompat.getFont(context, R.font.poppins)
+                )
+            }
+            "failure" -> {
+                MotionToast.darkColorToast(
+                    activity,
+                    title,
+                    message,
+                    MotionToastStyle.ERROR,
+                    MotionToast.GRAVITY_BOTTOM,
+                    MotionToast.LONG_DURATION,
+                    ResourcesCompat.getFont(context, R.font.poppins)
+                )
+            }
+            "warning" -> {
+                MotionToast.darkColorToast(
+                    activity,
+                    title,
+                    message,
+                    MotionToastStyle.WARNING,
+                    MotionToast.GRAVITY_BOTTOM,
+                    MotionToast.LONG_DURATION,
+                    ResourcesCompat.getFont(context, R.font.poppins)
+                )
+            }
+            "no_internet" ->
+                MotionToast.darkColorToast(
+                    activity,
+                    title,
+                    message,
+                    MotionToastStyle.NO_INTERNET,
+                    MotionToast.GRAVITY_BOTTOM,
+                    MotionToast.LONG_DURATION,
+                    ResourcesCompat.getFont(context, R.font.poppins)
+                )
+            "info" ->
+                MotionToast.darkColorToast(
+                    activity,
+                    title,
+                    message,
+                    MotionToastStyle.INFO,
+                    MotionToast.GRAVITY_BOTTOM,
+                    MotionToast.LONG_DURATION,
+                    ResourcesCompat.getFont(context, R.font.poppins)
+                )
+        }
+
+    }
+
+    fun getMilliFromDate(dateFormat: String?): String {
+        var date = Date()
+        val formatter =  SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault())
+        try {
+            date = formatter.parse(dateFormat!!)!!
+        } catch (e: ParseException) {
+            e.printStackTrace()
+        }
+        Log.d("registeredDate","Today is ${date.time}")
+        return "${date.time}"
     }
 
 }

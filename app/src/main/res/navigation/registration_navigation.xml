@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/registration_navigation"
+    app:startDestination="@id/singUpFragment">
+
+    <fragment
+        android:id="@+id/singUpFragment"
+        android:name="com.twango.calllogger.ui.SignUpAndLogin.SignUpFragment"
+        android:label="sing_up_fragment"
+        tools:layout="@layout/sing_up_fragment" >
+        <action
+            android:id="@+id/action_singUpFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:enterAnim="@anim/slide_in_from_right_to_left"
+            app:exitAnim="@anim/slide_out_from_right_to_left"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpTo="@id/singUpFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.twango.calllogger.ui.SignUpAndLogin.LoginFragment"
+        android:label="login_fragment"
+        tools:layout="@layout/login_fragment" />
+</navigation>

@@ -17,8 +17,16 @@ class SplashViewModel @Inject constructor(
     private val _permissionState = MutableLiveData<Boolean>()
     val permissionState: LiveData<Boolean> = _permissionState
 
+    private val _loginState = MutableLiveData<Boolean>()
+    val loginState: LiveData<Boolean> = _loginState
+
     fun getPermissionSavedState() = viewModelScope.launch {
         val permissionState = preferenceManager.getPermissionState()
         _permissionState.value = permissionState
+    }
+
+    fun getLoginState() = viewModelScope.launch {
+        val loginState = preferenceManager.getLoginState()
+        _loginState.value = loginState
     }
 }

@@ -67,6 +67,7 @@ dependencies {
     implementation 'com.google.dagger:hilt-android:2.40'
     kapt 'com.google.dagger:hilt-compiler:2.40'
 
+    implementation 'com.github.Spikeysanju:MotionToast:1.4'
     //retrofit and moshi
     implementation("com.squareup.moshi:moshi-kotlin:1.12.0")
     kapt 'com.squareup.moshi:moshi-kotlin-codegen:1.12.0'
@@ -77,6 +78,14 @@ dependencies {
     implementation 'com.github.judemanutd:autostarter:1.1.0'
 
     implementation 'com.makeramen:roundedimageview:2.3.0'
+
+    // country code picker
+    implementation 'com.hbb20:ccp:2.4.0'
+
+    implementation "android.arch.lifecycle:extensions:1.1.1"
+    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
+    implementation 'com.robinhood.ticker:ticker:2.0.4'
+
 }
 // Allow references to generated code
 kapt {

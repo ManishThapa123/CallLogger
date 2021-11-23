@@ -8,6 +8,7 @@ class PreferenceManager constructor(private val context: Context) {
         context.getSharedPreferences("CallLoggerTwango", 0)
     private var spEditor: SharedPreferences.Editor = sharedPreferences.edit()
 
+    //Save it after calling the api.
     fun saveFirstTimeRegisterMillis(timeInMillis: String) {
         spEditor.putString(AppConstants.TIMESTAMP_FIRST, timeInMillis)
         spEditor.putBoolean(AppConstants.TIMESTAMP_SAVED, true)
@@ -47,8 +48,29 @@ class PreferenceManager constructor(private val context: Context) {
         spEditor.putBoolean(AppConstants.AUTO_START_PERMISSION_STATE_SAVED, true)
         spEditor.commit()
     }
+
     fun getSaveAutoStartPermissionStart(): Boolean {
         return sharedPreferences.getBoolean(AppConstants.AUTO_START_PERMISSION_STATE_SAVED, false)
+    }
+
+    fun saveLoginState(saveLoginState: Boolean) {
+        spEditor.putBoolean(AppConstants.LOGIN_STATE_SAVED, true)
+        spEditor.commit()
+    }
+
+    fun getLoginState(): Boolean {
+        return sharedPreferences.getBoolean(AppConstants.LOGIN_STATE_SAVED, false)
+    }
+
+    //to save data after registration/login
+    fun saveClientRegistrationData(status: String) {
+        spEditor.putString(AppConstants.CLIENT_REGISTRATION_DATA_SAVED, status)
+        spEditor.commit()
+    }
+
+    //to get auth credentials
+    fun getClientRegistrationData(): String? {
+        return sharedPreferences.getString(AppConstants.CLIENT_REGISTRATION_DATA_SAVED, null)
     }
 
 }

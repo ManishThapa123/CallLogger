@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/dimens_16"
-    tools:context=".ui.SignUpAndLogin.SignUpFragment">
+    tools:context=".ui.SignUpAndLogin.LoginFragment">
 
 
     <LinearLayout
@@ -17,6 +17,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
 
         <ImageView
             android:layout_width="180dp"
@@ -34,7 +35,7 @@
             android:layout_marginBottom="@dimen/dimens_8"
             android:gravity="center_vertical"
             app:ccp_autoFormatNumber="false"
-            app:ccp_textSize="17sp" />
+            app:ccp_textSize="16sp" />
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -45,55 +46,30 @@
             app:boxCornerRadiusBottomStart="@dimen/dimens_16"
             app:boxCornerRadiusTopEnd="@dimen/dimens_16"
             app:boxCornerRadiusTopStart="@dimen/dimens_16"
-            app:errorEnabled="true"
             app:startIconDrawable="@drawable/call_icon">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/clientNumber"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="@dimen/dimens_2"
                 android:hint="Phone Number"
-                android:imeOptions="actionDone"
-                android:maxLines="1"
+                android:id="@+id/clientNumber"
                 android:textSize="14sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dimens_2"
-            android:layout_marginBottom="@dimen/dimens_16"
-            app:boxCornerRadiusBottomEnd="@dimen/dimens_16"
-            app:boxCornerRadiusBottomStart="@dimen/dimens_16"
-            app:boxCornerRadiusTopEnd="@dimen/dimens_16"
-            app:boxCornerRadiusTopStart="@dimen/dimens_16"
-            app:errorEnabled="true"
-            app:startIconDrawable="@drawable/baseline_person_outline_black_24dp">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/clientName"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:hint="User Name"
-                android:imeOptions="actionDone"
-                android:maxLines="1"
-                android:textSize="14sp" />
-        </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
 
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/registerButton"
+        android:id="@+id/loginButton"
         android:layout_width="match_parent"
         android:layout_height="54dp"
         android:layout_marginStart="@dimen/dimens_24"
         android:layout_marginEnd="@dimen/dimens_24"
         android:layout_marginBottom="@dimen/dimens_12"
         android:backgroundTint="@color/purple"
-        android:text="Register"
+        android:text="Login"
         android:textAllCaps="false"
         android:textSize="18sp"
         app:cornerRadius="@dimen/dimens_16"
@@ -113,15 +89,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins"
-            android:text="Already have an account? "
+            android:text="New User? "
             android:textSize="14sp" />
 
         <TextView
-            android:id="@+id/loginText"
             android:layout_width="wrap_content"
+            android:id="@+id/registerText"
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins_semibold"
-            android:text="Login"
+            android:text="Register"
             android:textColor="@color/black"
             android:textSize="15sp" />
 

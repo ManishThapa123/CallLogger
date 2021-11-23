@@ -24,4 +24,15 @@ class BaseRepository @Inject constructor(
             callDuration,
             callType,
             syncDateTime)
+
+    //In order to register a new User to the app.
+    suspend fun registerUser(
+        registeredNumber: String,
+        clientName: String,
+        registryDateAndTime: String,
+    ) = apiService.registerUser(registeredNumber, clientName, registryDateAndTime)
+
+    suspend fun checkLastSync(
+        registeredNumber: String
+    ) = apiService.lastsync(registeredNumber)
 }

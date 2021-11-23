@@ -30,4 +30,27 @@ class ApiTests {
            assertNotNull(callLogsResponse.body()?.type)
         }
     }
+
+
+    @Test
+    fun `Register new user`() {
+        runBlocking {
+            val registerResponse = apiClient.service.registerUser(
+                "+919470105450",
+                "meraj alam",
+                "2021-11-19 11:30:35"
+            )
+            assertNotNull(registerResponse.body()?.type)
+        }
+    }
+
+
+    @Test
+    fun `Check Last Sync user`() {
+        runBlocking {
+            val response = apiClient.service.lastsync(
+                "919470105451")
+            assertNotNull(response.body())
+        }
+    }
 }

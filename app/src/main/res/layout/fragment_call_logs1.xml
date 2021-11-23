@@ -27,6 +27,7 @@
             android:fontFamily="@font/poppins"
             android:gravity="bottom"
             android:hint="Search"
+            android:id="@+id/etSearch"
             android:textSize="14sp" />
 
     </androidx.cardview.widget.CardView>

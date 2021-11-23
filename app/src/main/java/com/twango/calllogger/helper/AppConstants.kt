@@ -6,5 +6,7 @@ object AppConstants {
     const val TIMESTAMP_LAST_SYNCED = "timestampLastSynced"
     const val TIMESTAMP_SAVED = "timestampSaved"
     const val PERMISSION_STATE_SAVED = "permissionStateSaved"
+    const val LOGIN_STATE_SAVED = "loginStateSaved"
+    const val CLIENT_REGISTRATION_DATA_SAVED = "clientRegistrationDataSaved"
     const val AUTO_START_PERMISSION_STATE_SAVED = "autoStartPermissionStateSaved"
 }

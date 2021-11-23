@@ -1,10 +1,10 @@
 package com.twango.callLogger.api
 
+import com.twango.callLogger.api.models.responses.LastSyncResponse
+import com.twango.callLogger.api.models.responses.RegistrationResponse
 import com.twango.callLogger.api.models.responses.SaveCallLogsResponse
 import retrofit2.Response
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.POST
+import retrofit2.http.*
 
 /**
  *Request method and URL specified in the annotation
@@ -24,5 +24,19 @@ interface CallLoggerAPIInterface {
         @Field("call_type") callType: String,
         @Field("sync_datetime") syncDateTime: String
     ): Response<SaveCallLogsResponse>
+
+
+    @FormUrlEncoded
+    @POST("registercallyzeruser")
+    suspend fun registerUser(
+        @Field("client_mobile") registeredNumber: String,
+        @Field("client_name") clientName: String,
+        @Field("reg_date_time") registryDateAndTime: String
+    ): Response<RegistrationResponse>
+
+    @GET("lastsync")
+    suspend fun lastsync(
+        @Query("client_mobile") registeredNumber: String
+    ): Response<LastSyncResponse>
 
 }

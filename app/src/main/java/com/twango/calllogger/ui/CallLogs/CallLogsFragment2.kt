@@ -8,11 +8,11 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.twango.calllogger.databinding.FragmentCallLogs2Binding
+import com.twango.calllogger.helper.CallLogsUpdatingManager.updateClientNeverPickedUp
+import com.twango.calllogger.helper.CallLogsUpdatingManager.updateNeverAttended
 import dagger.hilt.android.AndroidEntryPoint
-import okhttp3.internal.toImmutableList
 
 /**
  * A simple [Fragment] subclass.
@@ -25,7 +25,6 @@ class CallLogsFragment2 : Fragment() {
     private lateinit var callDetailsAdapter: CallDetailsAdapter2
     private var typeInString: String? = null
     private val callDetailsViewModel: CallLogsViewModel by activityViewModels()
-
 
     companion object {
         fun newInstance(type: String): Fragment {
@@ -41,9 +40,22 @@ class CallLogsFragment2 : Fragment() {
         if (!arguments?.getString("type").isNullOrEmpty()) {
             arguments.let {
                 typeInString = it?.getString("type")
-                callDetailsViewModel.getCallLogs(typeInString!!)
+
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        when (typeInString!!) {
+            "6" -> {
+                callDetailsViewModel.getCallLogs(typeInString!!)
+            }
+            "7" -> {
+                callDetailsViewModel.getCallLogs(typeInString!!, true)
+            }
+        }
+
     }
 
     override fun onCreateView(
@@ -76,18 +88,39 @@ class CallLogsFragment2 : Fragment() {
 
     private fun observeViewModel() {
         when (typeInString?.toInt()) {
-            6->{
+            6 -> {
                 callDetailsViewModel.neverAttendedCallData.observe({ lifecycle }) { sampleData ->
                     callDetailsAdapter.submitList(sampleData)
                 }
+                callDetailsViewModel.neverAttendedCallDataUpdated.observe({ lifecycle }) { updatedData ->
+                    setCallLogsAdapter()
+                    callDetailsAdapter.submitList(updatedData)
+                    callDetailsAdapter.notifyDataSetChanged()
+
+
+                }
+                updateNeverAttended.observe({ lifecycle }) {
+                    if (it) {
+                        callDetailsViewModel.getCallLogs(typeInString!!, true)
+                    }
+                }
             }
-            7 ->{
+            7 -> {
                 callDetailsViewModel.notPickedUpByClientCallData.observe({ lifecycle }) { sampleData ->
                     callDetailsAdapter.submitList(sampleData)
                 }
+                callDetailsViewModel.notPickedUpByClientCallDataUpdated.observe({ lifecycle }) { updatedData ->
+                    //Todo(): Optimize the code
+                    setCallLogsAdapter()
+                    callDetailsAdapter.submitList(updatedData)
+                    callDetailsAdapter.notifyItemRangeChanged(0, updatedData.size, updatedData)
+                    callDetailsAdapter.notifyDataSetChanged()
+                }
+                updateClientNeverPickedUp.observe({ lifecycle }) {
+                    if (it)
+                        callDetailsViewModel.getCallLogs(typeInString!!, true)
+                }
             }
         }
-
-
     }
 }

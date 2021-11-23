@@ -5,7 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.squareup.moshi.JsonAdapter
 import com.twango.callLogger.api.models.entities.CallDetailsWithCount
+import com.twango.callLogger.api.models.entities.Data
 import com.twango.callLogger.api.models.entities.SampleEntity
 import com.twango.calllogger.helper.CallLogsHelper
 import com.twango.calllogger.helper.GlobalMethods
@@ -17,11 +19,15 @@ import javax.inject.Inject
 @HiltViewModel
 class CallLogsViewModel @Inject constructor(
     private val preferenceManager: PreferenceManager,
-    private val callLogsHelper: CallLogsHelper
+    private val callLogsHelper: CallLogsHelper,
+    private val clientDetailAdapter: JsonAdapter<Data>
 ) : ViewModel() {
 
     private val _sampleData = MutableLiveData<List<SampleEntity>>()
     val sampleData: LiveData<List<SampleEntity>> = _sampleData
+
+    private val _sampleDataUpdated = MutableLiveData<List<SampleEntity>>()
+    val sampleDataUpdated: LiveData<List<SampleEntity>> = _sampleDataUpdated
 
     private val _missedCallData = MutableLiveData<List<SampleEntity>>()
     val missedCallData: LiveData<List<SampleEntity>> = _missedCallData
@@ -38,9 +44,17 @@ class CallLogsViewModel @Inject constructor(
     private val _neverAttendedCallData = MutableLiveData<List<CallDetailsWithCount>>()
     val neverAttendedCallData: LiveData<List<CallDetailsWithCount>> = _neverAttendedCallData
 
+    private val _neverAttendedCallDataUpdated = MutableLiveData<List<CallDetailsWithCount>>()
+    val neverAttendedCallDataUpdated: LiveData<List<CallDetailsWithCount>> =
+        _neverAttendedCallDataUpdated
+
     private val _notPickedUpByClientCallData = MutableLiveData<List<CallDetailsWithCount>>()
     val notPickedUpByClientCallData: LiveData<List<CallDetailsWithCount>> =
         _notPickedUpByClientCallData
+
+    private val _notPickedUpByClientCallDataUpdated = MutableLiveData<List<CallDetailsWithCount>>()
+    val notPickedUpByClientCallDataUpdated: LiveData<List<CallDetailsWithCount>> =
+        _notPickedUpByClientCallDataUpdated
 
     private val _permissionState = MutableLiveData<Boolean>()
     val permissionState: LiveData<Boolean> = _permissionState
@@ -49,22 +63,26 @@ class CallLogsViewModel @Inject constructor(
     val lastSynced: LiveData<String?> = _lastSynced
 
 
-    fun getCallLogs(type: String) = viewModelScope.launch {
+    fun getCallLogs(type: String, useHandler: Boolean? = false) = viewModelScope.launch {
         when (type) {
             "1" -> {
-                val callDetails = callLogsHelper.getAllCallLogs()
-                _sampleData.value = callDetails!!
+                callLogsHelper.getAllCallLogs { callDetails ->
+                    Log.d("All Call Details", "$callDetails")
+                    _sampleData.value = callDetails
+                }
             }
             "2" -> {
                 val callDetails = callLogsHelper.getIncomingCallLogs()
                 _incomingCallData.value = callDetails!!
             }
             "3" -> {
-                val callDetails = callLogsHelper.getOutGoingCallLogs()
-                _outGoingCallData.value = callDetails!!
+                callLogsHelper.getOutGoingCallLogs { callDetails ->
+                    _outGoingCallData.value = callDetails
 
-                val callDuration = callLogsHelper.getOutgoingCallStateDuration("+9779818480892")
-                Log.d("callDuration", "$callDuration")
+                    val callDuration = callLogsHelper.getOutgoingCallStateDuration("+9779818480892")
+                    Log.d("callDuration", "$callDuration")
+                }
+
             }
             "4" -> {
                 val callDetails = callLogsHelper.getMissedCallLogs()
@@ -75,33 +93,58 @@ class CallLogsViewModel @Inject constructor(
                 _rejectedCallData.value = callDetails!!
             }
             "6" -> {
-                val callDetails = callLogsHelper.getNeverAttended()
-                Log.d("neverAttended", "$callDetails")
-                _neverAttendedCallData.value = callDetails
+                if (useHandler == true) {
+                    callLogsHelper.getNeverAttended(true) { callDetails ->
+                        Log.d("neverAttended", "$callDetails")
+//                        _neverAttendedCallData.value = callDetails
+                        _neverAttendedCallDataUpdated.value = callDetails
+                    }
+
+                } else {
+                    callLogsHelper.getNeverAttended { callDetails ->
+                        Log.d("neverAttended", "$callDetails")
+                        _neverAttendedCallData.value = callDetails
+                    }
+
+                }
 
             }
             "7" -> {
-                val callDetails = callLogsHelper.getNeverPickedUpByClient()
-                Log.d("neverPickedUp", "$callDetails")
-                _notPickedUpByClientCallData.value = callDetails
-                for (item in callDetails) {
-                    Log.d(
-                        "neverPickedUpDetails",
-                        "${item.callDetails?.userName} and ${item.callDetails?.userNumber} ${item.count}"
-                    )
+                if (useHandler == true) {
+                    callLogsHelper.getNeverPickedUpByClient(true) { callDetails ->
+                        Log.d("neverPickedUpByClientCallList", "$callDetails")
+                        _notPickedUpByClientCallDataUpdated.value = callDetails
+                    }
+                } else {
+                    callLogsHelper.getNeverPickedUpByClient { callDetails ->
+                        Log.d("neverPickedUpByClientCallList", "$callDetails")
+                        _notPickedUpByClientCallData.value = callDetails
+                    }
                 }
             }
         }
     }
 
-
     fun getAndSaveLatestSyncedTime() = viewModelScope.launch {
+        //Make an API call to save the time.
         val currentTimeInMillis = callLogsHelper.createDate(0)
         preferenceManager.saveLastSyncedTimeInMillis(currentTimeInMillis)
         //convert the millis to TimeStamp
         val currentTimeConverted = GlobalMethods.convertMillisToDateAndTime(currentTimeInMillis)
         Log.d("currentTimeConverted", currentTimeConverted)
-        //Make an API call to save the time.
+
+    }
+
+    fun saveRegisteredDateAndTime() = viewModelScope.launch {
+        //Check Preferences for the saved Time.
+        if (!preferenceManager.isSavedFirstRegisterTimeStamp()) {
+            val prefSavedUserData = preferenceManager.getClientRegistrationData()
+            val convertedUserData = clientDetailAdapter.fromJson(prefSavedUserData!!)
+            Log.d("RegisteredUserTime", "${convertedUserData?.registeredOn}")
+            val finalConvertedDateInMillis =
+                GlobalMethods.getMilliFromDate(convertedUserData?.registeredOn)
+            preferenceManager.saveFirstTimeRegisterMillis(finalConvertedDateInMillis)
+        }
     }
 
     fun getAutoRunPermissionSavedState() = viewModelScope.launch {

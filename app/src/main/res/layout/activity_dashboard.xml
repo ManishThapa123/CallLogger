@@ -5,22 +5,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.Dashboard.DashboardActivity">
+
+
     <ImageButton
+        android:id="@+id/ibBack"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/header_title"
-        app:layout_constraintBottom_toBottomOf="@id/header_title"
-        android:id="@+id/ibBack"
         android:layout_marginStart="@dimen/dimens_16"
-        app:layout_constraintStart_toStartOf="parent"
         android:background="@drawable/ic_back_arrow"
+        app:layout_constraintBottom_toBottomOf="@id/header_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/header_title"
         app:tint="@color/black" />
 
     <TextView
         android:id="@+id/header_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimens_20"
+        android:layout_marginTop="@dimen/dimens_12"
         android:fontFamily="@font/poppins_semibold"
         android:text="Analysis"
         android:textColor="@color/black"
@@ -29,19 +31,30 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Spinner
+        android:id="@+id/dateDropDown"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dimen_64"
+        android:layout_marginTop="@dimen/dimens_8"
+        android:layout_marginEnd="@dimen/dimen_64"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/header_title" />
+
     <LinearLayout
         android:id="@+id/linearLayoutSet1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimens_24"
+        android:layout_marginTop="@dimen/dimens_12"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/header_title">
+        app:layout_constraintTop_toBottomOf="@id/dateDropDown">
 
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
-            android:layout_height="180dp"
+            android:layout_height="170dp"
             android:layout_marginStart="@dimen/dimens_16"
             android:layout_marginEnd="@dimen/dimens_16"
             android:layout_marginBottom="@dimen/dimens_2"
@@ -56,18 +69,16 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/totalWorkingHours"
+                <com.robinhood.ticker.TickerView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="8dp"
-                    android:fontFamily="@font/poppins_medium"
+                    android:id="@+id/totalWorkingHours"
                     android:gravity="center"
+                    android:text="0000 sec"
+                    android:layout_marginBottom="@dimen/dimens_8"
                     android:textColor="@color/black"
-                    android:textSize="14sp"
-                    android:maxLines="2"
-                    tools:text="12 hrs" />
+                    app:ticker_animationDuration="700"
+                    app:ticker_defaultPreferredScrollingDirection="up"/>
 
                 <ImageView
                     android:layout_width="48dp"
@@ -81,7 +92,7 @@
                     android:layout_marginStart="@dimen/dimens_16"
                     android:layout_marginTop="@dimen/dimens_4"
                     android:layout_marginEnd="@dimen/dimens_16"
-                    android:layout_marginBottom="@dimen/dimens_16"
+                    android:layout_marginBottom="@dimen/dimens_8"
                     android:fontFamily="@font/poppins_semibold"
                     android:gravity="center"
                     android:lines="2"
@@ -96,7 +107,7 @@
 
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
-            android:layout_height="180dp"
+            android:layout_height="170dp"
             android:layout_marginEnd="@dimen/dimens_16"
             android:layout_marginBottom="@dimen/dimens_2"
             android:layout_weight="1"
@@ -110,17 +121,16 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/totalPhoneCalls"
+                <com.robinhood.ticker.TickerView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="8dp"
-                    android:fontFamily="@font/poppins_medium"
+                    android:id="@+id/totalPhoneCalls"
                     android:gravity="center"
+                    android:text="00 calls"
+                    android:layout_marginBottom="@dimen/dimens_8"
                     android:textColor="@color/black"
-                    android:textSize="14sp"
-                    tools:text="12 calls" />
+                    app:ticker_animationDuration="700"
+                    app:ticker_defaultPreferredScrollingDirection="up"/>
 
                 <ImageView
                     android:layout_width="48dp"
@@ -134,7 +144,7 @@
                     android:layout_marginStart="@dimen/dimens_16"
                     android:layout_marginTop="@dimen/dimens_4"
                     android:layout_marginEnd="@dimen/dimens_16"
-                    android:layout_marginBottom="@dimen/dimens_16"
+                    android:layout_marginBottom="@dimen/dimens_8"
                     android:fontFamily="@font/poppins_semibold"
                     android:gravity="center"
                     android:lines="2"
@@ -154,7 +164,7 @@
         android:id="@+id/linearLayoutSet2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimens_16"
+        android:layout_marginTop="@dimen/dimens_8"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -162,7 +172,7 @@
 
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
-            android:layout_height="180dp"
+            android:layout_height="170dp"
             android:layout_marginStart="@dimen/dimens_16"
             android:layout_marginEnd="@dimen/dimens_16"
             android:layout_marginBottom="@dimen/dimens_2"
@@ -177,17 +187,16 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/neverAttended"
+                <com.robinhood.ticker.TickerView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="8dp"
-                    android:fontFamily="@font/poppins_medium"
+                    android:id="@+id/neverAttended"
                     android:gravity="center"
+                    android:text="00 calls"
+                    android:layout_marginBottom="@dimen/dimens_8"
                     android:textColor="@color/black"
-                    android:textSize="14sp"
-                    tools:text="20 calls" />
+                    app:ticker_animationDuration="700"
+                    app:ticker_defaultPreferredScrollingDirection="up"/>
 
                 <ImageView
                     android:layout_width="48dp"
@@ -200,7 +209,7 @@
                     android:layout_marginStart="@dimen/dimens_16"
                     android:layout_marginTop="@dimen/dimens_4"
                     android:layout_marginEnd="@dimen/dimens_16"
-                    android:layout_marginBottom="@dimen/dimens_16"
+                    android:layout_marginBottom="@dimen/dimens_8"
                     android:fontFamily="@font/poppins_semibold"
                     android:gravity="center"
                     android:lines="2"
@@ -215,7 +224,7 @@
 
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
-            android:layout_height="180dp"
+            android:layout_height="170dp"
             android:layout_marginEnd="@dimen/dimens_16"
             android:layout_marginBottom="@dimen/dimens_2"
             android:layout_weight="1"
@@ -229,17 +238,16 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/notPickedUpByClient"
+                <com.robinhood.ticker.TickerView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="8dp"
-                    android:fontFamily="@font/poppins_medium"
+                    android:id="@+id/notPickedUpByClient"
                     android:gravity="center"
+                    android:text="00 calls"
+                    android:layout_marginBottom="@dimen/dimens_8"
                     android:textColor="@color/black"
-                    android:textSize="14sp"
-                    tools:text="2 calls" />
+                    app:ticker_animationDuration="700"
+                    app:ticker_defaultPreferredScrollingDirection="up"/>
 
                 <ImageView
                     android:layout_width="48dp"
@@ -253,7 +261,7 @@
                     android:layout_marginStart="@dimen/dimens_16"
                     android:layout_marginTop="@dimen/dimens_4"
                     android:layout_marginEnd="@dimen/dimens_16"
-                    android:layout_marginBottom="@dimen/dimens_16"
+                    android:layout_marginBottom="@dimen/dimens_8"
                     android:fontFamily="@font/poppins_semibold"
                     android:gravity="center"
                     android:lines="2"
@@ -273,7 +281,7 @@
         android:id="@+id/linearLayoutSet3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimens_16"
+        android:layout_marginTop="@dimen/dimens_8"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -320,7 +328,7 @@
                     android:layout_marginStart="@dimen/dimens_16"
                     android:layout_marginTop="@dimen/dimens_4"
                     android:layout_marginEnd="@dimen/dimens_16"
-                    android:layout_marginBottom="@dimen/dimens_4"
+                    android:layout_marginBottom="@dimen/dimens_2"
                     android:fontFamily="@font/poppins_semibold"
                     android:gravity="center"
                     android:text="Top Caller"

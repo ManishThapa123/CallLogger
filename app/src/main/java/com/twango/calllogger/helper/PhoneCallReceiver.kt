@@ -9,12 +9,14 @@ import android.content.Context
 import android.content.Intent
 import android.media.RingtoneManager
 import android.os.Build
+import android.telecom.Call
 import android.telephony.TelephonyManager
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.twango.callLogger.api.models.entities.SampleEntity
 import com.twango.calllogger.MainActivity
 import com.twango.calllogger.R
+import com.twango.calllogger.container.CallLoggerApplication
 import com.twango.calllogger.helper.CallLogsUpdatingManager.updateExistingCallLogs
 import com.twango.calllogger.repository.BaseRepository
 import dagger.hilt.android.AndroidEntryPoint
@@ -35,6 +37,11 @@ class PhoneCallReceiver : BroadcastReceiver() {
 
     @Inject
     lateinit var preferenceManager: PreferenceManager
+
+    @Inject
+    lateinit var application: CallLoggerApplication
+
+
 
     private val job = Job()
     private val scope = CoroutineScope(Dispatchers.Main + job)
@@ -196,15 +203,28 @@ class PhoneCallReceiver : BroadcastReceiver() {
                     //Save the last syncdate.
                     preferenceManager.saveLastSyncedTimeInMillis(syncDateTime)
                     //We have to put a check to see whether the app is on foreground or not.
-                    val isAppRunning = isAppInforegrounded()
-                    Log.d("isAppRunning", "$isAppRunning")
-                    if (isAppRunning) {
-                        updateExistingCallLogs(
-                            callType,
-                            "testing",
-                            SampleEntity(userName, userNumber, callTime, callDuration, callType)
-                        )
-                    }
+//                    val isAppInitialized = application.isAppInitialized()
+//                    val isAppCreated = application.isAppCreated()
+//                    val isAppResumed = application.isAppResumed()
+//                    val isAppStarted = application.isAppStarted()
+//                    val isAppDestroyed = application.isAppDestroyed()
+//                    Log.d("isAppInitialized", "$isAppInitialized")
+//                    Log.d("isAppCreated", "$isAppCreated")
+//                    Log.d("isAppResumed", "$isAppResumed")
+//                    Log.d("isAppStarted", "$isAppStarted")
+//                    Log.d("isAppDestroyed", "$isAppDestroyed")
+
+                    val currentState = application.getCurrentState()
+                    Log.d("currentStateOfApp","$currentState")
+
+                        if (isAppInforegrounded()){
+                            updateExistingCallLogs(
+                                callType,
+                                "app running",
+                                SampleEntity(userName, userNumber, callTime, callDuration, callType))
+
+                            preferenceManager.getLastSyncedTimeInMillis()
+                        }
 
                 } else
                     Log.d("Response", "Success, Failed to update in the backend")
@@ -229,7 +249,13 @@ class PhoneCallReceiver : BroadcastReceiver() {
         val notificationBuilder = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.call_icon)
             .setContentTitle("Call Synced")
-            .setContentText("Your Last call has been synced at $syncDateTime")
+            .setContentText(
+                "Your Last call has been synced at ${
+                    GlobalMethods.convertMillisToDateAndTimeInMinutes(
+                        syncDateTime
+                    )
+                }"
+            )
             .setBadgeIconType(NotificationCompat.BADGE_ICON_LARGE)
             .setAutoCancel(true)
             .setSound(defaultSoundUri)
@@ -257,10 +283,21 @@ class PhoneCallReceiver : BroadcastReceiver() {
 
     }
 
+    /**
+     * In order to check whether the application is running in the foreground or not.
+     * If this doesn't work on custom UI's,
+     * refer to: [https://medium.com/the-devops-corner/how-to-detect-android-app-foreground-status-c9443ddef260]
+     */
     fun isAppInforegrounded(): Boolean {
         val appProcessInfo = ActivityManager.RunningAppProcessInfo()
         ActivityManager.getMyMemoryState(appProcessInfo)
         return (appProcessInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND ||
                 appProcessInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIBLE)
+    }
+
+    fun isAppInBackground(): Boolean {
+        val appProcessInfo = ActivityManager.RunningAppProcessInfo()
+        ActivityManager.getMyMemoryState(appProcessInfo)
+        return (appProcessInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_TOP_SLEEPING)
     }
 }

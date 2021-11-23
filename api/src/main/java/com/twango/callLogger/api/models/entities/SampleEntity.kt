@@ -6,7 +6,7 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class SampleEntity(
     @Json(name = "user_name")
-    var userName: String? = null,
+    var userName: String? = "Unknown",
     @Json(name = "user_number")
     var userNumber: String? = null,
     @Json(name = "call_time")
