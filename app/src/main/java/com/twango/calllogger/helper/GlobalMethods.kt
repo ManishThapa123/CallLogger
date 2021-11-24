@@ -1,5 +1,6 @@
 package com.twango.calllogger.helper
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
@@ -7,9 +8,12 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
+import android.telephony.SubscriptionInfo
+import android.telephony.SubscriptionManager
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
 import androidx.core.content.res.ResourcesCompat
 import com.judemanutd.autostarter.AutoStartPermissionHelper
 import com.twango.calllogger.R
@@ -184,6 +188,7 @@ object GlobalMethods {
         Log.d("dateInFormat", convertedDate)
         return convertedDate
     }
+
     /**
      * In order to convert the seconds to Hours, minutes and seconds format with text included.
      */
@@ -285,14 +290,33 @@ object GlobalMethods {
 
     fun getMilliFromDate(dateFormat: String?): String {
         var date = Date()
-        val formatter =  SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault())
+        val formatter = SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault())
         try {
             date = formatter.parse(dateFormat!!)!!
         } catch (e: ParseException) {
             e.printStackTrace()
         }
-        Log.d("registeredDate","Today is ${date.time}")
+        Log.d("registeredDate", "Today is ${date.time}")
         return "${date.time}"
     }
 
+    /**
+     * This Function Will return list of SubscriptionInfo
+     */
+    fun getSimCardInfos(context: Context): List<SubscriptionInfo>? {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            val subscriptionManager: SubscriptionManager =
+                context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
+            if (ActivityCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.READ_PHONE_STATE
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                throw Exception("Permission Not Granted -> Manifest.permission.READ_PHONE_STATE")
+            }
+            subscriptionManager.activeSubscriptionInfoList
+        } else {
+            null
+        }
+    }
 }

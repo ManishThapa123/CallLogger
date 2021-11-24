@@ -7,7 +7,6 @@
     android:padding="@dimen/dimens_16"
     tools:context=".ui.SignUpAndLogin.SignUpFragment">
 
-
     <LinearLayout
         android:id="@+id/llPhoneNumber"
         android:layout_width="match_parent"
@@ -19,19 +18,20 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:layout_width="180dp"
-            android:layout_height="180dp"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
             android:layout_gravity="center"
             android:src="@drawable/otics_by_eazybee"
             app:tint="@color/purple" />
+
 
         <com.hbb20.CountryCodePicker
             android:id="@+id/ccp"
             android:layout_width="wrap_content"
             android:layout_height="56dp"
             android:layout_gravity="center"
-            android:layout_marginTop="@dimen/dimens_32"
-            android:layout_marginBottom="@dimen/dimens_8"
+            android:layout_marginTop="@dimen/dimens_4"
+            android:layout_marginBottom="@dimen/dimens_4"
             android:gravity="center_vertical"
             app:ccp_autoFormatNumber="false"
             app:ccp_textSize="17sp" />
@@ -40,12 +40,34 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimens_2"
+            android:layout_marginBottom="@dimen/dimens_16"
+            app:boxCornerRadiusBottomEnd="@dimen/dimens_16"
+            app:boxCornerRadiusBottomStart="@dimen/dimens_16"
+            app:boxCornerRadiusTopEnd="@dimen/dimens_16"
+            app:boxCornerRadiusTopStart="@dimen/dimens_16"
+            app:startIconDrawable="@drawable/baseline_person_outline_black_24dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/clientName"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="User Name"
+                android:imeOptions="actionDone"
+                android:maxLines="1"
+                android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:layout_marginBottom="@dimen/dimens_8"
             app:boxCornerRadiusBottomEnd="@dimen/dimens_16"
             app:boxCornerRadiusBottomStart="@dimen/dimens_16"
             app:boxCornerRadiusTopEnd="@dimen/dimens_16"
             app:boxCornerRadiusTopStart="@dimen/dimens_16"
-            app:errorEnabled="true"
             app:startIconDrawable="@drawable/call_icon">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -59,31 +81,76 @@
                 android:textSize="14sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dimens_2"
-            android:layout_marginBottom="@dimen/dimens_16"
-            app:boxCornerRadiusBottomEnd="@dimen/dimens_16"
-            app:boxCornerRadiusBottomStart="@dimen/dimens_16"
-            app:boxCornerRadiusTopEnd="@dimen/dimens_16"
-            app:boxCornerRadiusTopStart="@dimen/dimens_16"
-            app:errorEnabled="true"
-            app:startIconDrawable="@drawable/baseline_person_outline_black_24dp">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/clientName"
+        <LinearLayout
+            android:id="@+id/simLinearLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/dimens_36"
+                android:layout_height="@dimen/dimens_36"
+                android:src="@drawable/image_sim" />
+
+            <TextView
+                android:id="@+id/simOneCarrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/dimens_12"
+                android:fontFamily="@font/poppins_medium"
+                android:text="Airtel"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/simTwoCarrier"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:hint="User Name"
-                android:imeOptions="actionDone"
-                android:maxLines="1"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/dimens_12"
+                android:fontFamily="@font/poppins_medium"
+                android:text="BSNL"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llShowDualSim"
+            android:layout_width="wrap_content"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimens_12"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_medium"
+                android:gravity="center"
+                android:text="If you dont want to connect this SIM, please click 'SKIP'"
+                android:textColor="@color/grey_dark"
                 android:textSize="14sp" />
-        </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSkipSimOne"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:elevation="1dp"
+                android:text="SKIP"
+                android:textColor="@color/grey_dark"
+                app:cornerRadius="@dimen/dimens_12" />
+
+        </LinearLayout>
 
     </LinearLayout>
-
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/registerButton"
@@ -93,7 +160,7 @@
         android:layout_marginEnd="@dimen/dimens_24"
         android:layout_marginBottom="@dimen/dimens_12"
         android:backgroundTint="@color/purple"
-        android:text="Register"
+        android:text="Connect"
         android:textAllCaps="false"
         android:textSize="18sp"
         app:cornerRadius="@dimen/dimens_16"
@@ -107,6 +174,7 @@
         android:layout_marginBottom="@dimen/dimens_12"
         android:gravity="center"
         android:orientation="horizontal"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <TextView

@@ -4,8 +4,6 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -30,6 +28,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class CallLogsFragment1 : Fragment() {
 
+    private val integerChars = '0'..'9'
     private lateinit var binding: FragmentCallLogs1Binding
     private lateinit var callDetailsAdapter: CallDetailsAdapter
     private var typeInString: String? = null
@@ -57,12 +56,12 @@ class CallLogsFragment1 : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        callDetailsViewModel.getAndSaveLatestSyncedTime()
+        //callDetailsViewModel.getAndSaveLatestSyncedTime()
         //call the api and get the time.
         if (!arguments?.getString("type").isNullOrEmpty()) {
             arguments.let {
                 typeInString = it?.getString("type")
-//                Log.d("Type", typeInString!!)
+                //Log.d("Type", typeInString!!)
             }
         }
     }
@@ -161,7 +160,7 @@ class CallLogsFragment1 : Fragment() {
                     setSearchListener(sectionCallLogs)
                 }
                 allCallLog.observe({ lifecycle }) {
-                callDetailsViewModel.getCallLogs(typeInString!!)
+                    callDetailsViewModel.getCallLogs(typeInString!!)
                 }
             }
             2 -> {
@@ -257,11 +256,21 @@ class CallLogsFragment1 : Fragment() {
                     callList.add(callData)
                 }
                 setCallLogsAdapter()
-                callDetailsAdapter.submitList(
-                    callList.filter { profile ->
-                        profile.userName?.lowercase()?.contains(it.toString())!!
-                    }
-                )
+
+                val isNumber = isInteger(it.toString())
+                if (isNumber){
+                    callDetailsAdapter.submitList(
+                        callList.filter { profile ->
+                            profile.userNumber?.lowercase()?.contains(it.toString())!!
+                        }
+                    )
+                }else{
+                    callDetailsAdapter.submitList(
+                        callList.filter { profile ->
+                            profile.userName?.lowercase()?.contains(it.toString())!!
+                        }
+                    )
+                }
             } else if (it.length == 0) {
                 setCallLogsAdapter()
                 callDetailsAdapter.submitList(sectionCallLogs)
@@ -269,4 +278,6 @@ class CallLogsFragment1 : Fragment() {
         }
 
     }
+
+    private fun isInteger(input: String) = input.all { it in integerChars }
 }

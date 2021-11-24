@@ -29,8 +29,7 @@ class BaseRepository @Inject constructor(
     suspend fun registerUser(
         registeredNumber: String,
         clientName: String,
-        registryDateAndTime: String,
-    ) = apiService.registerUser(registeredNumber, clientName, registryDateAndTime)
+        registryDateAndTime: String, ) = apiService.registerUser(registeredNumber, clientName, registryDateAndTime)
 
     suspend fun checkLastSync(
         registeredNumber: String

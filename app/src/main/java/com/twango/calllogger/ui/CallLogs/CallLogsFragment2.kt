@@ -55,7 +55,6 @@ class CallLogsFragment2 : Fragment() {
                 callDetailsViewModel.getCallLogs(typeInString!!, true)
             }
         }
-
     }
 
     override fun onCreateView(

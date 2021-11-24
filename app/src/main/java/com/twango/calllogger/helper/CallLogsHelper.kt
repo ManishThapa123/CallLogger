@@ -37,6 +37,7 @@ class CallLogsHelper @Inject constructor(
         val typeCol = CallLog.Calls.TYPE // 1 - Incoming, 2 - Outgoing, 3 - Missed , 5- Rejected
         val nameCol = CallLog.Calls.CACHED_NAME
         val dateCol = CallLog.Calls.DATE
+        val subscribedSim = CallLog.Calls.PHONE_ACCOUNT_ID
         val projection = arrayOf(numberCol, durationCol, typeCol, nameCol, dateCol)
         val mSelectionClause = CallLog.Calls.DATE + " BETWEEN ? AND ?"
 
