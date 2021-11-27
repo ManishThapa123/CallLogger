@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/permissionFragmentFirst"
-        android:name="com.twango.calllogger.ui.Onboarding.PermissionFragmentFirst"
+        android:name="com.eazybe.callLogger.ui.Onboarding.PermissionFragmentFirst"
         android:label="fragment_permission_first"
         tools:layout="@layout/fragment_permission_first" >
         <action
@@ -22,7 +22,7 @@
     </fragment>
     <fragment
         android:id="@+id/permissionFragmentSecond"
-        android:name="com.twango.calllogger.ui.Onboarding.PermissionFragmentSecond"
+        android:name="com.eazybe.callLogger.ui.Onboarding.PermissionFragmentSecond"
         android:label="fragment_permission_second"
         tools:layout="@layout/fragment_permission_second" />
 </navigation>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.twango.calllogger">
+    package="com.eazybe.callLogger">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
@@ -13,12 +13,14 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_CALL_LOG" />
+    <uses-permission android:name="android.permission.WRITE_CALL_LOG" />
     <uses-permission android:name="android.permission.ANSWER_PHONE_CALLS" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
+    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
 
     <application
-        android:name=".container.CallLoggerApplication"
+        android:name="com.eazybe.callLogger.container.CallLoggerApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -26,13 +28,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CallLogger">
         <activity
-            android:name=".ui.SignUpAndLogin.RegisterActivity"
+            android:name="com.eazybe.callLogger.ui.SignUpAndLogin.RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.Dashboard.DashboardActivity"
+            android:name="com.eazybe.callLogger.ui.Dashboard.DashboardActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.SplashScreen.SplashActivity"
+            android:name="com.eazybe.callLogger.ui.SplashScreen.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,12 +43,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name="com.eazybe.callLogger.MainActivity"
             android:exported="true" />
-        <activity android:name=".ui.Onboarding.OnBoardingActivity" />
+        <activity android:name="com.eazybe.callLogger.ui.Onboarding.OnBoardingActivity" />
 
         <receiver
-            android:name=".helper.PhoneCallReceiver"
+            android:name="com.eazybe.callLogger.helper.PhoneCallReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -57,6 +59,14 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
+        <service
+            android:name=".helper.MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

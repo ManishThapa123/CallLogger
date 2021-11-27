@@ -15,7 +15,7 @@
         android:layout_width="128dp"
         android:layout_height="128dp"
         android:layout_marginBottom="80dp"
-        android:src="@drawable/otics_logo"
+        android:src="@drawable/ic_eazybe_hand_logo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,11 +23,12 @@
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_marginBottom="80dp"
-        android:src="@drawable/otics_by_eazybee"
+        android:src="@drawable/image_eazybe_logo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:tint="@color/white" />
 </androidx.constraintlayout.motion.widget.MotionLayout>

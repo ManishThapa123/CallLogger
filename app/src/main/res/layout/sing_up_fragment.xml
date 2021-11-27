@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/dimens_16"
+    android:paddingStart="@dimen/dimens_24"
+    android:paddingTop="@dimen/dimens_8"
+    android:paddingEnd="@dimen/dimens_24"
     tools:context=".ui.SignUpAndLogin.SignUpFragment">
 
     <LinearLayout
@@ -12,16 +14,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/dimens_24"
+        android:paddingStart="@dimen/dimens_8"
+        android:paddingEnd="@dimen/dimens_8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:layout_width="160dp"
-            android:layout_height="160dp"
+            android:layout_height="140dp"
             android:layout_gravity="center"
-            android:src="@drawable/otics_by_eazybee"
+            android:src="@drawable/ic_eazybe_logo"
             app:tint="@color/purple" />
 
 
@@ -31,7 +34,6 @@
             android:layout_height="56dp"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/dimens_4"
-            android:layout_marginBottom="@dimen/dimens_4"
             android:gravity="center_vertical"
             app:ccp_autoFormatNumber="false"
             app:ccp_textSize="17sp" />
@@ -40,8 +42,31 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dimens_2"
-            android:layout_marginBottom="@dimen/dimens_16"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="@dimen/dimens_8"
+            app:boxCornerRadiusBottomEnd="@dimen/dimens_16"
+            app:boxCornerRadiusBottomStart="@dimen/dimens_16"
+            app:boxCornerRadiusTopEnd="@dimen/dimens_16"
+            app:boxCornerRadiusTopStart="@dimen/dimens_16"
+            app:startIconDrawable="@drawable/call_icon">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/clientNumber"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/dimens_2"
+                android:hint="Phone Number"
+                android:imeOptions="actionDone"
+                android:inputType="phone"
+                android:maxLines="1"
+                android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimens_8"
             app:boxCornerRadiusBottomEnd="@dimen/dimens_16"
             app:boxCornerRadiusBottomStart="@dimen/dimens_16"
             app:boxCornerRadiusTopEnd="@dimen/dimens_16"
@@ -59,26 +84,29 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="@dimen/dimens_8"
+            android:layout_marginStart="@dimen/dimens_32"
+            android:layout_marginTop="@dimen/dimens_2"
+            android:layout_marginEnd="@dimen/dimens_32"
+            android:layout_marginBottom="@dimen/dimens_16"
             app:boxCornerRadiusBottomEnd="@dimen/dimens_16"
             app:boxCornerRadiusBottomStart="@dimen/dimens_16"
             app:boxCornerRadiusTopEnd="@dimen/dimens_16"
-            app:boxCornerRadiusTopStart="@dimen/dimens_16"
-            app:startIconDrawable="@drawable/call_icon">
+            app:boxCornerRadiusTopStart="@dimen/dimens_16">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/clientNumber"
+                android:id="@+id/organizationCode"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="@dimen/dimens_2"
-                android:hint="Phone Number"
+                android:layout_gravity="center"
+                android:fontFamily="@font/poppins_medium"
+                android:gravity="center"
+                android:hint="Organization Code (Optional)"
                 android:imeOptions="actionDone"
                 android:maxLines="1"
-                android:textSize="14sp" />
+                android:textSize="16sp"
+                android:textStyle="bold" />
         </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -87,34 +115,44 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginTop="@dimen/dimens_12"
+            android:gravity="center"
             android:orientation="horizontal">
 
             <ImageView
+                android:id="@+id/simOneImage"
                 android:layout_width="@dimen/dimens_36"
-                android:layout_height="@dimen/dimens_36"
-                android:src="@drawable/image_sim" />
+                android:layout_height="46dp"
+                android:src="@drawable/img_sim_one" />
+
+            <ImageView
+                android:id="@+id/simTwoImage"
+                android:layout_width="@dimen/dimens_36"
+                android:layout_height="46dp"
+                android:src="@drawable/img_sim_two"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/simOneCarrier"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginStart="@dimen/dimens_12"
+                android:layout_marginStart="@dimen/dimens_4"
                 android:fontFamily="@font/poppins_medium"
                 android:text="Airtel"
                 android:textColor="@color/black"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/simTwoCarrier"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginStart="@dimen/dimens_12"
+                android:layout_marginStart="@dimen/dimens_4"
                 android:fontFamily="@font/poppins_medium"
                 android:text="BSNL"
                 android:textColor="@color/black"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:visibility="gone" />
 
         </LinearLayout>
@@ -122,11 +160,11 @@
         <LinearLayout
             android:id="@+id/llShowDualSim"
             android:layout_width="wrap_content"
-            android:visibility="gone"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimens_12"
+            android:layout_marginTop="@dimen/dimens_8"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -158,7 +196,7 @@
         android:layout_height="54dp"
         android:layout_marginStart="@dimen/dimens_24"
         android:layout_marginEnd="@dimen/dimens_24"
-        android:layout_marginBottom="@dimen/dimens_12"
+        android:layout_marginBottom="@dimen/dimens_8"
         android:backgroundTint="@color/purple"
         android:text="Connect"
         android:textAllCaps="false"

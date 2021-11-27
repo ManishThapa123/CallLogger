@@ -10,7 +10,7 @@
         android:layout_width="180dp"
         android:layout_height="100dp"
         android:layout_marginTop="@dimen/dimens_20"
-        android:src="@drawable/otics_by_eazybee"
+        android:src="@drawable/ic_eazybe_logo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

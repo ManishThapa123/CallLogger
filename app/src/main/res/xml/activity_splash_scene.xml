@@ -36,19 +36,19 @@
            <KeyAttribute
                motion:motionTarget="@+id/imageView"
                motion:framePosition="70"
-               android:scaleX="30" />
-           <KeyAttribute
-               motion:motionTarget="@+id/imageView"
-               motion:framePosition="70"
-               android:scaleY="30" />
-           <KeyAttribute
-               motion:motionTarget="@+id/imageView"
-               motion:framePosition="85"
                android:scaleX="40" />
            <KeyAttribute
                motion:motionTarget="@+id/imageView"
-               motion:framePosition="85"
+               motion:framePosition="70"
                android:scaleY="40" />
+           <KeyAttribute
+               motion:motionTarget="@+id/imageView"
+               motion:framePosition="85"
+               android:scaleX="45" />
+           <KeyAttribute
+               motion:motionTarget="@+id/imageView"
+               motion:framePosition="85"
+               android:scaleY="45" />
            <KeyAttribute
                motion:motionTarget="@+id/imageView"
                motion:framePosition="100"
@@ -61,6 +61,14 @@
                android:scaleY="50" >
 
            </KeyAttribute>
+           <KeyAttribute
+               motion:motionTarget="@+id/imageView"
+               motion:framePosition="50"
+               android:scaleX="35" />
+           <KeyAttribute
+               motion:motionTarget="@+id/imageView"
+               motion:framePosition="50"
+               android:scaleY="35" />
        </KeyFrameSet>
     </Transition>
 

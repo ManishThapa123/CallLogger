@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "917967494072",
+    "project_id": "eazybe-app",
+    "storage_bucket": "eazybe-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:917967494072:android:afa1bae8c3718f8b020d4d",
+        "android_client_info": {
+          "package_name": "com.eazybe.callLogger"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "917967494072-r7h5kqqr208tck7gar8lhgasmmrnqf7g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDYftIX58K0olKgCHlDM46BrUOdjSauAk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "917967494072-r7h5kqqr208tck7gar8lhgasmmrnqf7g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
