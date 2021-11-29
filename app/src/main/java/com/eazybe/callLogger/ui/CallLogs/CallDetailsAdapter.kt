@@ -1,8 +1,10 @@
 package com.eazybe.callLogger.ui.CallLogs
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -12,6 +14,7 @@ import com.eazybe.callLogger.R
 import com.eazybe.callLogger.databinding.ItemAdapterLayoutOneBinding
 import com.eazybe.callLogger.helper.GlobalMethods.convertMillisToTime
 import com.eazybe.callLogger.helper.GlobalMethods.convertSeconds
+import com.judemanutd.autostarter.AutoStartPermissionHelper
 
 abstract class CallDetailsAdapter : ListAdapter<SampleEntity,
         CallDetailsAdapter.ViewHolder>(object : DiffUtil.ItemCallback<SampleEntity>() {
@@ -93,7 +96,21 @@ abstract class CallDetailsAdapter : ListAdapter<SampleEntity,
 //                        }
 //                        popupMenu.show()
 //                    }
-                    deleteUser(callData)
+
+                    val builder = AlertDialog.Builder(context!!)
+                    builder.setTitle("Delete Call Log")
+                    builder.setMessage("Deleting would permanently remove the call log from the phone book. Continue?")
+                    builder.setPositiveButton("Delete") { _, _ ->
+                        deleteUser(callData)
+                        builder.create().dismiss()
+                    }
+                    builder.setNegativeButton("Cancel"){_,_ ->
+                        builder.create().dismiss()
+                    }
+                    builder.setCancelable(true)
+                    builder.create()
+                    builder.show()
+
                 }
             }
         }
