@@ -82,6 +82,17 @@ abstract class CallDetailsAdapter : ListAdapter<SampleEntity,
                 }
                 deleteIcon.setOnClickListener {
 
+//                    //Report Button
+//                    ivReportIcon.setOnClickListener {
+//                        val popupMenu = android.widget.PopupMenu(context, it)
+//                        popupMenu.menuInflater.inflate(R.menu.report_menu, popupMenu.menu)
+//                        popupMenu.setOnMenuItemClickListener {
+//                            showUserReportDialog("${profile.id}")
+//                            popupMenu.dismiss()
+//                            true
+//                        }
+//                        popupMenu.show()
+//                    }
                     deleteUser(callData)
                 }
             }

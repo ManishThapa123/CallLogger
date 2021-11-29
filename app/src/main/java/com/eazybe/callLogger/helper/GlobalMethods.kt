@@ -174,7 +174,14 @@ object GlobalMethods {
         return convertedDate
     }
 
-
+    /**
+     * In order to calculate the time difference using millis
+     */
+    fun calculateTimeDifference(date1: Long, date2: Long): Long{
+        val diff = date2 - date1
+        val seconds = diff / 1000
+        return seconds
+    }
     /**
      * In order to convert the milliseconds to Hours, minutes format
      */
@@ -283,6 +290,10 @@ object GlobalMethods {
         }
 
     }
+
+    /**
+     * In order to get the milliseconds using the simpleDateFormat.
+     */
 
     fun getMilliFromDate(dateFormat: String?): String {
         var date = Date()

@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Looper
 import android.provider.CallLog
+import android.telecom.TelecomManager
 import android.telephony.SubscriptionInfo
 import android.telephony.SubscriptionManager
 import android.util.Log
@@ -16,15 +17,11 @@ import com.eazybe.callLogger.api.models.entities.SampleEntity
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
-import android.telecom.PhoneAccountHandle
-
-import android.telecom.TelecomManager
 
 
 class CallLogsHelper @Inject constructor(
     private val context: Context,
-    private val preferenceManager: PreferenceManager
-) {
+    private val preferenceManager: PreferenceManager) {
 
     private var allCallLogsList: ArrayList<SampleEntity>? = null
     private var missedCallList: ArrayList<SampleEntity>? = null
@@ -38,11 +35,10 @@ class CallLogsHelper @Inject constructor(
     fun deleteCallById(callLogId: String, context: Context) {
         context.contentResolver.delete(
             CallLog.Calls.CONTENT_URI, CallLog.Calls._ID + " = ? ", arrayOf(
-                callLogId
-            )
-        )
-    }
+                callLogId))
 
+        loadCallLogs()
+    }
     private fun loadCallLogs() {
         allCallLogsList = ArrayList()
         missedCallList = ArrayList()
@@ -93,9 +89,7 @@ class CallLogsHelper @Inject constructor(
 
         val cursor = context.contentResolver.query(
             CallLog.Calls.CONTENT_URI,
-            projection, mSelectionClause, mSelectionArgs, CallLog.Calls.DEFAULT_SORT_ORDER
-        )
-
+            projection, mSelectionClause, mSelectionArgs, CallLog.Calls.DEFAULT_SORT_ORDER)
         val numberColIdx = cursor!!.getColumnIndex(numberCol)
         val durationColIdx = cursor.getColumnIndex(durationCol)
         val typeColIdx = cursor.getColumnIndex(typeCol)
@@ -119,8 +113,8 @@ class CallLogsHelper @Inject constructor(
             ) {
                 allCallLogsList!!.add(
                     SampleEntity(
-                        name,
                         number,
+                        name,
                         date,
                         duration,
                         type,
@@ -130,7 +124,6 @@ class CallLogsHelper @Inject constructor(
                 )
                 Log.d("MY_APP_CALL_LOGS", "$number $duration $type $name")
                 Log.d("subscription_Id", "$subscribedSimID and number = $number")
-
 
                 when (type) {
                     "1" -> {
@@ -142,9 +135,7 @@ class CallLogsHelper @Inject constructor(
                                 duration,
                                 type,
                                 subscribedSimID,
-                                callLogId
-                            )
-                        )
+                                callLogId))
                     }
                     "2" -> {
                         outGoingCallList!!.add(
@@ -155,9 +146,7 @@ class CallLogsHelper @Inject constructor(
                                 duration,
                                 type,
                                 subscribedSimID,
-                                callLogId
-                            )
-                        )
+                                callLogId))
                     }
                     "3" -> {
                         missedCallList!!.add(
@@ -168,9 +157,7 @@ class CallLogsHelper @Inject constructor(
                                 duration,
                                 type,
                                 subscribedSimID,
-                                callLogId
-                            )
-                        )
+                                callLogId))
                     }
                     "5", "10" -> {
                         rejectedCallList!!.add(
@@ -181,9 +168,7 @@ class CallLogsHelper @Inject constructor(
                                 duration,
                                 type,
                                 subscribedSimID,
-                                callLogId
-                            )
-                        )
+                                callLogId))
                     }
                 }
             }
@@ -205,9 +190,7 @@ class CallLogsHelper @Inject constructor(
                 val todaysCallList: ArrayList<SampleEntity> = ArrayList()
                 for (callLogInfo in allCallsList!!) {
                     if (GlobalMethods.convertMillisToDate(callLogInfo.time!!) == GlobalMethods.convertMillisToDate(
-                            createDate(0)
-                        )
-                    ) {
+                            createDate(0))) {
                         todaysCallList.add(callLogInfo)
                     }
                 }
@@ -233,17 +216,12 @@ class CallLogsHelper @Inject constructor(
         }
     }
 
-        fun getIncomingCallLogs(): ArrayList<SampleEntity>? {
+    fun getIncomingCallLogs(): ArrayList<SampleEntity>? {
         if (incomingCallList == null)
             loadCallLogs()
 
         return incomingCallList
     }
-//    fun getIncomingCallLogs(allCallData: (ArrayList<SampleEntity>) -> Unit) {
-//        refreshCallLogs("Incoming") { allCallsList ->
-//            allCallData(allCallsList!!)
-//        }
-//    }
 
     fun getRejectedCallLogs(): ArrayList<SampleEntity>? {
         if (rejectedCallList == null)
@@ -252,11 +230,9 @@ class CallLogsHelper @Inject constructor(
         return rejectedCallList
     }
 
-
     fun getNeverAttended(
         useHandler: Boolean? = false,
-        callDetailsWithCount: (MutableList<CallDetailsWithCount>) -> Unit
-    ) {
+        callDetailsWithCount: (MutableList<CallDetailsWithCount>) -> Unit) {
         if (useHandler == true) {
             loadCallLogsForNeverAttendedAndNeverPickedUp("NeverAttended") { missedCallList ->
                 Log.d("missedCallList", missedCallList.toString())
@@ -287,14 +263,11 @@ class CallLogsHelper @Inject constructor(
             }
             callDetailsWithCount(groups)
         }
-
-
     }
 
     fun getNeverPickedUpByClient(
         useHandler: Boolean? = false,
-        callDetailsWithCount: (MutableList<CallDetailsWithCount>) -> Unit
-    ) {
+        callDetailsWithCount: (MutableList<CallDetailsWithCount>) -> Unit) {
         if (useHandler == true) {
             loadCallLogsForNeverAttendedAndNeverPickedUp("NeverPickedUpByClient") { outGoingCallList ->
                 Log.d("outGoingCallList", outGoingCallList.toString())
@@ -354,45 +327,60 @@ class CallLogsHelper @Inject constructor(
 
     fun getAllCallsDuration(forToday: Boolean = false): String {
         var output = 0L
+        val allCallLogsReversed = allCallLogsList?.reversed()
         if (forToday) {
-            for (callLogInfo in allCallLogsList!!) {
-                if (GlobalMethods.convertMillisToDate(callLogInfo.time!!) == GlobalMethods.convertMillisToDate(
-                        createDate(0)
-                    )
-                ) {
-                    Log.d(
-                        "Is call date same?",
-                        GlobalMethods.convertMillisToDate(callLogInfo.time!!) + "= ${
-                            GlobalMethods.convertMillisToDate(createDate(0))
-                        } "
-                    )
+            var lastCallTime = 0L
+            for (callLogInfo in allCallLogsReversed!!) {
+                if (GlobalMethods.convertMillisToDate(callLogInfo.time!!) == GlobalMethods.convertMillisToDate(createDate(0))) {
+                    Log.d("Is call date same?", GlobalMethods.convertMillisToDate(callLogInfo.time!!) + "= ${GlobalMethods.convertMillisToDate(createDate(0))} ")
                     if (callLogInfo.callType!!.toInt() != CallLog.Calls.MISSED_TYPE) {
                         var updatedCallDuration = 0L
-                        when {
-                            callLogInfo.callDuration?.toLong()!! < 60L -> {
-                                updatedCallDuration += callLogInfo.callDuration?.toLong()!! + 60L
-                            }
-                            callLogInfo.callDuration?.toLong()!! > 60L -> {
-                                updatedCallDuration += callLogInfo.callDuration?.toLong()!! + 120L
-                            }
+                        val time1 = callLogInfo.time!!.toLong()
+                        Log.d("time1", "$time1")
+                        val time2 = lastCallTime
+                        Log.d("time2", "$time2")
+                        val diff = GlobalMethods.calculateTimeDifference(time1, time2)
+                        Log.d("diff", diff.toString())
+                        lastCallTime = time1
+                        Log.d("lastCallTime", lastCallTime.toString())
+
+                        if (diff > 180 || diff < -180){
+                            updatedCallDuration += callLogInfo.callDuration?.toLong()?.plus(60L)!!
+                            Log.d("IdealTimeAdded", "$diff and $updatedCallDuration ${diff > 180} and ${diff < -180}")
+                        }
+                        else{
+                            updatedCallDuration += callLogInfo.callDuration?.toLong()?.plus(180L)!!
+                            Log.d("ProcessTimeAdded", "$diff and $updatedCallDuration")
                         }
                         output += updatedCallDuration
+                        Log.d("output", output.toString())
                     }
                 }
             }
         } else {
-            for (callLogInfo in allCallLogsList!!) {
+            var lastCallTime = 0L
+            for (callLogInfo in allCallLogsReversed!!) {
                 if (callLogInfo.callType!!.toInt() != CallLog.Calls.MISSED_TYPE) {
                     var updatedCallDuration = 0L
-                    when {
-                        callLogInfo.callDuration?.toLong()!! < 60L -> {
-                            updatedCallDuration += callLogInfo.callDuration?.toLong()!! + 60L
-                        }
-                        callLogInfo.callDuration?.toLong()!! > 60L -> {
-                            updatedCallDuration += callLogInfo.callDuration?.toLong()!! + 120L
-                        }
+                    val time1 = callLogInfo.time!!.toLong()
+                    Log.d("time1", "$time1")
+                    val time2 = lastCallTime
+                    Log.d("time2", "$time2")
+                    val diff = GlobalMethods.calculateTimeDifference(time1, time2)
+                    Log.d("diff", diff.toString())
+                    lastCallTime = time1
+                    Log.d("lastCallTime", lastCallTime.toString())
+
+                    if (diff > 180 || diff < -180){
+                        updatedCallDuration += callLogInfo.callDuration?.toLong()?.plus(60L)!!
+                        Log.d("IdealTimeAdded", "$diff and $updatedCallDuration")
+                    }
+                    else{
+                        updatedCallDuration += callLogInfo.callDuration?.toLong()?.plus(180L)!!
+                        Log.d("ProcessTimeAdded", diff.toString()+" and ${callLogInfo.callDuration}")
                     }
                     output += updatedCallDuration
+                    Log.d("output", output.toString())
                 }
             }
         }
@@ -401,8 +389,7 @@ class CallLogsHelper @Inject constructor(
 
     fun highestCaller(
         forToday: Boolean = false,
-        highestCallerName: (String) -> Unit
-    ) {
+        highestCallerName: (String) -> Unit) {
         if (allCallLogsList == null) {
             loadCallLogs()
         }
@@ -464,7 +451,9 @@ class CallLogsHelper @Inject constructor(
         }
         return output
     }
-
+    /**
+     * In order to get the count of the never attended calls.
+     */
     fun getNeverAttendedCallsCount(forToday: Boolean = false): Int {
         if (missedCallList == null)
             loadCallLogs()
@@ -488,10 +477,12 @@ class CallLogsHelper @Inject constructor(
 
     }
 
+    /**
+     * In order to get the Highest Call Logs Count
+     */
     fun getHighestCallLogsCount(
         forToday: Boolean = false,
-        highestCallLogsCount: (MutableList<CallDetailsWithCount>) -> Unit
-    ) {
+        highestCallLogsCount: (MutableList<CallDetailsWithCount>) -> Unit) {
         if (allCallLogsList == null) {
             loadCallLogs()
         }
@@ -531,13 +522,18 @@ class CallLogsHelper @Inject constructor(
         }
     }
 
+    /**
+     * This function is used to get the latest call logs, using the HighOrder Function.
+     */
 
     fun getLatestCallLog(shareLatestCallLog: (SampleEntity) -> Unit) {
 
         loadAllLatestCallLog { shareLatestCallLog(it) }
-
     }
 
+    /**
+     * In order to load all the latest call logs.
+     */
     private fun loadAllLatestCallLog(latestLog: (SampleEntity) -> Unit) {
 
         val numberCol = CallLog.Calls.NUMBER
@@ -555,8 +551,7 @@ class CallLogsHelper @Inject constructor(
                 nameCol,
                 dateCol,
                 subscribedSimIDCol,
-                callLogIdCol
-            )
+                callLogIdCol)
         val mSelectionClause = CallLog.Calls.DATE + " BETWEEN ? AND ?"
 
         /**
@@ -573,7 +568,6 @@ class CallLogsHelper @Inject constructor(
             preferenceManager.saveFirstTimeRegisterMillis(fromDate!!)
             Log.d("fromDate2", fromDate!!)
         }
-
         //from date will be the date of registration, the user has signed up.
         val mSelectionArgs = arrayOf(fromDate, createDate(1))
         GlobalMethods.convertMillisToDateAndTime(fromDate!!)
@@ -584,8 +578,7 @@ class CallLogsHelper @Inject constructor(
         android.os.Handler(Looper.getMainLooper()).postDelayed({
             val cursor = context.contentResolver.query(
                 CallLog.Calls.CONTENT_URI,
-                projection, mSelectionClause, mSelectionArgs, CallLog.Calls.DATE + " DESC limit 1;"
-            )
+                projection, mSelectionClause, mSelectionArgs, CallLog.Calls.DATE + " DESC limit 1;")
 
             val numberColIdx = cursor!!.getColumnIndex(numberCol)
             val durationColIdx = cursor.getColumnIndex(durationCol)
@@ -606,8 +599,7 @@ class CallLogsHelper @Inject constructor(
 
                 if (subscribedSimID == preferenceManager.getSIMSubscriptionId() ||
                     subscribedSimID.dropLast(1) == preferenceManager.getSIMSubscriptionIccId()
-                        ?.dropLast(1)
-                ) {
+                        ?.dropLast(1)) {
                     latestLog(
                         SampleEntity(
                             name,
@@ -625,13 +617,11 @@ class CallLogsHelper @Inject constructor(
             }
             cursor.close()
         }, 2000)
-
     }
 
     private fun loadCallLogsForNeverAttendedAndNeverPickedUp(
         callType: String,
-        callData: (ArrayList<SampleEntity>?) -> Unit
-    ) {
+        callData: (ArrayList<SampleEntity>?) -> Unit) {
         neverAttendedList = ArrayList()
         neverPickedUpList = ArrayList()
 
@@ -650,8 +640,7 @@ class CallLogsHelper @Inject constructor(
                 nameCol,
                 dateCol,
                 subscribedSimIDCol,
-                callLogIdCol
-            )
+                callLogIdCol)
         val mSelectionClause = CallLog.Calls.DATE + " BETWEEN ? AND ?"
 
         /**
@@ -679,8 +668,7 @@ class CallLogsHelper @Inject constructor(
         android.os.Handler(Looper.getMainLooper()).postDelayed({
             val cursor = context.contentResolver.query(
                 CallLog.Calls.CONTENT_URI,
-                projection, mSelectionClause, mSelectionArgs, CallLog.Calls.DEFAULT_SORT_ORDER
-            )
+                projection, mSelectionClause, mSelectionArgs, CallLog.Calls.DEFAULT_SORT_ORDER)
 
             val numberColIdx = cursor!!.getColumnIndex(numberCol)
             val durationColIdx = cursor.getColumnIndex(durationCol)
@@ -701,8 +689,7 @@ class CallLogsHelper @Inject constructor(
 
                 if (subscribedSimID == preferenceManager.getSIMSubscriptionId() ||
                     subscribedSimID.dropLast(1) == preferenceManager.getSIMSubscriptionIccId()
-                        ?.dropLast(1)
-                ) {
+                        ?.dropLast(1)) {
                     when (type) {
                         "2" -> {
                             neverPickedUpList!!.add(
@@ -905,7 +892,8 @@ class CallLogsHelper @Inject constructor(
 
 
     /**
-     * This Function Will return list of SubscriptionInfo
+     * This Function Will return list of SubscriptionInfo.
+     * It is being used to fetch the names of network provider, such as Airtel, Vodafone, etc.
      */
     fun getSimCardInfoName(context: Context): List<SubscriptionInfo>? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
@@ -924,17 +912,18 @@ class CallLogsHelper @Inject constructor(
         }
     }
 
+    /**
+     * In order to get the sim card icc Id's, using the telecom Manager.
+     */
     @SuppressLint("MissingPermission")
     fun getSimCardInfo(context: Context): List<String> {
         val simIds: ArrayList<String> = ArrayList()
         val telecomManager = context.getSystemService(Context.TELECOM_SERVICE) as TelecomManager?
-        telecomManager!!.callCapablePhoneAccounts.forEach{
+        telecomManager!!.callCapablePhoneAccounts.forEach {
             simIds.add(it.id)
         }
 
         return simIds
     }
-
-
 
 }
