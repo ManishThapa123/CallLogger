@@ -42,6 +42,8 @@ object CallLogsUpdatingManager {
                     _updateClientNeverPickedUp.postValue(true)
             }
             "3" -> {
+                //If required use Lambda function to refresh the call logs list and
+                // in the callLogsFragment1 observe the _missed call logs and call the getCallLogs method.
                 //missed
                 _missedCallLog.postValue(sampleEntity)
                 _allCallLog.postValue(true)

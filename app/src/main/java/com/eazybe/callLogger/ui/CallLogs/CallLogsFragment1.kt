@@ -37,14 +37,14 @@ class CallLogsFragment1 : Fragment() {
     private var sectionCallLogs: ArrayList<SampleEntity> = ArrayList()
     private var callDataToDelete: SampleEntity? = null
 
-    //To request the call phone permission.
-    private val requestPermission =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { permissionGranted: Boolean ->
-            if (permissionGranted) {
-                GlobalMethods.showToast(requireContext(), "Permission Granted")
-                GlobalMethods.callUser(userNumberToCall!!, requireContext())
-            } else GlobalMethods.showToast(requireContext(), "Permission Rejected")
-        }
+//    //To request the call phone permission.
+//    private val requestPermission =
+//        registerForActivityResult(ActivityResultContracts.RequestPermission()) { permissionGranted: Boolean ->
+//            if (permissionGranted) {
+//                GlobalMethods.showToast(requireContext(), "Permission Granted")
+//                GlobalMethods.callUser(userNumberToCall!!, requireContext())
+//            } else GlobalMethods.showToast(requireContext(), "Permission Rejected")
+//        }
 
     //To request the call phone permission.
     private val requestPermissionToDelete =
@@ -132,18 +132,8 @@ class CallLogsFragment1 : Fragment() {
              */
             override fun callUser(callData: SampleEntity) {
                 userNumberToCall = callData.userNumber
-                if (ContextCompat.checkSelfPermission(
-                        requireContext(),
-                        Manifest.permission.CALL_PHONE
-                    ) == PackageManager.PERMISSION_GRANTED
-                ) {
                     //Write condition for calling
                     GlobalMethods.callUser(callData.userNumber!!, requireContext())
-                } else
-                // You can directly ask for the permission.
-                    requestPermission.launch(
-                        Manifest.permission.CALL_PHONE
-                    )
             }
 
             override fun deleteUser(callData: SampleEntity) {
@@ -248,6 +238,7 @@ class CallLogsFragment1 : Fragment() {
                         "Your calls have been updated",
                         "success", requireContext()
                     )
+
                     sectionCallLogs.add(0, it)
                     setCallLogsAdapter()
                     callDetailsAdapter.submitList(sectionCallLogs)
