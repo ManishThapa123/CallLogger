@@ -41,7 +41,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_medium"
                     android:gravity="center"
-                    android:text="ACCESS TO YOUR CONTACTS"
+                    android:text="Access To Your Contacts"
                     android:textSize="20sp" />
             </LinearLayout>
 
