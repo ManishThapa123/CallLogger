@@ -134,9 +134,12 @@ object GlobalMethods {
      */
     fun callUser(phoneNumberWithCountryCode: String, context: Context) {
         try {
-            val dialIntent = Intent(Intent.ACTION_DIAL)
-            dialIntent.data = Uri.parse("tel:$phoneNumberWithCountryCode")
-            context.startActivity(dialIntent)
+            val uri = Uri.parse("tel:$phoneNumberWithCountryCode")
+            val intent = Intent(Intent.ACTION_CALL,uri)
+            context.startActivity(intent)
+//            val dialIntent = Intent(Intent.ACTION_DIAL)
+//            dialIntent.data = Uri.parse("tel:$phoneNumberWithCountryCode")
+//            context.startActivity(dialIntent)
         } catch (e: Exception) {
             Toast.makeText(context, "Couldn't place your call...", Toast.LENGTH_SHORT)
                 .show()

@@ -68,6 +68,9 @@ class PermissionFragmentSecond : Fragment() {
                 requireContext(),
                 Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED
         ) {
+            requestReadContactsPermission.launch(
+                Manifest.permission.READ_CONTACTS
+            )
             Log.d("Permission", "Permission Granted")
         } else
             requestReadContactsPermission.launch(
