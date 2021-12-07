@@ -35,9 +35,6 @@ class PermissionFragmentSecond : Fragment() {
             intent.flags =
                 Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
             startActivity(intent)
-            //save in preference
-//            GlobalMethods.checkIfAutoStartPermissionAvailable(requireContext())
-//            GlobalMethods.getAutoStartPermission(requireContext())
         } else {
             //ask again
             Log.d("Permission", "Permission Rejected")
@@ -45,7 +42,6 @@ class PermissionFragmentSecond : Fragment() {
             activity?.onBackPressed()
 //            requestPermissionsToReadContacts()
         }
-
     }
 
     override fun onCreateView(
@@ -59,22 +55,8 @@ class PermissionFragmentSecond : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.agreePermission1Button.setOnClickListener {
-            requestPermissionsToReadContacts()
+//            requestPermissionsToReadContacts()
         }
     }
 
-    private fun requestPermissionsToReadContacts() {
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED
-        ) {
-            requestReadContactsPermission.launch(
-                Manifest.permission.READ_CONTACTS
-            )
-            Log.d("Permission", "Permission Granted")
-        } else
-            requestReadContactsPermission.launch(
-                Manifest.permission.READ_CONTACTS
-            )
-    }
 }

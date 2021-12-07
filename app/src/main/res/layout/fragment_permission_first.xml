@@ -41,7 +41,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_medium"
                     android:gravity="center"
-                    android:text="Set as a Default Dialer and Access Call Logs"
+                    android:text="Access to call logs"
                     android:textSize="20sp" />
             </LinearLayout>
 
@@ -67,7 +67,7 @@
                     android:layout_marginEnd="@dimen/dimens_12"
                     android:fontFamily="@font/poppins"
                     android:gravity="center"
-                    android:text="By permitting, you accept to initiate and read calls through this application. These permissions are mandatory to continue."
+                    android:text="By permitting, you accept to manage and read calls through this application. These permissions are mandatory to continue."
                     android:textSize="12sp" />
             </LinearLayout>
 

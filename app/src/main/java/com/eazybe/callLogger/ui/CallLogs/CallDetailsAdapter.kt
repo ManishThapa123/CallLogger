@@ -83,35 +83,35 @@ abstract class CallDetailsAdapter : ListAdapter<SampleEntity,
                 imgCall.setOnClickListener {
                     callUser(callData)
                 }
-                deleteIcon.setOnClickListener {
-
-//                    //Report Button
-//                    ivReportIcon.setOnClickListener {
-//                        val popupMenu = android.widget.PopupMenu(context, it)
-//                        popupMenu.menuInflater.inflate(R.menu.report_menu, popupMenu.menu)
-//                        popupMenu.setOnMenuItemClickListener {
-//                            showUserReportDialog("${profile.id}")
-//                            popupMenu.dismiss()
-//                            true
-//                        }
-//                        popupMenu.show()
+//                deleteIcon.setOnClickListener {
+//
+////                    //Report Button
+////                    ivReportIcon.setOnClickListener {
+////                        val popupMenu = android.widget.PopupMenu(context, it)
+////                        popupMenu.menuInflater.inflate(R.menu.report_menu, popupMenu.menu)
+////                        popupMenu.setOnMenuItemClickListener {
+////                            showUserReportDialog("${profile.id}")
+////                            popupMenu.dismiss()
+////                            true
+////                        }
+////                        popupMenu.show()
+////                    }
+//
+//                    val builder = AlertDialog.Builder(context!!)
+//                    builder.setTitle("Delete Call Log")
+//                    builder.setMessage("Deleting would permanently remove the call log from the phone book. Continue?")
+//                    builder.setPositiveButton("Delete") { _, _ ->
+//                        deleteUser(callData)
+//                        builder.create().dismiss()
 //                    }
-
-                    val builder = AlertDialog.Builder(context!!)
-                    builder.setTitle("Delete Call Log")
-                    builder.setMessage("Deleting would permanently remove the call log from the phone book. Continue?")
-                    builder.setPositiveButton("Delete") { _, _ ->
-                        deleteUser(callData)
-                        builder.create().dismiss()
-                    }
-                    builder.setNegativeButton("Cancel"){_,_ ->
-                        builder.create().dismiss()
-                    }
-                    builder.setCancelable(true)
-                    builder.create()
-                    builder.show()
-
-                }
+//                    builder.setNegativeButton("Cancel"){_,_ ->
+//                        builder.create().dismiss()
+//                    }
+//                    builder.setCancelable(true)
+//                    builder.create()
+//                    builder.show()
+//
+//                }
             }
         }
     }

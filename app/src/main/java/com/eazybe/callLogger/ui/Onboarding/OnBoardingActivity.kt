@@ -31,17 +31,17 @@ class OnBoardingActivity : AppCompatActivity() {
         setContentView(view)
         navController = Navigation.findNavController(this, R.id.nav_host_Onboarding_container)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            val roleManager = getSystemService(Context.ROLE_SERVICE) as RoleManager
-            val intent = roleManager.createRequestRoleIntent(RoleManager.ROLE_DIALER)
-            startActivityForResult(intent, 112)
-        } else {
-            val intent = Intent(TelecomManager.ACTION_CHANGE_DEFAULT_DIALER)
-            intent.putExtra(
-                TelecomManager.EXTRA_CHANGE_DEFAULT_DIALER_PACKAGE_NAME,
-                this.packageName)
-            startActivity(intent)
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+//            val roleManager = getSystemService(Context.ROLE_SERVICE) as RoleManager
+//            val intent = roleManager.createRequestRoleIntent(RoleManager.ROLE_DIALER)
+//            startActivityForResult(intent, 112)
+//        } else {
+//            val intent = Intent(TelecomManager.ACTION_CHANGE_DEFAULT_DIALER)
+//            intent.putExtra(
+//                TelecomManager.EXTRA_CHANGE_DEFAULT_DIALER_PACKAGE_NAME,
+//                this.packageName)
+//            startActivity(intent)
+//        }
 //        navController.setGraph(R.navigation.onboarding_navigation)
     }
 

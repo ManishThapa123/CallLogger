@@ -46,16 +46,16 @@
                 app:layout_constraintStart_toEndOf="@+id/callTypeImage"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/deleteIcon"
-                android:layout_width="@dimen/dimens_26"
-                android:layout_height="@dimen/dimens_26"
-                android:layout_marginTop="@dimen/dimens_8"
-                android:src="@drawable/image_delete"
-                app:layout_constraintBottom_toBottomOf="@id/personName"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/personName"
-                app:tint="#C4C4C4" />
+<!--            <ImageView-->
+<!--                android:id="@+id/deleteIcon"-->
+<!--                android:layout_width="@dimen/dimens_26"-->
+<!--                android:layout_height="@dimen/dimens_26"-->
+<!--                android:layout_marginTop="@dimen/dimens_8"-->
+<!--                android:src="@drawable/image_delete"-->
+<!--                app:layout_constraintBottom_toBottomOf="@id/personName"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="@id/personName"-->
+<!--                app:tint="#C4C4C4" />-->
 
             <TextView
                 android:id="@+id/phoneNumber"

@@ -60,9 +60,10 @@ class MainActivity : AppCompatActivity() {
         callDetailsViewModel.getAutoRunPermissionSavedState()
         callDetailsViewModel.permissionState.observe({ lifecycle }) {
             if (!it) {
-                GlobalMethods.checkIfAutoStartPermissionAvailable(this)
-                GlobalMethods.getAutoStartPermission(this)
-                callDetailsViewModel.saveAutoRunPermissionSavedState()
+                Log.d("autoSavePermissionState","False")
+//                GlobalMethods.checkIfAutoStartPermissionAvailable(this)
+//                GlobalMethods.getAutoStartPermission(this)
+//                callDetailsViewModel.saveAutoRunPermissionSavedState()
             }
         }
         // call the view model to save the registered date in millis.

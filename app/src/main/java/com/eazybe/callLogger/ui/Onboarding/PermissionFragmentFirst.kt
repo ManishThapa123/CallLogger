@@ -1,6 +1,7 @@
 package com.eazybe.callLogger.ui.Onboarding
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -14,6 +15,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.eazybe.callLogger.databinding.FragmentPermissionFirstBinding
 import com.eazybe.callLogger.helper.GlobalMethods
+import com.eazybe.callLogger.ui.SignUpAndLogin.RegisterActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
@@ -41,10 +43,14 @@ class PermissionFragmentFirst : Fragment() {
     private val requestReadCallLogsPermission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { permissionGranted: Boolean ->
             if (permissionGranted) {
-//                GlobalMethods.showToast(requireContext(), "Permission Granted")
-                val action =
-                    PermissionFragmentFirstDirections.actionPermissionFragmentFirstToPermissionFragmentSecond()
-                findNavController().navigate(action)
+                onboardingViewModel.savePermissionAccessStateToPreference()
+                val intent = Intent(requireContext(), RegisterActivity::class.java)
+                intent.flags =
+                    Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                startActivity(intent)
+//                val action =
+//                    PermissionFragmentFirstDirections.actionPermissionFragmentFirstToPermissionFragmentSecond()
+//                findNavController().navigate(action)
             } else {
                 GlobalMethods.showToast(requireContext(), "Permission Rejected")
 //                requestReadCallLogsPermission()

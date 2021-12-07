@@ -33,11 +33,6 @@ class CallLogsHelper @Inject constructor(
     private var neverPickedUpList: ArrayList<SampleEntity>? = null
 
     fun deleteCallById(callLogId: String, context: Context) {
-        context.contentResolver.delete(
-            CallLog.Calls.CONTENT_URI, CallLog.Calls._ID + " = ? ", arrayOf(
-                callLogId))
-
-        loadCallLogs()
     }
     private fun loadCallLogs() {
         allCallLogsList = ArrayList()
