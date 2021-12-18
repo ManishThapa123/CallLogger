@@ -31,9 +31,11 @@ class CallLogsHelper @Inject constructor(
     private var fromDate: String? = null
     private var neverAttendedList: ArrayList<SampleEntity>? = null
     private var neverPickedUpList: ArrayList<SampleEntity>? = null
+    private var lastLogCount = false
 
     fun deleteCallById(callLogId: String, context: Context) {
     }
+
     private fun loadCallLogs() {
         allCallLogsList = ArrayList()
         missedCallList = ArrayList()
@@ -108,8 +110,8 @@ class CallLogsHelper @Inject constructor(
             ) {
                 allCallLogsList!!.add(
                     SampleEntity(
-                        number,
                         name,
+                        number,
                         date,
                         duration,
                         type,
@@ -324,6 +326,7 @@ class CallLogsHelper @Inject constructor(
         var output = 0L
         val allCallLogsReversed = allCallLogsList?.reversed()
         if (forToday) {
+
             var lastCallTime = 0L
             for (callLogInfo in allCallLogsReversed!!) {
                 if (GlobalMethods.convertMillisToDate(callLogInfo.time!!) == GlobalMethods.convertMillisToDate(createDate(0))) {
@@ -336,9 +339,13 @@ class CallLogsHelper @Inject constructor(
                         Log.d("time2", "$time2")
                         val diff = GlobalMethods.calculateTimeDifference(time1, time2)
                         Log.d("diff", diff.toString())
-                        lastCallTime = time1
-                        Log.d("lastCallTime", lastCallTime.toString())
 
+                        val durationInMillis = callLogInfo.callDuration?.toLong() ?.times(1000L)
+                        Log.d("durationInMillis", durationInMillis.toString())
+                        //To do = difference would be the last call ended and the next call started.
+                        lastCallTime = time1.plus(durationInMillis!!)
+//                        lastCallTime = time1
+                        Log.d("lastCallTime", lastCallTime.toString())
                         if (diff > 180 || diff < -180){
                             updatedCallDuration += callLogInfo.callDuration?.toLong()?.plus(60L)!!
                             Log.d("IdealTimeAdded", "$diff and $updatedCallDuration ${diff > 180} and ${diff < -180}")
@@ -363,7 +370,11 @@ class CallLogsHelper @Inject constructor(
                     Log.d("time2", "$time2")
                     val diff = GlobalMethods.calculateTimeDifference(time1, time2)
                     Log.d("diff", diff.toString())
-                    lastCallTime = time1
+
+                    val durationInMillis = callLogInfo.callDuration?.toLong() ?.times(1000L)
+                    Log.d("durationInMillis", durationInMillis.toString())
+//                    lastCallTime = time1
+                    lastCallTime = time1.plus(durationInMillis!!)
                     Log.d("lastCallTime", lastCallTime.toString())
 
                     if (diff > 180 || diff < -180){
@@ -570,48 +581,63 @@ class CallLogsHelper @Inject constructor(
             Log.d("SelectionDate:", it!!)
         }
 
-        android.os.Handler(Looper.getMainLooper()).postDelayed({
-            val cursor = context.contentResolver.query(
-                CallLog.Calls.CONTENT_URI,
-                projection, mSelectionClause, mSelectionArgs, CallLog.Calls.DATE + " DESC limit 1;")
 
-            val numberColIdx = cursor!!.getColumnIndex(numberCol)
-            val durationColIdx = cursor.getColumnIndex(durationCol)
-            val typeColIdx = cursor.getColumnIndex(typeCol)
-            val nameColIdx = cursor.getColumnIndex(nameCol)
-            val dateColIdx = cursor.getColumnIndex(dateCol)
-            val subscribedSimIDColIdx = cursor.getColumnIndex(subscribedSimIDCol)
-            val callLogIdColIdx = cursor.getColumnIndex(callLogIdCol)
+            android.os.Handler(Looper.getMainLooper()).postDelayed({
+                val cursor = context.contentResolver.query(
+                    CallLog.Calls.CONTENT_URI,
+                    projection, mSelectionClause, mSelectionArgs, CallLog.Calls.DATE + " DESC"
+                )
 
-            while (cursor.moveToNext()) {
-                val number = cursor.getString(numberColIdx)
-                val duration = cursor.getString(durationColIdx)
-                val type = cursor.getString(typeColIdx)
-                val name = cursor.getString(nameColIdx)
-                val date = cursor.getString(dateColIdx)
-                val subscribedSimID = cursor.getString(subscribedSimIDColIdx)
-                val callLogId = cursor.getString(callLogIdColIdx)
+//            val cursor = context.contentResolver.query(
+//                CallLog.Calls.CONTENT_URI,
+//                projection, mSelectionClause, mSelectionArgs, CallLog.Calls.DEFAULT_SORT_ORDER)
 
-                if (subscribedSimID == preferenceManager.getSIMSubscriptionId() ||
-                    subscribedSimID.dropLast(1) == preferenceManager.getSIMSubscriptionIccId()
-                        ?.dropLast(1)) {
-                    latestLog(
-                        SampleEntity(
-                            name,
-                            number,
-                            date,
-                            duration,
-                            type,
-                            subscribedSimID,
-                            callLogId
-                        )
-                    )
-                    Log.d("MY_APP_CALL_LOGS", "$number $duration $type $name")
-                    Log.d("subscription_Id", "$subscribedSimID and number = $number")
-                }
-            }
-            cursor.close()
-        }, 2000)
+                val numberColIdx = cursor!!.getColumnIndex(numberCol)
+                val durationColIdx = cursor.getColumnIndex(durationCol)
+                val typeColIdx = cursor.getColumnIndex(typeCol)
+                val nameColIdx = cursor.getColumnIndex(nameCol)
+                val dateColIdx = cursor.getColumnIndex(dateCol)
+                val subscribedSimIDColIdx = cursor.getColumnIndex(subscribedSimIDCol)
+                val callLogIdColIdx = cursor.getColumnIndex(callLogIdCol)
+
+
+
+                  while (cursor.moveToNext()) {
+                      val number = cursor.getString(numberColIdx)
+                      val duration = cursor.getString(durationColIdx)
+                      val type = cursor.getString(typeColIdx)
+                      val name = cursor.getString(nameColIdx)
+                      val date = cursor.getString(dateColIdx)
+                      val subscribedSimID = cursor.getString(subscribedSimIDColIdx)
+                      val callLogId = cursor.getString(callLogIdColIdx)
+
+                      if (!lastLogCount) {
+                          if (subscribedSimID == preferenceManager.getSIMSubscriptionId() ||
+                              subscribedSimID.dropLast(1) == preferenceManager.getSIMSubscriptionIccId()
+                                  ?.dropLast(1)
+                          ) {
+                              latestLog(
+                                  SampleEntity(
+                                      name,
+                                      number,
+                                      date,
+                                      duration,
+                                      type,
+                                      subscribedSimID,
+                                      callLogId
+                                  )
+                              )
+                              lastLogCount = true
+                              Log.d("MY_APP_CALL_LOGS", "$number $duration $type $name")
+                              Log.d("subscription_Id", "$subscribedSimID and number = $number")
+                          }
+                      }
+                  }
+
+                cursor.close()
+                lastLogCount = false
+            }, 2000)
+
     }
 
     private fun loadCallLogsForNeverAttendedAndNeverPickedUp(

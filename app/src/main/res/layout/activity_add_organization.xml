@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".ui.AddOrganization.AddOrganizationActivity">
+
+    <ImageButton
+        android:id="@+id/ibBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dimens_16"
+        android:background="@drawable/ic_back_arrow"
+        app:layout_constraintBottom_toBottomOf="@id/header_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/header_title"
+        app:tint="@color/black" />
+
+    <TextView
+        android:id="@+id/header_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimens_16"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="Add Organization"
+        android:textColor="@color/black"
+        android:textSize="@dimen/dimens_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimens_20"
+        android:id="@+id/txtAddLink"
+        android:text="To create an organization click here:"
+        android:fontFamily="@font/poppins_semibold"
+        android:textSize="16dp"
+        android:textColor="@color/grey_dark"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/header_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/txtDashBoardLink"
+        android:text="eazybe.com/workspace"
+        android:textColor="#D71818"
+        android:fontFamily="@font/poppins_medium"
+        android:textSize="14sp"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/txtAddLink"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/txtDashBoardLink"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/imgOrgIllustration"
+        android:layout_marginTop="@dimen/dimens_32"
+        android:src="@drawable/add_org_image" />
+
+    <LinearLayout
+        app:layout_constraintTop_toBottomOf="@id/imgOrgIllustration"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="match_parent"
+        android:id="@+id/llOrganizationCode"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimens_20"
+        android:layout_marginStart="@dimen/dimens_24"
+        android:layout_marginEnd="@dimen/dimens_24"
+        android:orientation="horizontal">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimens_12"
+            android:layout_weight="0.8"
+            app:boxCornerRadiusBottomEnd="@dimen/dimens_16"
+            app:boxCornerRadiusBottomStart="@dimen/dimens_16"
+            app:boxCornerRadiusTopEnd="@dimen/dimens_16"
+            app:boxCornerRadiusTopStart="@dimen/dimens_16">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/organizationCode"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:fontFamily="@font/poppins_medium"
+                android:gravity="center"
+                android:hint="Enter Organization Code"
+                android:imeOptions="actionDone"
+                android:maxLines="1"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <ImageView
+            android:id="@+id/imageValidationCheck"
+            android:layout_width="@dimen/dimens_24"
+            android:layout_height="@dimen/dimens_24"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_validation_check"
+            android:visibility="gone"
+            app:tint="@color/green" />
+
+        <ImageView
+            android:id="@+id/imageValidationFailure"
+            android:layout_width="@dimen/dimens_24"
+            android:layout_height="@dimen/dimens_24"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_validation_failure"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        app:layout_constraintTop_toBottomOf="@+id/llOrganizationCode"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:id="@+id/validationButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:backgroundTint="@color/green"
+        android:elevation="@dimen/dimens_8"
+        android:text="Validate"
+        android:textAllCaps="false"
+        android:visibility="gone"
+        app:cornerRadius="@dimen/dimens_16" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/addOrganization"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:layout_marginStart="@dimen/dimens_24"
+        android:layout_marginEnd="@dimen/dimens_24"
+        android:layout_marginBottom="@dimen/dimens_32"
+        android:backgroundTint="@color/purple"
+        android:text="Add Organization"
+        android:textAllCaps="false"
+        android:textSize="18sp"
+        app:cornerRadius="@dimen/dimens_16"
+        app:layout_constraintBottom_toBottomOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

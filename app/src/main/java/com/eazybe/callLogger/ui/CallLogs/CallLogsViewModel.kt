@@ -10,6 +10,7 @@ import com.squareup.moshi.JsonAdapter
 import com.eazybe.callLogger.api.models.entities.CallDetailsWithCount
 import com.eazybe.callLogger.api.models.entities.Data
 import com.eazybe.callLogger.api.models.entities.SampleEntity
+import com.eazybe.callLogger.api.models.responses.RegisterData
 import com.eazybe.callLogger.helper.CallLogsHelper
 import com.eazybe.callLogger.helper.GlobalMethods
 import com.eazybe.callLogger.helper.PreferenceManager
@@ -21,7 +22,7 @@ import javax.inject.Inject
 class CallLogsViewModel @Inject constructor(
     private val preferenceManager: PreferenceManager,
     private val callLogsHelper: CallLogsHelper,
-    private val clientDetailAdapter: JsonAdapter<Data>
+    private val clientDetailAdapter: JsonAdapter<RegisterData>
 ) : ViewModel() {
 
     private val _sampleData = MutableLiveData<List<SampleEntity>>()
@@ -131,25 +132,19 @@ class CallLogsViewModel @Inject constructor(
         }
     }
 
-    fun getAndSaveLatestSyncedTime() = viewModelScope.launch {
-        //Make an API call to save the time.
-        val currentTimeInMillis = callLogsHelper.createDate(0)
-        preferenceManager.saveLastSyncedTimeInMillis(currentTimeInMillis)
-        //convert the millis to TimeStamp
-        val currentTimeConverted = GlobalMethods.convertMillisToDateAndTime(currentTimeInMillis)
-        Log.d("currentTimeConverted", currentTimeConverted)
-
-    }
 
     fun saveRegisteredDateAndTime() = viewModelScope.launch {
         //Check Preferences for the saved Time.
         if (!preferenceManager.isSavedFirstRegisterTimeStamp()) {
             val prefSavedUserData = preferenceManager.getClientRegistrationData()
             val convertedUserData = clientDetailAdapter.fromJson(prefSavedUserData!!)
-            Log.d("RegisteredUserTime", "${convertedUserData?.registeredOn}")
+            Log.d("RegisteredUserTime", "${convertedUserData?.registrationDate}")
             val finalConvertedDateInMillis =
-                GlobalMethods.getMilliFromDate(convertedUserData?.registeredOn)
+                GlobalMethods.getMilliFromDate(convertedUserData?.registrationDate)
             preferenceManager.saveFirstTimeRegisterMillis(finalConvertedDateInMillis)
+
+            val finalConvertedSyncedTimeInMillis = GlobalMethods.getMilliFromDate(convertedUserData?.lastSynced)
+            preferenceManager.saveLastSyncedTimeInMillis(finalConvertedSyncedTimeInMillis)
         }
     }
 

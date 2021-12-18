@@ -18,7 +18,11 @@
     <item android:title="Settings"
         android:icon="@drawable/ic_settings"
         android:id="@+id/navSettings"/>
+    <item android:title="Add Organization"
+        android:id="@+id/navOrg"
+        android:icon="@drawable/ic_add_org"/>
     <item android:title="About"
         android:id="@+id/navAbout"
         android:icon="@drawable/ic_about"/>
+
 </menu>

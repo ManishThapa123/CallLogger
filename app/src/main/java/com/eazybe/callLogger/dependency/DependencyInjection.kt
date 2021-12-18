@@ -6,6 +6,7 @@ import com.squareup.moshi.Moshi
 import com.eazybe.callLogger.api.CallLoggerAPIInterface
 import com.eazybe.callLogger.api.CallLoggerClient
 import com.eazybe.callLogger.api.models.entities.Data
+import com.eazybe.callLogger.api.models.responses.RegisterData
 import com.eazybe.callLogger.container.CallLoggerApplication
 import com.eazybe.callLogger.helper.CallLogsHelper
 import com.eazybe.callLogger.helper.PreferenceManager
@@ -67,10 +68,10 @@ object DependencyInjection {
     ): CallLogsHelper = CallLogsHelper(context, preferenceManager)
 
     /**
-     * provides instance of adapter which serializes and deserialized [Data]
+     * provides instance of adapter which serializes and deserialized [RegisterData]
      */
     @Provides
     @Singleton
-    fun provideClientRegistrationDataAdapter(): JsonAdapter<Data> =
-        Moshi.Builder().build().adapter(Data::class.java)
+    fun provideClientRegistrationDataAdapter(): JsonAdapter<RegisterData> =
+        Moshi.Builder().build().adapter(RegisterData::class.java)
 }

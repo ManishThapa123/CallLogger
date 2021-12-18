@@ -87,8 +87,7 @@ class PermissionFragmentFirst : Fragment() {
             )
         } else
             requestManageCallsPermission.launch(
-                Manifest.permission.READ_PHONE_STATE
-            )
+                Manifest.permission.READ_PHONE_STATE)
     }
 
     private fun requestReadCallLogsPermission() {

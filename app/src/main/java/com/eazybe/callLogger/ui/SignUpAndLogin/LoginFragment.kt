@@ -77,6 +77,6 @@ class LoginFragment : Fragment() {
     }
 
     private fun submitDetails() {
-        registrationAndLoginViewModel.checkLastSynced(binding.ccp.fullNumber)
+//        registrationAndLoginViewModel.checkLastSynced(binding.ccp.fullNumber)
     }
 }

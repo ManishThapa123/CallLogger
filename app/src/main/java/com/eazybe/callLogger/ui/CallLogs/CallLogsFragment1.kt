@@ -38,7 +38,6 @@ class CallLogsFragment1 : Fragment() {
     private var callDataToDelete: SampleEntity? = null
 
 
-
     companion object {
         fun newInstance(type: String): Fragment {
             val bundle = bundleOf("type" to type)

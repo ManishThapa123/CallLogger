@@ -8,7 +8,7 @@ import com.eazybe.callLogger.api.models.entities.Data
 @JsonClass(generateAdapter = true)
 data class RegistrationResponse(
     @Json(name = "data")
-    var `data`: Data?,
+    var registerData: List<RegisterData>?,
     @Json(name = "message")
     var message: String?,
     @Json(name = "type")

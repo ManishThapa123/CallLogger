@@ -12,14 +12,15 @@ import android.os.Build
 import android.telephony.TelephonyManager
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import com.squareup.moshi.JsonAdapter
-import com.eazybe.callLogger.api.models.entities.Data
-import com.eazybe.callLogger.api.models.entities.SampleEntity
 import com.eazybe.callLogger.MainActivity
 import com.eazybe.callLogger.R
+import com.eazybe.callLogger.api.models.entities.SampleEntity
+import com.eazybe.callLogger.api.models.requests.SaveCallLogs
+import com.eazybe.callLogger.api.models.responses.RegisterData
 import com.eazybe.callLogger.container.CallLoggerApplication
 import com.eazybe.callLogger.helper.CallLogsUpdatingManager.updateExistingCallLogs
 import com.eazybe.callLogger.repository.BaseRepository
+import com.squareup.moshi.JsonAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -43,7 +44,7 @@ class PhoneCallReceiver : BroadcastReceiver() {
     lateinit var application: CallLoggerApplication
 
     @Inject
-    lateinit var clientDetailAdapter: JsonAdapter<Data>
+    lateinit var clientDetailAdapter: JsonAdapter<RegisterData>
 
     private val job = Job()
     private val scope = CoroutineScope(Dispatchers.Main + job)
@@ -114,10 +115,10 @@ class PhoneCallReceiver : BroadcastReceiver() {
                     lastState == TelephonyManager.CALL_STATE_RINGING -> {
                         //Ring but no pickup-  a miss
                         callLogsHelper.getLatestCallLog { callDetails ->
-                            Log.d("latestMissedCall", "$callDetails")
+                            Log.d("latestIncomingCall", "$callDetails")
 
                             updateLatestCallLog(
-                                "+${clientData?.clientMobile}",
+                                clientData?.id!!,
                                 if (callDetails.userName.isNullOrEmpty())
                                     "Unknown"
                                 else
@@ -139,7 +140,7 @@ class PhoneCallReceiver : BroadcastReceiver() {
                         callLogsHelper.getLatestCallLog { callDetails ->
                             Log.d("latestIncomingCall", "$callDetails")
                             updateLatestCallLog(
-                                "+${clientData?.clientMobile}",
+                                clientData?.id!!,
                                 if (callDetails.userName.isNullOrEmpty())
                                     "Unknown"
                                 else
@@ -161,7 +162,7 @@ class PhoneCallReceiver : BroadcastReceiver() {
                         callLogsHelper.getLatestCallLog { callDetails ->
                             Log.d("latestOutgoingCall", "$callDetails")
                             updateLatestCallLog(
-                                "+${clientData?.clientMobile}",
+                                clientData?.id!!,
                                 if (callDetails.userName.isNullOrEmpty())
                                     "Unknown"
                                 else
@@ -188,31 +189,31 @@ class PhoneCallReceiver : BroadcastReceiver() {
     // upload to api to server and show the notification for call synced.
 
     private fun updateLatestCallLog(
-        registeredNumber: String,
+        clientId: Int,
         userName: String, userNumber: String, callTime: String,
         callDuration: String, callType: String, subscribedSimID: String,
         syncDateTime: String,
         context: Context,
         callLogId: String
     ) = scope.launch {
-        Log.d("ClientNumber1", registeredNumber)
+        Log.d("ClientNumber1", clientId.toString())
         baseRepository.updateClientCallLog(
-            registeredNumber,
-            userName,
-            userNumber,
-            GlobalMethods.convertMillisToDateAndTime(callTime),
-            GlobalMethods.convertSecondsInHoursFormat(callDuration.toInt()),
-            callType,
-            GlobalMethods.convertMillisToDateAndTime(syncDateTime)
-        ).let { response ->
+            SaveCallLogs(
+                callDuration = GlobalMethods.convertSecondsInHoursFormat(callDuration.toInt()),
+                callTime = GlobalMethods.convertMillisToDateAndTime(callTime),
+                callType = callType.toInt(),
+                clientId = clientId,
+                syncDatetime = GlobalMethods.convertMillisToDateAndTime(syncDateTime),
+                userMobile = userNumber,
+                userName = userName)).let { response ->
             if (response.isSuccessful) {
                 if (response.body()?.type == true) {
                     Log.d("Response", "Success, call notification")
                     Log.d("CallType", callType)
-                    Log.d("ClientNumber", registeredNumber)
-                    sendNotification(context, registeredNumber, syncDateTime)
+                    Log.d("ClientId", clientId.toString())
+                    sendNotification(context, userNumber, syncDateTime)
 
-                    //Save the last syncdate.
+                    //Save the last sync_date.
                     preferenceManager.saveLastSyncedTimeInMillis(syncDateTime)
                     //We have to put a check to see whether the app is on foreground or not.
 
@@ -233,7 +234,6 @@ class PhoneCallReceiver : BroadcastReceiver() {
                                 callLogId
                             )
                         )
-
                         preferenceManager.getLastSyncedTimeInMillis()
                     }
 
@@ -247,9 +247,8 @@ class PhoneCallReceiver : BroadcastReceiver() {
 
     private fun sendNotification(
         context: Context,
-        registeredNumber: String?,
-        syncDateTime: String
-    ) {
+        userNumber: String?,
+        syncDateTime: String) {
         val intent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
@@ -257,13 +256,12 @@ class PhoneCallReceiver : BroadcastReceiver() {
         val channelId = "Call Logger"
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(context, channelId)
-            .setSmallIcon(R.drawable.call_icon)
+            .setSmallIcon(R.drawable.ic_eazybe_hand_logo)
             .setContentTitle("Call Synced")
             .setContentText(
-                "Your Last call has been synced at ${
+                "Your Last call with $userNumber has been synced at ${
                     GlobalMethods.convertMillisToDateAndTimeInMinutes(
-                        syncDateTime
-                    )
+                        syncDateTime)
                 }"
             )
             .setBadgeIconType(NotificationCompat.BADGE_ICON_LARGE)

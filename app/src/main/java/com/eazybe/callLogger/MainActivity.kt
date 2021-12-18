@@ -19,6 +19,7 @@ import com.eazybe.callLogger.databinding.ActivityMainBinding
 import com.eazybe.callLogger.databinding.NavigationHeaderBinding
 import com.eazybe.callLogger.helper.CallLogsUpdatingManager.allCallLog
 import com.eazybe.callLogger.helper.GlobalMethods
+import com.eazybe.callLogger.ui.AddOrganization.AddOrganizationActivity
 import com.eazybe.callLogger.ui.CallLogs.CallLogsFragment1
 import com.eazybe.callLogger.ui.CallLogs.CallLogsFragment2
 import com.eazybe.callLogger.ui.CallLogs.CallLogsViewModel
@@ -61,14 +62,14 @@ class MainActivity : AppCompatActivity() {
         callDetailsViewModel.permissionState.observe({ lifecycle }) {
             if (!it) {
                 Log.d("autoSavePermissionState","False")
-//                GlobalMethods.checkIfAutoStartPermissionAvailable(this)
-//                GlobalMethods.getAutoStartPermission(this)
-//                callDetailsViewModel.saveAutoRunPermissionSavedState()
+                GlobalMethods.checkIfAutoStartPermissionAvailable(this)
+                GlobalMethods.getAutoStartPermission(this)
+                callDetailsViewModel.saveAutoRunPermissionSavedState()
             }
         }
         // call the view model to save the registered date in millis.
         callDetailsViewModel.saveRegisteredDateAndTime()
-        callDetailsViewModel.getLastSynced()
+
         allCallLog.observe({ lifecycle }) {
             callDetailsViewModel.getLastSynced()
         }
@@ -105,9 +106,20 @@ class MainActivity : AppCompatActivity() {
                     startActivity(intent)
                     binding.drawerLayout.close()
                 }
+
+                R.id.navOrg -> {
+                    val intent = Intent(this, AddOrganizationActivity::class.java)
+                    startActivity(intent)
+                    binding.drawerLayout.close()
+                }
             }
             true
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        callDetailsViewModel.getLastSynced()
     }
 
     private fun setUpAdapter() {

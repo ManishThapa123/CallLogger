@@ -8,7 +8,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eazybe.callLogger.api.models.entities.Data
+import com.eazybe.callLogger.api.models.requests.RegisterRequest
 import com.eazybe.callLogger.api.models.responses.LastSyncResponse
+import com.eazybe.callLogger.api.models.responses.RegisterData
 import com.eazybe.callLogger.api.models.responses.RegistrationResponse
 import com.eazybe.callLogger.helper.CallLogsHelper
 import com.eazybe.callLogger.helper.GlobalMethods
@@ -24,7 +26,7 @@ class RegistrationAndLoginViewModel @Inject constructor(
     private val preferenceManager: PreferenceManager,
     private val baseRepository: BaseRepository,
     private val callLogsHelper: CallLogsHelper,
-    private val clientDetailAdapter: JsonAdapter<Data>
+    private val clientDetailAdapter: JsonAdapter<RegisterData>
 ) :
     ViewModel() {
 
@@ -43,28 +45,36 @@ class RegistrationAndLoginViewModel @Inject constructor(
     private val _simCardInfoTelecom = MutableLiveData<ArrayList<String>>()
     val simCardInfoTelecom: LiveData<ArrayList<String>> = _simCardInfoTelecom
 
-    fun registerNewUser(
+    private val _validateOrgCode = MutableLiveData<Int>()
+    val validateOrgCode: LiveData<Int> = _validateOrgCode
+
+    private val _validateOrgCodeFailure = MutableLiveData<Boolean>()
+    val validateOrgCodeFailure: LiveData<Boolean> = _validateOrgCodeFailure
+
+    private val _responseFailed = MutableLiveData<Boolean>()
+    val responseFailed: LiveData<Boolean> = _responseFailed
+
+    private var orgId: Int? = null
+
+     fun registerNewUser(
         clientNumber: String,
         clientName: String,
         selectedSIM: Int?,
         subscriptionInfo: ArrayList<String>,
-        organizationCode: String
-    ) =
+        organizationCode: Int? = null) =
         viewModelScope.launch {
             val currentTimeInMillis = callLogsHelper.createDate(0)
             //convert the millis to TimeStamp
             val currentTimeConverted = GlobalMethods.convertMillisToDateAndTime(currentTimeInMillis)
-            Log.d(
-                "currentTimeConvertedDuringSignup",
-                "$currentTimeConverted = $currentTimeInMillis"
-            )
+            Log.d("currentTimeConvertedDuringSignup",
+                "$currentTimeConverted = $currentTimeInMillis")
             baseRepository.registerUser(
-                clientNumber,
-                clientName,
-                currentTimeConverted,
-                organizationCode
-            )
-                .let { response ->
+                RegisterRequest(
+                    1,
+                    clientNumber,
+                    clientName,
+                    currentTimeConverted,
+                    organizationCode)).let { response ->
                     if (response.isSuccessful) {
                         val responseBody = response.body()
                         when (selectedSIM) {
@@ -87,14 +97,15 @@ class RegistrationAndLoginViewModel @Inject constructor(
                         }
                         if (responseBody?.type == true) {
                             preferenceManager.saveLoginState(true)
-                            val dataInString = clientDetailAdapter.toJson(responseBody.data)
+                            val dataInString = clientDetailAdapter.toJson(responseBody.registerData!![0])
                             preferenceManager.saveClientRegistrationData(dataInString)
                             _userRegisteredResponse.value = responseBody!!
                             Log.d("Response", "User Registered")
                         } else {
-                            if (responseBody?.message == "user existed") {
+                            if (responseBody?.type == false &&
+                                responseBody.message == "User Existed. You Can't Process") {
                                 preferenceManager.saveLoginState(true)
-                                val dataInString = clientDetailAdapter.toJson(responseBody.data)
+                                val dataInString = clientDetailAdapter.toJson(responseBody.registerData!![0])
                                 preferenceManager.saveClientRegistrationData(dataInString)
                                 //save to shared preferences
                                 _userAlreadyExists.value = responseBody!!
@@ -102,26 +113,12 @@ class RegistrationAndLoginViewModel @Inject constructor(
                             }
                         }
                     } else {
+                        _responseFailed.postValue(true)
                         Log.d("Response", "Failed to fetch result")
                     }
                 }
         }
 
-    fun checkLastSynced(clientNumber: String) = viewModelScope.launch {
-        baseRepository.checkLastSync(clientNumber).let { response ->
-            if (response.isSuccessful) {
-                if (response.body()?.type == true) {
-                    if (!response.body()?.data?.clientMobile.isNullOrEmpty()) {
-                        _userLastSync.value = response.body()
-                        preferenceManager.saveLoginState(true)
-                        //save to shared preferences
-                        val dataInString = clientDetailAdapter.toJson(response.body()?.data)
-                        preferenceManager.saveClientRegistrationData(dataInString)
-                    }
-                }
-            }
-        }
-    }
 
     fun getSimCardInfos(context: FragmentActivity) = viewModelScope.launch {
         val simInfoNew = callLogsHelper.getSimCardInfo(context)
@@ -131,6 +128,25 @@ class RegistrationAndLoginViewModel @Inject constructor(
             val simCardInfos = it as ArrayList<SubscriptionInfo>
             _simCardInfo.value = simCardInfos
 
+        }
+    }
+
+    fun getOrganizationDetails(orgCode: String) = viewModelScope.launch {
+        baseRepository.getOrganizationDetails(orgCode).let { response ->
+            if (response.isSuccessful) {
+                val responseBody = response.body()
+                if (responseBody?.type == true){
+                    orgId = responseBody.orgData!![0].id
+                    _validateOrgCode.value = orgId!!
+                }else{
+                    _validateOrgCodeFailure.value = true
+                }
+
+            }else{
+                _responseFailed.postValue(true)
+                Log.d("Response", "Failed to fetch result")
+
+            }
         }
     }
 }

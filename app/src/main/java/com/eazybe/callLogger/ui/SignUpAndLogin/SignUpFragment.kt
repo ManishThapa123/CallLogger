@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -27,6 +28,7 @@ class SignUpFragment : Fragment() {
     private var simCardCount: Int? = 0
     private var subscriptionInfoTelecom: ArrayList<String> = ArrayList()
     private var selectedSIM: Int = 1
+    private var orgCode: Int? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -68,6 +70,7 @@ class SignUpFragment : Fragment() {
         // attach mobile number field to country code field
         binding.ccp.registerCarrierNumberEditText(binding.clientNumber)
         setOnClickListeners()
+        checkValidationForOrganizationCode()
 
     }
 
@@ -125,13 +128,61 @@ class SignUpFragment : Fragment() {
         }
     }
 
+    private fun checkValidationForOrganizationCode() {
+        binding.apply {
+            organizationCode.doAfterTextChanged {
+                if (it?.length == 17) {
+                    //api for validation
+                    registrationAndLoginViewModel.getOrganizationDetails("${organizationCode.text}")
+                } else {
+                    binding.imageValidationCheck.visibility = View.GONE
+                    binding.imageValidationFailure.visibility = View.GONE
+                }
+            }
+        }
+    }
+
     private fun submitDetails() {
         binding.apply {
-            registrationAndLoginViewModel.registerNewUser(
-                binding.ccp.fullNumberWithPlus,
-                "${clientName.text}", selectedSIM, subscriptionInfoTelecom,
-                "${organizationCode.text}"
-            )
+            if (organizationCode.text.toString().trim().isEmpty() && orgCode == null){
+                    val builder = AlertDialog.Builder(requireContext())
+                    builder.setTitle("Continue Without Organization")
+                    builder.setMessage("Are you sure you want to continue without an Organization Code?")
+                    builder.setPositiveButton("Continue") { _, _ ->
+                        registrationAndLoginViewModel.registerNewUser(
+                            binding.ccp.fullNumber, "${clientName.text}", selectedSIM,
+                            subscriptionInfoTelecom)
+
+                        builder.create().dismiss()
+                    }
+                    builder.setNegativeButton("No"){_,_ ->
+                        builder.create().dismiss()
+                    }
+                    builder.setCancelable(false)
+                    builder.create()
+                    builder.show()
+            }
+            else if(orgCode == null){
+                val builder = AlertDialog.Builder(requireContext())
+                builder.setTitle("Continue Without Verification?")
+                builder.setMessage("If you continue without the verification, your calls would not be synced to your organization")
+                builder.setPositiveButton("Continue") { _, _ ->
+                    registrationAndLoginViewModel.registerNewUser(
+                        binding.ccp.fullNumber, "${clientName.text}", selectedSIM,
+                        subscriptionInfoTelecom)
+                    builder.create().dismiss()
+                }
+                builder.setNegativeButton("No"){_,_ ->
+                    builder.create().dismiss()
+                }
+                builder.setCancelable(false)
+                builder.create()
+                builder.show()
+            } else {
+                registrationAndLoginViewModel.registerNewUser(
+                    binding.ccp.fullNumber, "${clientName.text}", selectedSIM,
+                    subscriptionInfoTelecom, orgCode)
+            }
         }
     }
 
@@ -155,25 +206,46 @@ class SignUpFragment : Fragment() {
                     requireActivity(),
                     "User Already Exists",
                     "Redirecting..",
-                    "warning", requireContext())
+                    "warning", requireContext()
+                )
                 val intent = Intent(requireContext(), MainActivity::class.java)
                 intent.flags =
                     Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(intent)
             }
 
-            simCardInfoTelecom.observe({lifecycle}){listOfSubscriptionInfo ->
+            simCardInfoTelecom.observe({ lifecycle }) { listOfSubscriptionInfo ->
                 simCardCount = listOfSubscriptionInfo.size
                 subscriptionInfoTelecom = listOfSubscriptionInfo
                 Log.d("simCardInformation", listOfSubscriptionInfo.toString())
                 Log.d("simCardInformation2", subscriptionInfoTelecom.toString())
             }
 
-            simCardInfo.observe({lifecycle}){
+            simCardInfo.observe({ lifecycle }) {
                 checkSIMCardStatus(it)
             }
+
+            validateOrgCode.observe({ lifecycle }) { organizationCode ->
+                orgCode = organizationCode
+                binding.imageValidationCheck.visibility = View.VISIBLE
+                binding.organizationCode.isEnabled = false
+                binding.organizationCode.isClickable = false
+            }
+
+            validateOrgCodeFailure.observe({lifecycle}){
+                orgCode = null
+                binding.imageValidationCheck.visibility = View.GONE
+                binding.imageValidationFailure.visibility = View.VISIBLE
+
+            }
+            responseFailed.observe({lifecycle}){
+                GlobalMethods.showMotionToast(
+                    requireActivity(),
+                    "Whoops!",
+                    "Something went wrong. Please try again Later",
+                    "failure",
+                    requireContext())
+            }
         }
-
     }
-
 }
