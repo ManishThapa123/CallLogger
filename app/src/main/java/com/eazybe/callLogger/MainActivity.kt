@@ -26,6 +26,7 @@ import com.eazybe.callLogger.ui.CallLogs.CallLogsViewModel
 import com.eazybe.callLogger.ui.CallLogs.CallLogsViewPagerAdapter
 import com.eazybe.callLogger.ui.Dashboard.DashboardActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.content_main.*
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -44,6 +45,7 @@ class MainActivity : AppCompatActivity() {
 
         //For Navigation Drawer and Tool bar
         setSupportActionBar(binding.contentMain.toolBar)
+        title = "Home"
         val toggle = ActionBarDrawerToggle(
             this,
             binding.drawerLayout,
@@ -88,19 +90,6 @@ class MainActivity : AppCompatActivity() {
 
         binding.navView.setNavigationItemSelectedListener {
             when (it.itemId) {
-                R.id.navSettings -> {
-//                    val intent = Intent(this, RegisterActivity::class.java)
-//                    intent.flags =
-//                        Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-//                    startActivity(intent)
-
-                }
-                R.id.navAbout -> {
-//                   val intent = Intent(this, OnBoardingActivity::class.java)
-//                   intent.flags =
-//                       Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-//                   startActivity(intent)
-                }
                 R.id.dashBoard -> {
                     val intent = Intent(this, DashboardActivity::class.java)
                     startActivity(intent)
@@ -149,48 +138,48 @@ class MainActivity : AppCompatActivity() {
                     0 -> {
                         tab.text = "All"
                         tab.icon =
-                            AppCompatResources.getDrawable(this@MainActivity, R.drawable.call_icon)
+                            AppCompatResources.getDrawable(this@MainActivity, R.drawable.ic_all_call)
                     }
                     1 -> {
                         tab.text = "Incoming"
                         tab.icon = AppCompatResources.getDrawable(
                             this@MainActivity,
-                            R.drawable.call_received_icon
+                            R.drawable.ic_incoming
                         )
                     }
                     2 -> {
                         tab.text = "Outgoing"
                         tab.icon = AppCompatResources.getDrawable(
                             this@MainActivity,
-                            R.drawable.call_outgoing_icon
+                            R.drawable.ic_outgoing
                         )
                     }
                     3 -> {
                         tab.text = "Missed"
                         tab.icon = AppCompatResources.getDrawable(
                             this@MainActivity,
-                            R.drawable.call_missed_icon
+                            R.drawable.ic_missed
                         )
                     }
                     4 -> {
                         tab.text = "Rejected"
                         tab.icon = AppCompatResources.getDrawable(
                             this@MainActivity,
-                            R.drawable.call_disabled
+                            R.drawable.ic_rejected
                         )
                     }
                     5 -> {
                         tab.text = "Never Attended"
                         tab.icon = AppCompatResources.getDrawable(
                             this@MainActivity,
-                            R.drawable.call_never_attented
+                            R.drawable.ic_never_attented
                         )
                     }
                     6 -> {
                         tab.text = "Not Picked up by client"
                         tab.icon = AppCompatResources.getDrawable(
                             this@MainActivity,
-                            R.drawable.call_never_picked_up
+                            R.drawable.ic_not_picked_up_by_client
                         )
                     }
                 }
@@ -205,6 +194,7 @@ class MainActivity : AppCompatActivity() {
                         binding.apply {
                             contentMain.floatingActionButton.hide()
                             Handler(Looper.getMainLooper()).postDelayed({
+
                                 contentMain.floatingActionButton.show()
                             }, 600)
                         }
@@ -214,6 +204,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
                 Log.d("unselectedTab", "${tab?.text}")
+
             }
 
             override fun onTabReselected(tab: TabLayout.Tab?) {

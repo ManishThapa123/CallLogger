@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:theme="@style/Theme.AppCompat.Light"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
         <androidx.appcompat.widget.Toolbar
@@ -19,6 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
             app:layout_constraintEnd_toEndOf="parent"
+
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </com.google.android.material.appbar.AppBarLayout>
@@ -35,50 +36,52 @@
         app:tabIndicatorAnimationMode="elastic"
         app:tabInlineLabel="true"
         app:tabMode="scrollable"
-        app:tabSelectedTextColor="@color/teal_200"
+        app:tabIconTint="@color/tab_icon_color"
+        app:tabIndicatorColor="@color/purple"
+        app:tabSelectedTextColor="@color/purple"
         app:tabTextAppearance="@style/MyCustomTabText">
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:icon="@drawable/call_icon"
-            android:text="All" />
+            android:icon="@drawable/ic_all_call"
+            />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:icon="@drawable/call_received_icon"
-            android:text="Incoming" />
+            android:icon="@drawable/ic_incoming"
+            />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:icon="@drawable/call_outgoing_icon"
-            android:text="Outgoing" />
+            android:icon="@drawable/ic_outgoing"
+            />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:icon="@drawable/call_missed_icon"
-            android:text="Missed" />
+            android:icon="@drawable/ic_missed"
+            />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:icon="@drawable/call_disabled"
-            android:text="Rejected" />
+            android:icon="@drawable/ic_rejected"
+            />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:icon="@drawable/call_never_attented"
-            android:text="Never Attended" />
+            android:icon="@drawable/ic_never_attented"
+             />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:icon="@drawable/call_never_picked_up"
-            android:text="Not Picked up by client" />
+            android:icon="@drawable/ic_not_picked_up_by_client"
+            />
 
     </com.google.android.material.tabs.TabLayout>
 

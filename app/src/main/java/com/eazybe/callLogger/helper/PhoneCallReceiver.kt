@@ -67,23 +67,46 @@ class PhoneCallReceiver : BroadcastReceiver() {
             if (intent.extras != null) {
                 savedNumber = intent.extras!!.getString(PHONE_NUMBER)!!
             }
+
+            val clientData =
+                clientDetailAdapter.fromJson(preferenceManager.getClientRegistrationData()!!)
+
+            callLogsHelper.getLatestCallLog { callDetails ->
+                Log.d("latestOutgoingCall", "$callDetails")
+                updateLatestCallLog(
+                    clientData?.id!!,
+                    if (callDetails.userName.isNullOrEmpty())
+                        "Unknown"
+                    else
+                        callDetails.userName!!,
+                    callDetails.userNumber!!,
+                    callDetails.time!!,
+                    callDetails.callDuration!!,
+                    callDetails.callType!!,
+                    callDetails.subscribedSimID!!,
+                    callLogsHelper.createDate(0),
+                    context!!,
+                    callDetails.callLogId!!
+                )
+            }
+
         } else {
             val stateStr = intent?.extras!!.getString(TelephonyManager.EXTRA_STATE)
             var state = 0
             when (stateStr) {
                 TelephonyManager.EXTRA_STATE_IDLE -> {
                     state = TelephonyManager.CALL_STATE_IDLE
-                    onCallStateChanged(context!!, state)
+
                 }
                 TelephonyManager.EXTRA_STATE_OFFHOOK -> {
                     state = TelephonyManager.CALL_STATE_OFFHOOK
-                    onCallStateChanged(context!!, state)
                 }
                 TelephonyManager.EXTRA_STATE_RINGING -> {
                     state = TelephonyManager.CALL_STATE_RINGING
-                    onCallStateChanged(context!!, state)
+
                 }
             }
+            onCallStateChanged(context!!, state)
         }
     }
 
@@ -92,6 +115,8 @@ class PhoneCallReceiver : BroadcastReceiver() {
             clientDetailAdapter.fromJson(preferenceManager.getClientRegistrationData()!!)
         if (lastState == state) {
             //No change, debounce extras
+//            showToast(context, "Syncing...")
+            println("Syncing...")
             return
         }
         when (state) {
@@ -106,7 +131,7 @@ class PhoneCallReceiver : BroadcastReceiver() {
                     isIncoming = false
                     callStartTime = Date()
                 }
-//                showToast(context, "Call Started")
+//                showToast(context, "Out going Call Started")
             }
 
             TelephonyManager.CALL_STATE_IDLE -> {
@@ -132,8 +157,9 @@ class PhoneCallReceiver : BroadcastReceiver() {
                                 context,
                                 callDetails.callLogId!!
                             )
+//                            showToast(context, "Call Type: ${callDetails.callType!!}")
                         }
-
+//                        showToast(context, "Call Missed")
                     }
                     isIncoming -> {
                         //this means call was incoming and picked up and ended.
@@ -156,6 +182,7 @@ class PhoneCallReceiver : BroadcastReceiver() {
                             )
 
                         }
+//                        showToast(context, "Call Incoming Ended")
                     }
                     else -> {
                         //this means call was outgoing and picked up and ended.
@@ -177,10 +204,11 @@ class PhoneCallReceiver : BroadcastReceiver() {
                                 callDetails.callLogId!!
                             )
                         }
+//                        showToast(context, "Out going Call Ended")
                     }
 
                 }
-//                showToast(context, "Call Ended")
+
             }
         }
         lastState = state
@@ -205,50 +233,50 @@ class PhoneCallReceiver : BroadcastReceiver() {
                 clientId = clientId,
                 syncDatetime = GlobalMethods.convertMillisToDateAndTime(syncDateTime),
                 userMobile = userNumber,
-                userName = userName)).let { response ->
-            if (response.isSuccessful) {
-                if (response.body()?.type == true) {
-                    Log.d("Response", "Success, call notification")
-                    Log.d("CallType", callType)
-                    Log.d("ClientId", clientId.toString())
-                    sendNotification(context, userNumber, syncDateTime)
+                userName = userName
+            )
+        ).let { response ->
+            if (response?.type == true) {
+                Log.d("Response", "Success, call notification")
+                Log.d("CallType", callType)
+                Log.d("ClientId", clientId.toString())
+                sendNotification(context, userNumber, syncDateTime)
 
-                    //Save the last sync_date.
-                    preferenceManager.saveLastSyncedTimeInMillis(syncDateTime)
-                    //We have to put a check to see whether the app is on foreground or not.
+                //Save the last sync_date.
+                preferenceManager.saveLastSyncedTimeInMillis(syncDateTime)
+                //We have to put a check to see whether the app is on foreground or not.
 
-                    val currentState = application.getCurrentState()
-                    Log.d("currentStateOfApp", "$currentState")
+                val currentState = application.getCurrentState()
+                Log.d("currentStateOfApp", "$currentState")
 
-                    if (isAppInforegrounded()) {
-                        updateExistingCallLogs(
+                if (isAppInforegrounded()) {
+                    updateExistingCallLogs(
+                        callType,
+                        "app running",
+                        SampleEntity(
+                            userName,
+                            userNumber,
+                            callTime,
+                            callDuration,
                             callType,
-                            "app running",
-                            SampleEntity(
-                                userName,
-                                userNumber,
-                                callTime,
-                                callDuration,
-                                callType,
-                                subscribedSimID,
-                                callLogId
-                            )
+                            subscribedSimID,
+                            callLogId
                         )
-                        preferenceManager.getLastSyncedTimeInMillis()
-                    }
+                    )
+                    preferenceManager.getLastSyncedTimeInMillis()
+                }
 
-                } else
-                    Log.d("Response", "Success, Failed to update in the backend")
-            } else {
-                Log.d("Response", "Failure, Alert user")
-            }
+            } else
+                Log.d("Response", "Success, Failed to update in the backend")
+
         }
     }
 
     private fun sendNotification(
         context: Context,
         userNumber: String?,
-        syncDateTime: String) {
+        syncDateTime: String
+    ) {
         val intent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
@@ -261,7 +289,8 @@ class PhoneCallReceiver : BroadcastReceiver() {
             .setContentText(
                 "Your Last call with $userNumber has been synced at ${
                     GlobalMethods.convertMillisToDateAndTimeInMinutes(
-                        syncDateTime)
+                        syncDateTime
+                    )
                 }"
             )
             .setBadgeIconType(NotificationCompat.BADGE_ICON_LARGE)

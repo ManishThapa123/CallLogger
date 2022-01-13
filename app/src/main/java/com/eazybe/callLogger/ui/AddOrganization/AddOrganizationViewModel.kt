@@ -1,6 +1,5 @@
 package com.eazybe.callLogger.ui.AddOrganization
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -37,24 +36,24 @@ class AddOrganizationViewModel @Inject constructor(
     private val _responseFailed = MutableLiveData<Boolean>()
     val responseFailed: LiveData<Boolean> = _responseFailed
 
+    private val _orgState = MutableLiveData<Boolean>()
+    val orgState: LiveData<Boolean> = _orgState
 
     private var orgId: Int? = null
 
+
+    fun getOrganizationState() = viewModelScope.launch {
+        val orgState = preferenceManager.getOrgState()
+        _orgState.value = orgState
+    }
+
     fun getOrganizationDetails(orgCode: String) = viewModelScope.launch {
         baseRepository.getOrganizationDetails(orgCode).let { response ->
-            if (response.isSuccessful) {
-                val responseBody = response.body()
-                if (responseBody?.type == true) {
-                    orgId = responseBody.orgData!![0].id
-                    _validateOrgCode.value = orgId!!
-                } else {
-                    _validateOrgCodeFailure.value = true
-                }
-
+            if (response?.type == true) {
+                orgId = response.orgData!![0].id
+                _validateOrgCode.value = orgId!!
             } else {
-                _responseFailed.postValue(true)
-                Log.d("Response", "Failed to fetch result")
-
+                _validateOrgCodeFailure.value = true
             }
         }
     }
@@ -64,20 +63,13 @@ class AddOrganizationViewModel @Inject constructor(
         val userData = clientDetailAdapter.fromJson(prefSavedUserData!!)
 
         baseRepository.updateUserOrganization(
-            UpdateOrgRequest(
-                orgId = orgCode,
-                userId = userData?.id
-            )
-        ).let {
-            if (it.isSuccessful) {
-                if (it.body()!!.type == false && it.body()!!.message == "User Already With An Organization") {
+            UpdateOrgRequest(orgId = orgCode, userId = userData?.id)).let {
+                if (it?.type == false && it.message == "User Already With An Organization") {
                     _userAlreadyHasOrgCode.value = true
-                } else if (it.body()!!.type == true) {
+                } else if (it?.type == true) {
                     _addOrgCodeResponse.value = true
+                    preferenceManager.saveOrgState(true)
                 }
-            }else{
-                _responseFailed.value = true
-            }
         }
     }
 }

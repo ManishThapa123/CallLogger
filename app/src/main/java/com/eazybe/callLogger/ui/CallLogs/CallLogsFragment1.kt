@@ -38,6 +38,29 @@ class CallLogsFragment1 : Fragment() {
     private var callDataToDelete: SampleEntity? = null
 
 
+    private val requestReadCallLogsPermission =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { permissionGranted: Boolean ->
+            if (permissionGranted) {
+                //Get the call logs.
+                callDetailsViewModel.getCallLogs(typeInString!!)
+            } else {
+                //close the app
+                activity?.onBackPressed()
+            }
+        }
+
+    private val requestManageCallsPermission = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { permissionGranted: Boolean ->
+        if (permissionGranted) {
+            //check if the call logs permission is accepted.
+            checkCallLogsPermission()
+        } else {
+            //close the app
+            activity?.onBackPressed()
+        }
+    }
+
     companion object {
         fun newInstance(type: String): Fragment {
             val bundle = bundleOf("type" to type)
@@ -61,8 +84,31 @@ class CallLogsFragment1 : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        callDetailsViewModel.getCallLogs(typeInString!!)
+        //check if the phone_state permission is accepted.
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+                    //Check if the call logs permission is accepted.
+            checkCallLogsPermission()
+        } else {
+            //Ask for the Permission
+            requestManageCallsPermission.launch(
+                Manifest.permission.READ_PHONE_STATE)
+        }
+    }
 
+    private fun checkCallLogsPermission() {
+        //Check if the call logs permission is accepted.
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED) {
+                    //Get the Call Logs
+            callDetailsViewModel.getCallLogs(typeInString!!)
+        } else {
+            //Ask for the Read Call Logs Permission.
+            requestReadCallLogsPermission.launch(
+                Manifest.permission.READ_CALL_LOG)
+        }
     }
 
     override fun onCreateView(
@@ -110,20 +156,23 @@ class CallLogsFragment1 : Fragment() {
              */
             override fun callUser(callData: SampleEntity) {
                 userNumberToCall = callData.userNumber
-                    //Write condition for calling
-                    GlobalMethods.callUser(callData.userNumber!!, requireContext())
+                //Write condition for calling
+                GlobalMethods.callUser(callData.userNumber!!, requireContext())
 
             }
 
             override fun deleteUser(callData: SampleEntity) {
                 callDataToDelete = callData
-                    //Write condition for deleting
-                    callDetailsViewModel.deleteUserCallLog(callData, requireContext())
-                    sectionCallLogs.remove(callData)
-                    callDetailsAdapter.submitList(sectionCallLogs)
-                    callDetailsAdapter.notifyDataSetChanged()
+                //Write condition for deleting
+                callDetailsViewModel.deleteUserCallLog(callData, requireContext())
+                sectionCallLogs.remove(callData)
+                callDetailsAdapter.submitList(sectionCallLogs)
+                callDetailsAdapter.notifyDataSetChanged()
 
+            }
 
+            override fun copyContact(callData: SampleEntity) {
+                GlobalMethods.copyTextToClipboard(callData.userNumber!!,requireContext())
             }
         }
         binding.rvCallDetailsFragmentOne.apply {

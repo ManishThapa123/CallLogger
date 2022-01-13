@@ -27,6 +27,7 @@ class SignUpFragment : Fragment() {
     private var simCardTwoName: String? = ""
     private var simCardCount: Int? = 0
     private var subscriptionInfoTelecom: ArrayList<String> = ArrayList()
+    private var subscriptionInfoSub: ArrayList<String> = ArrayList()
     private var selectedSIM: Int = 1
     private var orgCode: Int? = null
 
@@ -151,7 +152,7 @@ class SignUpFragment : Fragment() {
                     builder.setPositiveButton("Continue") { _, _ ->
                         registrationAndLoginViewModel.registerNewUser(
                             binding.ccp.fullNumber, "${clientName.text}", selectedSIM,
-                            subscriptionInfoTelecom)
+                            subscriptionInfoTelecom,subscriptionInfoSub)
 
                         builder.create().dismiss()
                     }
@@ -169,7 +170,7 @@ class SignUpFragment : Fragment() {
                 builder.setPositiveButton("Continue") { _, _ ->
                     registrationAndLoginViewModel.registerNewUser(
                         binding.ccp.fullNumber, "${clientName.text}", selectedSIM,
-                        subscriptionInfoTelecom)
+                        subscriptionInfoTelecom,subscriptionInfoSub)
                     builder.create().dismiss()
                 }
                 builder.setNegativeButton("No"){_,_ ->
@@ -181,7 +182,7 @@ class SignUpFragment : Fragment() {
             } else {
                 registrationAndLoginViewModel.registerNewUser(
                     binding.ccp.fullNumber, "${clientName.text}", selectedSIM,
-                    subscriptionInfoTelecom, orgCode)
+                    subscriptionInfoTelecom,subscriptionInfoSub, orgCode)
             }
         }
     }
@@ -219,6 +220,10 @@ class SignUpFragment : Fragment() {
                 subscriptionInfoTelecom = listOfSubscriptionInfo
                 Log.d("simCardInformation", listOfSubscriptionInfo.toString())
                 Log.d("simCardInformation2", subscriptionInfoTelecom.toString())
+            }
+
+            simCardInfoSub.observe({lifecycle}){
+                subscriptionInfoSub = it
             }
 
             simCardInfo.observe({ lifecycle }) {

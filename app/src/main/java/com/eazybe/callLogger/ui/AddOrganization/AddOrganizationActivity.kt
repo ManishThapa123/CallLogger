@@ -25,10 +25,19 @@ class AddOrganizationActivity : AppCompatActivity() {
         setContentView(view)
         observeViewModel()
         setOnClickListeners()
+        addOrganizationViewModel.getOrganizationState()
         checkValidationForOrganizationCode()
     }
 
     private fun observeViewModel() {
+
+        addOrganizationViewModel.orgState.observe({ lifecycle }) { state ->
+            if (state) {
+                binding.llOrganizationCode.visibility = View.GONE
+                binding.txtAlreadyRegistered.visibility = View.VISIBLE
+                binding.addOrganization.visibility = View.GONE
+            }
+        }
         addOrganizationViewModel.validateOrgCode.observe({ lifecycle }) { organizationCode ->
             orgCode = organizationCode
             binding.imageValidationCheck.visibility = View.VISIBLE
@@ -52,21 +61,23 @@ class AddOrganizationActivity : AppCompatActivity() {
             )
         }
 
-        addOrganizationViewModel.userAlreadyHasOrgCode.observe({lifecycle}){
+        addOrganizationViewModel.userAlreadyHasOrgCode.observe({ lifecycle }) {
             GlobalMethods.showMotionToast(
                 this@AddOrganizationActivity,
                 "Whoops!",
                 "Looks like your number is already synced to an Organization.",
                 "info",
-                this@AddOrganizationActivity)
+                this@AddOrganizationActivity
+            )
         }
-        addOrganizationViewModel.responseFailed.observe({lifecycle}){
+        addOrganizationViewModel.responseFailed.observe({ lifecycle }) {
             GlobalMethods.showMotionToast(
                 this@AddOrganizationActivity,
                 "Whoops!",
                 "Something went wrong. Please try again Later",
                 "failure",
-                this@AddOrganizationActivity)
+                this@AddOrganizationActivity
+            )
         }
     }
 

@@ -6,8 +6,8 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.robinhood.ticker.TickerUtils
 import com.eazybe.callLogger.databinding.ActivityDashboardBinding
+import com.robinhood.ticker.TickerUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -51,23 +51,81 @@ class DashboardActivity : AppCompatActivity() {
     private fun observeViewModel() {
         dashboardViewModel.apply {
             totalWorkingHours.observe({ lifecycle }) {
-                binding.totalWorkingHours.setCharacterLists(TickerUtils.provideNumberList())
-                binding.totalWorkingHours.text = it
+                binding.workingTime.setCharacterLists(TickerUtils.provideNumberList())
+                binding.workingTime.text = it
+
             }
             topCaller.observe({ lifecycle }) {
-                binding.topCaller.text = it
+                binding.topCallerName.setCharacterLists(TickerUtils.provideAlphabeticalList())
+                binding.topCallerName.text = it
             }
             totalPhoneCalls.observe({ lifecycle }) {
                 binding.totalPhoneCalls.setCharacterLists(TickerUtils.provideNumberList())
-                binding.totalPhoneCalls.text = it+" calls"
+                if (it.toInt() > 1)
+                binding.totalPhoneCalls.text = it + " calls"
+                else
+                    binding.totalPhoneCalls.text = it + " call"
             }
             neverAttendedCalls.observe({ lifecycle }) {
                 binding.neverAttended.setCharacterLists(TickerUtils.provideNumberList())
-                binding.neverAttended.text = it+" calls"
+                if (it.toInt() > 1)
+                binding.neverAttended.text = it + " calls"
+                else
+                    binding.neverAttended.text = it + " call"
             }
             notPickedUpByClient.observe({ lifecycle }) {
                 binding.notPickedUpByClient.setCharacterLists(TickerUtils.provideNumberList())
-                binding.notPickedUpByClient.text = it+" calls"
+                if (it.toInt() > 1)
+                binding.notPickedUpByClient.text = it + " calls"
+                else
+                    binding.notPickedUpByClient.text = it + " call"
+            }
+
+            totalOutgoingCallsCount.observe({ lifecycle }) {
+                binding.totalOutgoingCalls.setCharacterLists(TickerUtils.provideNumberList())
+                binding.totalOutgoingCalls.setCharacterLists(TickerUtils.provideAlphabeticalList())
+                if (it.toInt() > 1)
+                binding.totalOutgoingCalls.text = it + " calls"
+                else
+                    binding.totalOutgoingCalls.text = it + " call"
+            }
+            totalOutGoingCallsDuration.observe({ lifecycle }) {
+                binding.totalOutgoingDuration.setCharacterLists(TickerUtils.provideNumberList())
+                binding.totalOutgoingDuration.setCharacterLists(TickerUtils.provideAlphabeticalList())
+                binding.totalOutgoingDuration.text = it
+            }
+            totalIncomingCallsCount.observe({ lifecycle }) {
+                binding.totalIncomingCalls.setCharacterLists(TickerUtils.provideNumberList())
+                binding.totalIncomingCalls.setCharacterLists(TickerUtils.provideAlphabeticalList())
+                if (it.toInt() > 1)
+                binding.totalIncomingCalls.text = it + " calls"
+                else
+                    binding.totalIncomingCalls.text = it + " call"
+            }
+            totalIncomingCallsDuration.observe({ lifecycle }) {
+                binding.totalIncomingDuration.setCharacterLists(TickerUtils.provideNumberList())
+                binding.totalIncomingDuration.setCharacterLists(TickerUtils.provideAlphabeticalList())
+                binding.totalIncomingDuration.text = it
+            }
+            highestCallerCount.observe({lifecycle}){
+                binding.topCallerCallsCount.setCharacterLists(TickerUtils.provideNumberList())
+                binding.topCallerCallsCount.setCharacterLists(TickerUtils.provideAlphabeticalList())
+                if (it.toInt() > 1)
+                binding.topCallerCallsCount.text = it + " calls"
+                else
+                    binding.topCallerCallsCount.text = it + " call"
+
+            }
+            highestDurationCall.observe({lifecycle}){
+                binding.highestCallDuration.setCharacterLists(TickerUtils.provideNumberList())
+                binding.highestCallDuration.setCharacterLists(TickerUtils.provideAlphabeticalList())
+                binding.highestCallDuration.text = it
+            }
+
+            totalCallsDuration.observe({lifecycle}){
+                binding.totalCallTime.setCharacterLists(TickerUtils.provideNumberList())
+                binding.totalCallTime.setCharacterLists(TickerUtils.provideAlphabeticalList())
+                binding.totalCallTime.text = it
             }
         }
 

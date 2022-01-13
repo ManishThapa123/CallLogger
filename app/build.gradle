@@ -17,8 +17,8 @@ android {
         applicationId "com.eazybe.callLogger"
         minSdk 23
         targetSdk 31
-        versionCode 7
-        versionName '1.6'
+        versionCode 11
+        versionName '1.10'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -101,6 +101,9 @@ dependencies {
     //Stetho dependencies
     implementation 'com.facebook.stetho:stetho:1.6.0'
     implementation 'com.facebook.stetho:stetho-okhttp3:1.6.0'
+
+    //smartlook
+    implementation 'com.smartlook.recording:app:1.8.7-native'
 
  
 

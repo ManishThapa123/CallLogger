@@ -10,6 +10,7 @@ import com.facebook.stetho.Stetho
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.FirebaseApp
 import com.google.firebase.messaging.FirebaseMessaging
+import com.smartlook.sdk.smartlook.Smartlook
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
@@ -22,6 +23,11 @@ class CallLoggerApplication : Application(), LifecycleObserver {
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
         FirebaseApp.initializeApp(this)
         generateTokenFirebase()
+        /**
+         *  Initialization of Smartlook inside the Application object
+         *  Uses the SDK key provided in the smart look dashboard.
+         */
+        Smartlook.setupAndStartRecording("4456f686f5ae65eddf67078efe44635fc1f29d6f")
     }
 
     private fun generateTokenFirebase() {

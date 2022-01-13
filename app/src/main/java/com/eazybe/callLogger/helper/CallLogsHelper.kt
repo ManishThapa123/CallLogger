@@ -11,6 +11,7 @@ import android.telecom.TelecomManager
 import android.telephony.SubscriptionInfo
 import android.telephony.SubscriptionManager
 import android.util.Log
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import com.eazybe.callLogger.api.models.entities.CallDetailsWithCount
 import com.eazybe.callLogger.api.models.entities.SampleEntity
@@ -105,9 +106,9 @@ class CallLogsHelper @Inject constructor(
             val callLogId = cursor.getString(callLogIdColIdx)
 
             if (subscribedSimID == preferenceManager.getSIMSubscriptionId() ||
-                subscribedSimID.dropLast(1) == preferenceManager.getSIMSubscriptionIccId()
-                    ?.dropLast(1)
-            ) {
+                subscribedSimID == preferenceManager.getSIMSubscriptionIdSub() ||
+                (subscribedSimID.length > 1 && preferenceManager.getSIMSubscriptionId()?.substring(0,18)
+                    ?.let { subscribedSimID.contains(it) } == true)) {
                 allCallLogsList!!.add(
                     SampleEntity(
                         name,
@@ -311,7 +312,6 @@ class CallLogsHelper @Inject constructor(
         }
         return output
     }
-
     fun getOutgoingCallStateDuration(number: String?): String {
         var output = 0L
         for (callLogInfo in outGoingCallList!!) {
@@ -322,15 +322,164 @@ class CallLogsHelper @Inject constructor(
         return "$output"
     }
 
+    fun getTotalOutGoingCallsCount(forToday: Boolean = false): Int {
+        if (outGoingCallList == null)
+            loadCallLogs()
+
+        var output = 0
+        if (forToday) {
+            for (callLogInfo in outGoingCallList!!) {
+                if (GlobalMethods.convertMillisToDate(callLogInfo.time!!) == GlobalMethods.convertMillisToDate(
+                        createDate(0))) {
+                        output++
+                }
+            }
+
+        } else {
+            for (callLogInfo in outGoingCallList!!) {
+                    output++
+            }
+        }
+        return output
+    }
+
+    fun getTotalOutGoingCallsDuration(forToday: Boolean = false): String {
+        if (outGoingCallList == null)
+            loadCallLogs()
+
+        var output = 0L
+        if (forToday) {
+            for (callLogInfo in outGoingCallList!!) {
+                if (GlobalMethods.convertMillisToDate(callLogInfo.time!!) == GlobalMethods.convertMillisToDate(
+                        createDate(0))) {
+                    output += callLogInfo.callDuration?.toLong()!!
+                }
+            }
+
+        } else {
+            for (callLogInfo in outGoingCallList!!) {
+                output += callLogInfo.callDuration?.toLong()!!
+            }
+        }
+        return "$output"
+    }
+
+    fun getTotalIncomingCallsCount(forToday: Boolean = false): Int {
+        if (incomingCallList == null)
+            loadCallLogs()
+
+        var output = 0
+        if (forToday) {
+            for (callLogInfo in incomingCallList!!) {
+                if (GlobalMethods.convertMillisToDate(callLogInfo.time!!) == GlobalMethods.convertMillisToDate(
+                        createDate(0))) {
+                    output++
+                }
+            }
+
+        } else {
+            for (callLogInfo in incomingCallList!!) {
+                output++
+            }
+        }
+        return output
+    }
+
+    fun getTotalIncomingCallsDuration(forToday: Boolean = false): String {
+        if (incomingCallList == null)
+            loadCallLogs()
+
+        var output = 0L
+        if (forToday) {
+            for (callLogInfo in incomingCallList!!) {
+                if (GlobalMethods.convertMillisToDate(callLogInfo.time!!) == GlobalMethods.convertMillisToDate(
+                        createDate(0))) {
+                    output += callLogInfo.callDuration?.toLong()!!
+                }
+            }
+
+        } else {
+            for (callLogInfo in incomingCallList!!) {
+                output += callLogInfo.callDuration?.toLong()!!
+            }
+        }
+        return "$output"
+    }
+
+    fun getTotalCallsDuration(forToday: Boolean = false): String {
+        var output = 0L
+        val allCallLogsReversed = allCallLogsList?.reversed()
+        if (forToday) {
+            if (allCallLogsReversed?.isNotEmpty() == true) {
+                for (callLogInfo in allCallLogsReversed) {
+                    if (GlobalMethods.convertMillisToDate(callLogInfo.time!!) == GlobalMethods.convertMillisToDate(
+                            createDate(0))) {
+                        if (callLogInfo.callType!!.toInt() != CallLog.Calls.MISSED_TYPE) {
+                            output += callLogInfo.callDuration?.toLong()!!
+                        }
+                    }
+                }
+            }
+        } else {
+            if (allCallLogsReversed?.isNotEmpty() == true) {
+                for (callLogInfo in allCallLogsReversed) {
+                    if (callLogInfo.callType!!.toInt() != CallLog.Calls.MISSED_TYPE) {
+                        output += callLogInfo.callDuration?.toLong()!!
+                    }
+                }
+            }
+        }
+        return "$output"
+    }
+
     fun getAllCallsDuration(forToday: Boolean = false): String {
         var output = 0L
         val allCallLogsReversed = allCallLogsList?.reversed()
         if (forToday) {
-
             var lastCallTime = 0L
-            for (callLogInfo in allCallLogsReversed!!) {
-                if (GlobalMethods.convertMillisToDate(callLogInfo.time!!) == GlobalMethods.convertMillisToDate(createDate(0))) {
-                    Log.d("Is call date same?", GlobalMethods.convertMillisToDate(callLogInfo.time!!) + "= ${GlobalMethods.convertMillisToDate(createDate(0))} ")
+            if (allCallLogsReversed?.isNotEmpty() == true) {
+                for (callLogInfo in allCallLogsReversed) {
+                    if (GlobalMethods.convertMillisToDate(callLogInfo.time!!) == GlobalMethods.convertMillisToDate(
+                            createDate(0))) {
+                        Log.d("Is call date same?",
+                            GlobalMethods.convertMillisToDate(callLogInfo.time!!) + "= ${GlobalMethods.convertMillisToDate(createDate(0))} ")
+                        if (callLogInfo.callType!!.toInt() != CallLog.Calls.MISSED_TYPE) {
+                            var updatedCallDuration = 0L
+                            val time1 = callLogInfo.time!!.toLong()
+                            Log.d("time1", "$time1")
+                            val time2 = lastCallTime
+                            Log.d("time2", "$time2")
+                            val diff = GlobalMethods.calculateTimeDifference(time1, time2)
+                            Log.d("diff", diff.toString())
+
+                            val durationInMillis = callLogInfo.callDuration?.toLong()?.times(1000L)
+                            Log.d("durationInMillis", durationInMillis.toString())
+                            //To do = difference would be the last call ended and the next call started.
+                            lastCallTime = time1.plus(durationInMillis!!)
+//                        lastCallTime = time1
+                            Log.d("lastCallTime", lastCallTime.toString())
+                            if (diff > 180 || diff < -180) {
+                                updatedCallDuration += callLogInfo.callDuration?.toLong()
+                                    ?.plus(60L)!!
+                                Log.d(
+                                    "IdealTimeAdded",
+                                    "$diff and $updatedCallDuration ${diff > 180} and ${diff < -180}"
+                                )
+                            } else {
+                                updatedCallDuration += callLogInfo.callDuration?.toLong()
+                                    ?.plus(120L)!!
+                                Log.d("ProcessTimeAdded", "$diff and $updatedCallDuration")
+                            }
+                            output += updatedCallDuration
+                            Log.d("output", output.toString())
+                        }
+                    }
+                }
+            }
+        } else {
+            if (allCallLogsReversed?.isNotEmpty() == true) {
+                var lastCallTime = 0L
+                for (callLogInfo in allCallLogsReversed) {
                     if (callLogInfo.callType!!.toInt() != CallLog.Calls.MISSED_TYPE) {
                         var updatedCallDuration = 0L
                         val time1 = callLogInfo.time!!.toLong()
@@ -340,53 +489,25 @@ class CallLogsHelper @Inject constructor(
                         val diff = GlobalMethods.calculateTimeDifference(time1, time2)
                         Log.d("diff", diff.toString())
 
-                        val durationInMillis = callLogInfo.callDuration?.toLong() ?.times(1000L)
+                        val durationInMillis = callLogInfo.callDuration?.toLong()?.times(1000L)
                         Log.d("durationInMillis", durationInMillis.toString())
-                        //To do = difference would be the last call ended and the next call started.
+//                    lastCallTime = time1
                         lastCallTime = time1.plus(durationInMillis!!)
-//                        lastCallTime = time1
                         Log.d("lastCallTime", lastCallTime.toString())
-                        if (diff > 180 || diff < -180){
+
+                        if (diff > 180 || diff < -180) {
                             updatedCallDuration += callLogInfo.callDuration?.toLong()?.plus(60L)!!
-                            Log.d("IdealTimeAdded", "$diff and $updatedCallDuration ${diff > 180} and ${diff < -180}")
-                        }
-                        else{
-                            updatedCallDuration += callLogInfo.callDuration?.toLong()?.plus(180L)!!
-                            Log.d("ProcessTimeAdded", "$diff and $updatedCallDuration")
+                            Log.d("IdealTimeAdded", "$diff and $updatedCallDuration")
+                        } else {
+                            updatedCallDuration += callLogInfo.callDuration?.toLong()?.plus(120L)!!
+                            Log.d(
+                                "ProcessTimeAdded",
+                                diff.toString() + " and ${callLogInfo.callDuration}"
+                            )
                         }
                         output += updatedCallDuration
                         Log.d("output", output.toString())
                     }
-                }
-            }
-        } else {
-            var lastCallTime = 0L
-            for (callLogInfo in allCallLogsReversed!!) {
-                if (callLogInfo.callType!!.toInt() != CallLog.Calls.MISSED_TYPE) {
-                    var updatedCallDuration = 0L
-                    val time1 = callLogInfo.time!!.toLong()
-                    Log.d("time1", "$time1")
-                    val time2 = lastCallTime
-                    Log.d("time2", "$time2")
-                    val diff = GlobalMethods.calculateTimeDifference(time1, time2)
-                    Log.d("diff", diff.toString())
-
-                    val durationInMillis = callLogInfo.callDuration?.toLong() ?.times(1000L)
-                    Log.d("durationInMillis", durationInMillis.toString())
-//                    lastCallTime = time1
-                    lastCallTime = time1.plus(durationInMillis!!)
-                    Log.d("lastCallTime", lastCallTime.toString())
-
-                    if (diff > 180 || diff < -180){
-                        updatedCallDuration += callLogInfo.callDuration?.toLong()?.plus(60L)!!
-                        Log.d("IdealTimeAdded", "$diff and $updatedCallDuration")
-                    }
-                    else{
-                        updatedCallDuration += callLogInfo.callDuration?.toLong()?.plus(180L)!!
-                        Log.d("ProcessTimeAdded", diff.toString()+" and ${callLogInfo.callDuration}")
-                    }
-                    output += updatedCallDuration
-                    Log.d("output", output.toString())
                 }
             }
         }
@@ -419,6 +540,71 @@ class CallLogsHelper @Inject constructor(
 
             highestCallerName(item?.userName.toString())
         }
+    }
+
+    fun highestCallerCallCount(
+        forToday: Boolean = false,
+        highestCallerCount: (String) -> Unit) {
+        if (allCallLogsList == null) {
+            loadCallLogs()
+        }
+
+        var output = 0
+        if (forToday) {
+            var todaysCallList: ArrayList<SampleEntity> = ArrayList()
+            for (callLogInfo in allCallLogsList!!) {
+                if (GlobalMethods.convertMillisToDate(callLogInfo.time!!) == GlobalMethods.convertMillisToDate(
+                        createDate(0))) {
+                    todaysCallList.add(callLogInfo)
+                }
+            }
+            val item = todaysCallList.groupBy { it }.maxByOrNull { it.value.size }?.key
+            for (callLog in todaysCallList){
+                if (callLog.userName.toString() == item?.userName.toString()){
+                    output ++
+                }
+            }
+            highestCallerCount("$output")
+        } else {
+            val item = allCallLogsList?.groupBy { it }
+                ?.maxByOrNull { it.value.size }
+                ?.key
+
+            for (callLog in allCallLogsList!!){
+                if (callLog.userName.toString() == item?.userName.toString()){
+                    output ++
+                }
+            }
+            highestCallerCount("$output")
+        }
+    }
+
+    fun highestCallDuration(forToday: Boolean = false,
+                            highestCallDuration: (SampleEntity) -> Unit) {
+        if (allCallLogsList == null) {
+            loadCallLogs()
+        }
+        if (forToday){
+            var todaysCallList: ArrayList<SampleEntity> = ArrayList()
+            for (callLogInfo in allCallLogsList!!) {
+                if (GlobalMethods.convertMillisToDate(callLogInfo.time!!) == GlobalMethods.convertMillisToDate(
+                        createDate(0))) {
+                    todaysCallList.add(callLogInfo)
+                }
+            }
+            val highestCalledTime = todaysCallList.maxByOrNull { it.callDuration?.toLong()!! }
+            if (highestCalledTime != null)
+            highestCallDuration(highestCalledTime)
+            else
+                highestCallDuration(SampleEntity("","","","0","","",""))
+        }else{
+            val highestCalledTime = allCallLogsList?.maxByOrNull { it -> it.callDuration?.toLong()!! }
+            if (highestCalledTime != null)
+            highestCallDuration(highestCalledTime)
+            else
+                highestCallDuration(SampleEntity("","","","0","","",""))
+        }
+
     }
 
     fun getMissedCallState(number: String?): Int {
@@ -601,7 +787,6 @@ class CallLogsHelper @Inject constructor(
                 val callLogIdColIdx = cursor.getColumnIndex(callLogIdCol)
 
 
-
                   while (cursor.moveToNext()) {
                       val number = cursor.getString(numberColIdx)
                       val duration = cursor.getString(durationColIdx)
@@ -613,9 +798,9 @@ class CallLogsHelper @Inject constructor(
 
                       if (!lastLogCount) {
                           if (subscribedSimID == preferenceManager.getSIMSubscriptionId() ||
-                              subscribedSimID.dropLast(1) == preferenceManager.getSIMSubscriptionIccId()
-                                  ?.dropLast(1)
-                          ) {
+                              subscribedSimID == preferenceManager.getSIMSubscriptionIdSub() ||
+                              (subscribedSimID.length > 1 && preferenceManager.getSIMSubscriptionId()?.substring(0,18)
+                                  ?.let { subscribedSimID.contains(it) } == true) ) {
                               latestLog(
                                   SampleEntity(
                                       name,
@@ -709,8 +894,9 @@ class CallLogsHelper @Inject constructor(
                 val callLogId = cursor.getString(callLogIdColIdx)
 
                 if (subscribedSimID == preferenceManager.getSIMSubscriptionId() ||
-                    subscribedSimID.dropLast(1) == preferenceManager.getSIMSubscriptionIccId()
-                        ?.dropLast(1)) {
+                    subscribedSimID == preferenceManager.getSIMSubscriptionIdSub() ||
+                    (subscribedSimID.length > 1 && preferenceManager.getSIMSubscriptionId()?.substring(0,18)
+                        ?.let { subscribedSimID.contains(it) } == true)) {
                     when (type) {
                         "2" -> {
                             neverPickedUpList!!.add(
@@ -821,18 +1007,17 @@ class CallLogsHelper @Inject constructor(
             val subscribedSimID = cursor.getString(subscribedSimIDColIdx)
             val callLogId = cursor.getString(callLogIdColIdx)
 
-            Log.d("subscribedSimID", subscribedSimID.dropLast(1))
-            Log.d("calllogid", callLogId)
-            Log.d(
-                "subscribedSimICCID",
-                "${preferenceManager.getSIMSubscriptionIccId()?.dropLast(1)}"
-            )
+//          GlobalMethods.showToast(context,subscribedSimID)
+            Log.d("subscribedSimID1", subscribedSimID)
+//            Log.d("subscribedSimID2", "${preferenceManager.getSIMSubscriptionId()}, ${preferenceManager.getSIMSubscriptionIdSub()}")
+//            Log.d("calllogid", callLogId)
+//            Log.d("subscribedSimICCID", "${preferenceManager.getSIMSubscriptionId()?.substring(0,18)}")
 
             if (subscribedSimID == preferenceManager.getSIMSubscriptionId() ||
-                subscribedSimID.dropLast(1) == preferenceManager.getSIMSubscriptionIccId()
-                    ?.dropLast(1)
-            ) {
-                allCallLogsList!!.add(
+                subscribedSimID == preferenceManager.getSIMSubscriptionIdSub() ||
+                (subscribedSimID.length > 1 && preferenceManager.getSIMSubscriptionId()?.substring(0,18)
+                    ?.let { subscribedSimID.contains(it) } == true))
+                { allCallLogsList!!.add(
                     SampleEntity(
                         name,
                         number,
@@ -937,14 +1122,64 @@ class CallLogsHelper @Inject constructor(
      * In order to get the sim card icc Id's, using the telecom Manager.
      */
     @SuppressLint("MissingPermission")
-    fun getSimCardInfo(context: Context): List<String> {
-        val simIds: ArrayList<String> = ArrayList()
-        val telecomManager = context.getSystemService(Context.TELECOM_SERVICE) as TelecomManager?
-        telecomManager!!.callCapablePhoneAccounts.forEach {
-            simIds.add(it.id)
-        }
+    fun getSimCardInfo(context: Context, simIds: (ArrayList<String>) -> Unit) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+            val simCardIds: ArrayList<String> = ArrayList()
+            val telecomManager = context.getSystemService(Context.TELECOM_SERVICE) as TelecomManager?
+            telecomManager!!.callCapablePhoneAccounts.forEach {
+                simCardIds.add(it.id)
+            }
+            if (simCardIds[0].isNotEmpty()){
+                simIds(simCardIds)
+            }else{
+                val simCardIdsNew: ArrayList<String> = ArrayList()
+                val subscriptionManager: SubscriptionManager = context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
+                if (ActivityCompat.checkSelfPermission(
+                        context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                    throw Exception("Permission Not Granted -> Manifest.permission.READ_PHONE_STATE")
+                }
 
-        return simIds
+                for (simIcc in subscriptionManager.activeSubscriptionInfoList){
+                    if (!simIcc.iccId.isNullOrEmpty()){
+                        simCardIdsNew.add(simIcc.iccId)
+                    }else{
+                        simCardIdsNew.add("${simIcc.subscriptionId}")
+                    }
+                }
+                simIds(simCardIdsNew)
+            }
+
+        }
+        else {
+            val simCardIds: ArrayList<String> = ArrayList()
+            val subscriptionManager: SubscriptionManager = context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
+            if (ActivityCompat.checkSelfPermission(
+                    context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                throw Exception("Permission Not Granted -> Manifest.permission.READ_PHONE_STATE")
+            }
+
+            for (simIcc in subscriptionManager.activeSubscriptionInfoList){
+                if (!simIcc.iccId.isNullOrEmpty()){
+                    simCardIds.add(simIcc.iccId)
+                }else{
+                    simCardIds.add("${simIcc.subscriptionId}")
+                }
+            }
+            simIds(simCardIds)
+        }
     }
 
+    fun getSimCardSubIdOnly(context: Context, simIds: (ArrayList<String>) -> Unit){
+        val simCardIds: ArrayList<String> = ArrayList()
+        val subscriptionManager: SubscriptionManager = context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
+        if (ActivityCompat.checkSelfPermission(
+                context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            throw Exception("Permission Not Granted -> Manifest.permission.READ_PHONE_STATE")
+        }
+
+        for (simIcc in subscriptionManager.activeSubscriptionInfoList){
+                simCardIds.add("${simIcc.subscriptionId}")
+        }
+        simIds(simCardIds)
+    }
 }

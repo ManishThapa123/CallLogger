@@ -7,7 +7,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.eazybe.callLogger.api.models.entities.Data
 import com.eazybe.callLogger.api.models.requests.RegisterRequest
 import com.eazybe.callLogger.api.models.responses.LastSyncResponse
 import com.eazybe.callLogger.api.models.responses.RegisterData
@@ -45,6 +44,9 @@ class RegistrationAndLoginViewModel @Inject constructor(
     private val _simCardInfoTelecom = MutableLiveData<ArrayList<String>>()
     val simCardInfoTelecom: LiveData<ArrayList<String>> = _simCardInfoTelecom
 
+    private val _simCardInfoSub = MutableLiveData<ArrayList<String>>()
+    val simCardInfoSub: LiveData<ArrayList<String>> = _simCardInfoSub
+
     private val _validateOrgCode = MutableLiveData<Int>()
     val validateOrgCode: LiveData<Int> = _validateOrgCode
 
@@ -56,96 +58,100 @@ class RegistrationAndLoginViewModel @Inject constructor(
 
     private var orgId: Int? = null
 
-     fun registerNewUser(
+    fun registerNewUser(
         clientNumber: String,
         clientName: String,
         selectedSIM: Int?,
         subscriptionInfo: ArrayList<String>,
-        organizationCode: Int? = null) =
+        subscriptionInfoSub: ArrayList<String>? = null,
+        organizationCode: Int? = null
+    ) =
         viewModelScope.launch {
             val currentTimeInMillis = callLogsHelper.createDate(0)
             //convert the millis to TimeStamp
             val currentTimeConverted = GlobalMethods.convertMillisToDateAndTime(currentTimeInMillis)
-            Log.d("currentTimeConvertedDuringSignup",
-                "$currentTimeConverted = $currentTimeInMillis")
+            Log.d(
+                "currentTimeConvertedDuringSignup",
+                "$currentTimeConverted = $currentTimeInMillis"
+            )
             baseRepository.registerUser(
                 RegisterRequest(
                     1,
                     clientNumber,
                     clientName,
                     currentTimeConverted,
-                    organizationCode)).let { response ->
-                    if (response.isSuccessful) {
-                        val responseBody = response.body()
-                        when (selectedSIM) {
-                            1 -> {
-                                preferenceManager.saveSIMSubscriptionId(subscriptionInfo[0])
-                                preferenceManager.saveSIMSubscriptionIccId(subscriptionInfo[0])
-                                Log.d(
-                                    "subIdAndIccId1",
-                                    "${subscriptionInfo[0]} | " + subscriptionInfo[0]
-                                )
-                            }
-                            2 -> {
-                                preferenceManager.saveSIMSubscriptionId(subscriptionInfo[1])
-                                preferenceManager.saveSIMSubscriptionIccId(subscriptionInfo[1])
-                                Log.d(
-                                    "subIdAndIccId2",
-                                    "${subscriptionInfo[1]} | " + subscriptionInfo[1]
-                                )
-                            }
+                    organizationCode
+                )
+            ).let { response ->
+                when (selectedSIM) {
+                    1 -> {
+                        preferenceManager.saveSIMSubscriptionId(subscriptionInfo[0])
+                        if (subscriptionInfoSub != null) {
+                            preferenceManager.saveSIMSubscriptionIdSub(subscriptionInfoSub[0])
                         }
-                        if (responseBody?.type == true) {
-                            preferenceManager.saveLoginState(true)
-                            val dataInString = clientDetailAdapter.toJson(responseBody.registerData!![0])
-                            preferenceManager.saveClientRegistrationData(dataInString)
-                            _userRegisteredResponse.value = responseBody!!
-                            Log.d("Response", "User Registered")
-                        } else {
-                            if (responseBody?.type == false &&
-                                responseBody.message == "User Existed. You Can't Process") {
-                                preferenceManager.saveLoginState(true)
-                                val dataInString = clientDetailAdapter.toJson(responseBody.registerData!![0])
-                                preferenceManager.saveClientRegistrationData(dataInString)
-                                //save to shared preferences
-                                _userAlreadyExists.value = responseBody!!
-                                Log.d("Response", "User Already Exists")
-                            }
+                        Log.d("subIdAndIccId1", "${subscriptionInfo[0]} | " + subscriptionInfo[0])
+                    }
+                    2 -> {
+                        preferenceManager.saveSIMSubscriptionId(subscriptionInfo[1])
+                        if (subscriptionInfoSub != null) {
+                            preferenceManager.saveSIMSubscriptionIdSub(subscriptionInfoSub[1])
                         }
-                    } else {
-                        _responseFailed.postValue(true)
-                        Log.d("Response", "Failed to fetch result")
+                        Log.d("subIdAndIccId2", "${subscriptionInfo[1]} | " + subscriptionInfo[1])
                     }
                 }
+                if (response?.type == true) {
+                    preferenceManager.saveLoginState(true)
+                    val dataInString =
+                        clientDetailAdapter.toJson(response.registerData!![0])
+                    preferenceManager.saveClientRegistrationData(dataInString)
+                    _userRegisteredResponse.value = response!!
+                    Log.d("Response", "User Registered")
+                } else {
+                    if (response?.type == false &&
+                        response.message == "User Existed. You Can't Process"
+                    ) {
+                        preferenceManager.saveLoginState(true)
+                        val dataInString =
+                            clientDetailAdapter.toJson(response.registerData!![0])
+                        preferenceManager.saveClientRegistrationData(dataInString)
+                        //save to shared preferences
+                        _userAlreadyExists.value = response!!
+                        Log.d("Response", "User Already Exists")
+                    }
+                }
+
+            }
         }
 
 
     fun getSimCardInfos(context: FragmentActivity) = viewModelScope.launch {
-        val simInfoNew = callLogsHelper.getSimCardInfo(context)
-        Log.d("simInfoNew", "${simInfoNew.size}, and $simInfoNew")
-        _simCardInfoTelecom.value = simInfoNew as ArrayList<String>
+
+        callLogsHelper.getSimCardInfo(context) { simInfoNew ->
+//            GlobalMethods.showToast(context,"$simInfoNew")
+            Log.d("simInfoNew", "${simInfoNew.size} and $simInfoNew")
+            _simCardInfoTelecom.value = simInfoNew
+        }
+
+        callLogsHelper.getSimCardSubIdOnly(context) { simSubInfoNew ->
+//            GlobalMethods.showToast(context,"$simSubInfoNew")
+            _simCardInfoSub.value = simSubInfoNew
+        }
+
+        //For Sim Card Name
         callLogsHelper.getSimCardInfoName(context).let {
             val simCardInfos = it as ArrayList<SubscriptionInfo>
             _simCardInfo.value = simCardInfos
-
         }
     }
 
+
     fun getOrganizationDetails(orgCode: String) = viewModelScope.launch {
         baseRepository.getOrganizationDetails(orgCode).let { response ->
-            if (response.isSuccessful) {
-                val responseBody = response.body()
-                if (responseBody?.type == true){
-                    orgId = responseBody.orgData!![0].id
-                    _validateOrgCode.value = orgId!!
-                }else{
-                    _validateOrgCodeFailure.value = true
-                }
-
-            }else{
-                _responseFailed.postValue(true)
-                Log.d("Response", "Failed to fetch result")
-
+            if (response?.type == true) {
+                orgId = response.orgData!![0].id
+                _validateOrgCode.value = orgId!!
+            } else {
+                _validateOrgCodeFailure.value = true
             }
         }
     }

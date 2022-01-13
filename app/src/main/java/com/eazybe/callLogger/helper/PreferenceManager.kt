@@ -82,17 +82,26 @@ class PreferenceManager constructor(private val context: Context) {
         return sharedPreferences.getString(AppConstants.SIM_SUBSCRIPTION_ID_SAVED, null)
     }
 
-    fun saveSIMSubscriptionIccId(subId: String){
-        spEditor.putString(AppConstants.SIM_SUBSCRIPTION_ICC_ID_SAVED,subId)
+    fun saveSIMSubscriptionIdSub(subId: String){
+        spEditor.putString(AppConstants.SIM_SUBSCRIPTION_ID_SUB_SAVED,subId)
         spEditor.commit()
     }
 
-    fun getSIMSubscriptionIccId(): String? {
-        return sharedPreferences.getString(AppConstants.SIM_SUBSCRIPTION_ICC_ID_SAVED, null)
+    fun getSIMSubscriptionIdSub(): String? {
+        return sharedPreferences.getString(AppConstants.SIM_SUBSCRIPTION_ID_SUB_SAVED, null)
     }
 
     fun clearAllData() {
         sharedPreferences.edit().clear().apply()
+    }
+
+    fun saveOrgState(saveOrgState: Boolean) {
+        spEditor.putBoolean(AppConstants.ORG_STATE_SAVED, true)
+        spEditor.commit()
+    }
+
+    fun getOrgState(): Boolean {
+        return sharedPreferences.getBoolean(AppConstants.ORG_STATE_SAVED, false)
     }
 
 }

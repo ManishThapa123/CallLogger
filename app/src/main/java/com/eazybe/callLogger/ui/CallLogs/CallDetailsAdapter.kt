@@ -37,38 +37,46 @@ abstract class CallDetailsAdapter : ListAdapter<SampleEntity,
             binding.apply {
                 when (callData.callType) {
                     "2" -> {
-                        callTypeImage.setImageDrawable(
+                        callTypeImg.setImageDrawable(
                             ContextCompat.getDrawable(
                                 context!!,
-                                R.drawable.call_outgoing_icon
+                                R.drawable.ic_outgoing
                             )
                         )
+                        callType.text = "Outgoing Call"
                     }
                     "1" -> {
-                        callTypeImage.setImageDrawable(
+                        callTypeImg.setImageDrawable(
                             ContextCompat.getDrawable(
                                 context!!,
-                                R.drawable.call_received_icon
+                                R.drawable.ic_incoming
                             )
                         )
+                        callType.text = "Incoming Call"
                     }
                     "3" -> {
-                        callTypeImage.setImageDrawable(
+                        callTypeImg.setImageDrawable(
                             ContextCompat.getDrawable(
                                 context!!,
-                                R.drawable.call_missed_icon
+                                R.drawable.ic_missed
                             )
                         )
+                        callType.text = "Missed Call"
                     }
                     "5","10" -> {
-                        callTypeImage.setImageDrawable(
+                        callTypeImg.setImageDrawable(
                             ContextCompat.getDrawable(
                                 context!!,
-                                R.drawable.call_disabled
-                            )
-                        )
+                                R.drawable.ic_rejected))
+                        callType.text = "Rejected Call"
                     }
                 }
+                callTypeImage.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        context!!,
+                        R.drawable.person_image
+                    )
+                )
                 personName.text = callData.userName ?: "Unknown"
                 phoneNumber.text = callData.userNumber
                 callDuration.text = convertSeconds(callData.callDuration!!.toInt())
@@ -82,6 +90,9 @@ abstract class CallDetailsAdapter : ListAdapter<SampleEntity,
                 }
                 imgCall.setOnClickListener {
                     callUser(callData)
+                }
+                imgCopyContact.setOnClickListener {
+                    copyContact(callData)
                 }
 //                deleteIcon.setOnClickListener {
 //
@@ -132,4 +143,5 @@ abstract class CallDetailsAdapter : ListAdapter<SampleEntity,
     abstract fun sendWhatsAppToUser(callData: SampleEntity)
     abstract fun callUser(callData: SampleEntity)
     abstract fun deleteUser(callData: SampleEntity)
+    abstract fun copyContact(callData: SampleEntity)
 }

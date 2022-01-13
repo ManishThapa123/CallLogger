@@ -46,7 +46,7 @@
             app:boxCornerRadiusBottomStart="@dimen/dimens_16"
             app:boxCornerRadiusTopEnd="@dimen/dimens_16"
             app:boxCornerRadiusTopStart="@dimen/dimens_16"
-            app:startIconDrawable="@drawable/call_icon">
+            app:startIconDrawable="@drawable/ic_all_call">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"

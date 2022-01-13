@@ -1,7 +1,10 @@
 package com.eazybe.callLogger.helper
 
+import a.a.b.a.c.l.e.c
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -10,6 +13,7 @@ import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.res.ResourcesCompat
 import com.judemanutd.autostarter.AutoStartPermissionHelper
 import com.eazybe.callLogger.R
@@ -307,4 +311,10 @@ object GlobalMethods {
         return "${date.time}"
     }
 
+     fun copyTextToClipboard(textToCopy: String, context: Context) {
+        val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clipData = ClipData.newPlainText("text", textToCopy)
+        clipboardManager.setPrimaryClip(clipData)
+        Toast.makeText(context, "$textToCopy copied to clipboard", Toast.LENGTH_LONG).show()
+    }
 }

@@ -23,7 +23,7 @@ object CallLoggerClient {
         .connectTimeout(30, TimeUnit.SECONDS)
         .build()
 
-    var retrofit: Retrofit = Retrofit.Builder()
+    val retrofit: Retrofit = Retrofit.Builder()
         .baseUrl(API_PREFIX)
         .addConverterFactory(MoshiConverterFactory.create())
         .client(okHttpBuilder)
