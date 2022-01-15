@@ -1,20 +1,17 @@
 package com.eazybe.callLogger.ui.CallLogs
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.eazybe.callLogger.api.models.entities.SampleEntity
 import com.eazybe.callLogger.R
+import com.eazybe.callLogger.api.models.entities.SampleEntity
 import com.eazybe.callLogger.databinding.ItemAdapterLayoutOneBinding
 import com.eazybe.callLogger.helper.GlobalMethods.convertMillisToTime
 import com.eazybe.callLogger.helper.GlobalMethods.convertSeconds
-import com.judemanutd.autostarter.AutoStartPermissionHelper
 
 abstract class CallDetailsAdapter : ListAdapter<SampleEntity,
         CallDetailsAdapter.ViewHolder>(object : DiffUtil.ItemCallback<SampleEntity>() {
@@ -63,11 +60,13 @@ abstract class CallDetailsAdapter : ListAdapter<SampleEntity,
                         )
                         callType.text = "Missed Call"
                     }
-                    "5","10" -> {
+                    "5", "10" -> {
                         callTypeImg.setImageDrawable(
                             ContextCompat.getDrawable(
                                 context!!,
-                                R.drawable.ic_rejected))
+                                R.drawable.ic_rejected
+                            )
+                        )
                         callType.text = "Rejected Call"
                     }
                 }
@@ -77,7 +76,11 @@ abstract class CallDetailsAdapter : ListAdapter<SampleEntity,
                         R.drawable.person_image
                     )
                 )
-                personName.text = callData.userName ?: "Unknown"
+                personName.text =
+                    if (callData.userName.isNullOrEmpty() || callData.userName.isNullOrBlank())
+                        "Unknown"
+                    else
+                        callData.userName ?: "Unknown"
                 phoneNumber.text = callData.userNumber
                 callDuration.text = convertSeconds(callData.callDuration!!.toInt())
                 callTime.text = convertMillisToTime(callData.time!!)

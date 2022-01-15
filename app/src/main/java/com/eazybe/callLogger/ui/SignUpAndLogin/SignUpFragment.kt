@@ -1,6 +1,8 @@
 package com.eazybe.callLogger.ui.SignUpAndLogin
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.telephony.SubscriptionInfo
 import android.util.Log
@@ -8,7 +10,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -30,6 +34,30 @@ class SignUpFragment : Fragment() {
     private var subscriptionInfoSub: ArrayList<String> = ArrayList()
     private var selectedSIM: Int = 1
     private var orgCode: Int? = null
+
+    private val requestReadCallLogsPermission =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { permissionGranted: Boolean ->
+            if (permissionGranted) {
+                //Get the call logs.
+                registrationAndLoginViewModel.getSimCardInfos(requireActivity())
+                observeViewModel()
+            } else {
+                //close the app
+                activity?.onBackPressed()
+            }
+        }
+
+    private val requestManageCallsPermission = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { permissionGranted: Boolean ->
+        if (permissionGranted) {
+            //check if the call logs permission is accepted.
+            checkCallLogsPermission()
+        } else {
+            //close the app
+            activity?.onBackPressed()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,10 +89,32 @@ class SignUpFragment : Fragment() {
 
             }
         })
-        registrationAndLoginViewModel.getSimCardInfos(requireActivity())
-        observeViewModel()
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+            //Check if the call logs permission is accepted.
+            checkCallLogsPermission()
+        } else {
+            //Ask for the Permission
+            requestManageCallsPermission.launch(
+                Manifest.permission.READ_PHONE_STATE)
+        }
     }
 
+    private fun checkCallLogsPermission() {
+        //Check if the call logs permission is accepted.
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED) {
+
+            registrationAndLoginViewModel.getSimCardInfos(requireActivity())
+            observeViewModel()
+        } else {
+            //Ask for the Read Call Logs Permission.
+            requestReadCallLogsPermission.launch(
+                Manifest.permission.READ_CALL_LOG)
+        }
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

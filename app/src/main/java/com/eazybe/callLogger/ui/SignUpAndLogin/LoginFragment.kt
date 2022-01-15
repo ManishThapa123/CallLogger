@@ -30,23 +30,23 @@ class LoginFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        observeViewModel()
+//        observeViewModel()
     }
-
-    private fun observeViewModel() {
-        registrationAndLoginViewModel.userLastSync.observe({ lifecycle }) { response ->
-            GlobalMethods.showMotionToast(
-                requireActivity(),
-                "Success",
-                "Logged in.",
-                "success",requireContext()
-            )
-            val intent = Intent(requireContext(), MainActivity::class.java)
-            intent.flags =
-                Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-            startActivity(intent)
-        }
-    }
+//
+//    private fun observeViewModel() {
+//        registrationAndLoginViewModel.userLastSync.observe({ lifecycle }) { response ->
+//            GlobalMethods.showMotionToast(
+//                requireActivity(),
+//                "Success",
+//                "Logged in.",
+//                "success",requireContext()
+//            )
+//            val intent = Intent(requireContext(), MainActivity::class.java)
+//            intent.flags =
+//                Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+//            startActivity(intent)
+//        }
+//    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

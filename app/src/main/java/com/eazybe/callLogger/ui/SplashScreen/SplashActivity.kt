@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.motion.widget.MotionLayout
 import com.eazybe.callLogger.MainActivity
 import com.eazybe.callLogger.databinding.ActivitySplashBinding
+import com.eazybe.callLogger.helper.GlobalMethods
 import com.eazybe.callLogger.ui.Onboarding.OnBoardingActivity
 import com.eazybe.callLogger.ui.SignUpAndLogin.RegisterActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -60,24 +61,39 @@ class SplashActivity : AppCompatActivity() {
 
                 if (isLoggedIn) {
                     // Start activity
-                    startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+                    val intent = Intent(this@SplashActivity, MainActivity::class.java)
+                    intent.flags =
+                        Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                    startActivity(intent)
+                    finish()
+
+                    // Animate the loading of new activity
+//                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+                    // Close this activity
+
+                } else if (isPermissionSaved) {
+                    val intent = Intent(this@SplashActivity, RegisterActivity::class.java)
+                    intent.flags =
+                        Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                    startActivity(intent)
+
                     // Animate the loading of new activity
 //                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
                     // Close this activity
                     finish()
-                } else if (isPermissionSaved){
-                    startActivity(Intent(this@SplashActivity, RegisterActivity::class.java))
-                    // Animate the loading of new activity
-//                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-                    // Close this activity
-                    finish()
-                }else {
+
+                } else {
                     // Start activity
-                    startActivity(Intent(this@SplashActivity, OnBoardingActivity::class.java))
+//
+                    val intent = Intent(this@SplashActivity, OnBoardingActivity::class.java)
+                    intent.flags =
+                        Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                    startActivity(intent)
                     // Animate the loading of new activity
 //                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
                     // Close this activity
                     finish()
+
                 }
             }
 

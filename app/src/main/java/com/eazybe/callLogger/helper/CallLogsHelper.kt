@@ -3,6 +3,7 @@ package com.eazybe.callLogger.helper
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Looper
@@ -13,8 +14,10 @@ import android.telephony.SubscriptionManager
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import com.eazybe.callLogger.MainActivity
 import com.eazybe.callLogger.api.models.entities.CallDetailsWithCount
 import com.eazybe.callLogger.api.models.entities.SampleEntity
+import com.eazybe.callLogger.ui.SignUpAndLogin.RegisterActivity
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -105,68 +108,80 @@ class CallLogsHelper @Inject constructor(
             val subscribedSimID = cursor.getString(subscribedSimIDColIdx)
             val callLogId = cursor.getString(callLogIdColIdx)
 
-            if (subscribedSimID == preferenceManager.getSIMSubscriptionId() ||
-                subscribedSimID == preferenceManager.getSIMSubscriptionIdSub() ||
-                (subscribedSimID.length > 1 && preferenceManager.getSIMSubscriptionId()?.substring(0,18)
-                    ?.let { subscribedSimID.contains(it) } == true)) {
-                allCallLogsList!!.add(
-                    SampleEntity(
-                        name,
-                        number,
-                        date,
-                        duration,
-                        type,
-                        subscribedSimID,
-                        callLogId
+            if (!subscribedSimID.isNullOrEmpty()) {
+                if (subscribedSimID == preferenceManager.getSIMSubscriptionId() ||
+                    subscribedSimID == preferenceManager.getSIMSubscriptionIdSub() ||
+                    (subscribedSimID.length > 1 && preferenceManager.getSIMSubscriptionId()
+                        ?.substring(0, 18)
+                        ?.let { subscribedSimID.contains(it) } == true)
+                ) {
+                    allCallLogsList!!.add(
+                        SampleEntity(
+                            name,
+                            number,
+                            date,
+                            duration,
+                            type,
+                            subscribedSimID,
+                            callLogId
+                        )
                     )
-                )
-                Log.d("MY_APP_CALL_LOGS", "$number $duration $type $name")
-                Log.d("subscription_Id", "$subscribedSimID and number = $number")
+                    Log.d("MY_APP_CALL_LOGS", "$number $duration $type $name")
+                    Log.d("subscription_Id", "$subscribedSimID and number = $number")
 
-                when (type) {
-                    "1" -> {
-                        incomingCallList!!.add(
-                            SampleEntity(
-                                name,
-                                number,
-                                date,
-                                duration,
-                                type,
-                                subscribedSimID,
-                                callLogId))
-                    }
-                    "2" -> {
-                        outGoingCallList!!.add(
-                            SampleEntity(
-                                name,
-                                number,
-                                date,
-                                duration,
-                                type,
-                                subscribedSimID,
-                                callLogId))
-                    }
-                    "3" -> {
-                        missedCallList!!.add(
-                            SampleEntity(
-                                name,
-                                number,
-                                date,
-                                duration,
-                                type,
-                                subscribedSimID,
-                                callLogId))
-                    }
-                    "5", "10" -> {
-                        rejectedCallList!!.add(
-                            SampleEntity(
-                                name,
-                                number,
-                                date,
-                                duration,
-                                type,
-                                subscribedSimID,
-                                callLogId))
+                    when (type) {
+                        "1" -> {
+                            incomingCallList!!.add(
+                                SampleEntity(
+                                    name,
+                                    number,
+                                    date,
+                                    duration,
+                                    type,
+                                    subscribedSimID,
+                                    callLogId
+                                )
+                            )
+                        }
+                        "2" -> {
+                            outGoingCallList!!.add(
+                                SampleEntity(
+                                    name,
+                                    number,
+                                    date,
+                                    duration,
+                                    type,
+                                    subscribedSimID,
+                                    callLogId
+                                )
+                            )
+                        }
+                        "3" -> {
+                            missedCallList!!.add(
+                                SampleEntity(
+                                    name,
+                                    number,
+                                    date,
+                                    duration,
+                                    type,
+                                    subscribedSimID,
+                                    callLogId
+                                )
+                            )
+                        }
+                        "5", "10" -> {
+                            rejectedCallList!!.add(
+                                SampleEntity(
+                                    name,
+                                    number,
+                                    date,
+                                    duration,
+                                    type,
+                                    subscribedSimID,
+                                    callLogId
+                                )
+                            )
+                        }
                     }
                 }
             }
@@ -797,24 +812,28 @@ class CallLogsHelper @Inject constructor(
                       val callLogId = cursor.getString(callLogIdColIdx)
 
                       if (!lastLogCount) {
-                          if (subscribedSimID == preferenceManager.getSIMSubscriptionId() ||
-                              subscribedSimID == preferenceManager.getSIMSubscriptionIdSub() ||
-                              (subscribedSimID.length > 1 && preferenceManager.getSIMSubscriptionId()?.substring(0,18)
-                                  ?.let { subscribedSimID.contains(it) } == true) ) {
-                              latestLog(
-                                  SampleEntity(
-                                      name,
-                                      number,
-                                      date,
-                                      duration,
-                                      type,
-                                      subscribedSimID,
-                                      callLogId
+                          if (!subscribedSimID.isNullOrEmpty()) {
+                              if (subscribedSimID == preferenceManager.getSIMSubscriptionId() ||
+                                  subscribedSimID == preferenceManager.getSIMSubscriptionIdSub() ||
+                                  (subscribedSimID.length > 1 && preferenceManager.getSIMSubscriptionId()
+                                      ?.substring(0, 18)
+                                      ?.let { subscribedSimID.contains(it) } == true)
+                              ) {
+                                  latestLog(
+                                      SampleEntity(
+                                          name,
+                                          number,
+                                          date,
+                                          duration,
+                                          type,
+                                          subscribedSimID,
+                                          callLogId
+                                      )
                                   )
-                              )
-                              lastLogCount = true
-                              Log.d("MY_APP_CALL_LOGS", "$number $duration $type $name")
-                              Log.d("subscription_Id", "$subscribedSimID and number = $number")
+                                  lastLogCount = true
+                                  Log.d("MY_APP_CALL_LOGS", "$number $duration $type $name")
+                                  Log.d("subscription_Id", "$subscribedSimID and number = $number")
+                              }
                           }
                       }
                   }
@@ -893,38 +912,42 @@ class CallLogsHelper @Inject constructor(
                 val subscribedSimID = cursor.getString(subscribedSimIDColIdx)
                 val callLogId = cursor.getString(callLogIdColIdx)
 
-                if (subscribedSimID == preferenceManager.getSIMSubscriptionId() ||
-                    subscribedSimID == preferenceManager.getSIMSubscriptionIdSub() ||
-                    (subscribedSimID.length > 1 && preferenceManager.getSIMSubscriptionId()?.substring(0,18)
-                        ?.let { subscribedSimID.contains(it) } == true)) {
-                    when (type) {
-                        "2" -> {
-                            neverPickedUpList!!.add(
-                                SampleEntity(
-                                    name,
-                                    number,
-                                    date,
-                                    duration,
-                                    type,
-                                    subscribedSimID,
-                                    callLogId
+                if (!subscribedSimID.isNullOrEmpty()) {
+                    if (subscribedSimID == preferenceManager.getSIMSubscriptionId() ||
+                        subscribedSimID == preferenceManager.getSIMSubscriptionIdSub() ||
+                        (subscribedSimID.length > 1 && preferenceManager.getSIMSubscriptionId()
+                            ?.substring(0, 18)
+                            ?.let { subscribedSimID.contains(it) } == true)
+                    ) {
+                        when (type) {
+                            "2" -> {
+                                neverPickedUpList!!.add(
+                                    SampleEntity(
+                                        name,
+                                        number,
+                                        date,
+                                        duration,
+                                        type,
+                                        subscribedSimID,
+                                        callLogId
+                                    )
                                 )
-                            )
 
-                        }
-                        "3" -> {
-                            neverAttendedList!!.add(
-                                SampleEntity(
-                                    name,
-                                    number,
-                                    date,
-                                    duration,
-                                    type,
-                                    subscribedSimID,
-                                    callLogId
+                            }
+                            "3" -> {
+                                neverAttendedList!!.add(
+                                    SampleEntity(
+                                        name,
+                                        number,
+                                        date,
+                                        duration,
+                                        type,
+                                        subscribedSimID,
+                                        callLogId
+                                    )
                                 )
-                            )
 
+                            }
                         }
                     }
                 }
@@ -1007,82 +1030,87 @@ class CallLogsHelper @Inject constructor(
             val subscribedSimID = cursor.getString(subscribedSimIDColIdx)
             val callLogId = cursor.getString(callLogIdColIdx)
 
-//          GlobalMethods.showToast(context,subscribedSimID)
-            Log.d("subscribedSimID1", subscribedSimID)
+//
+//          GlobalMethods.showToast(context,"Sim Component name is $subscribedSimNAME and sim id is $subscribedSimID" )
+//            Log.d("subscribedSimID1", subscribedSimID)
 //            Log.d("subscribedSimID2", "${preferenceManager.getSIMSubscriptionId()}, ${preferenceManager.getSIMSubscriptionIdSub()}")
 //            Log.d("calllogid", callLogId)
 //            Log.d("subscribedSimICCID", "${preferenceManager.getSIMSubscriptionId()?.substring(0,18)}")
 
-            if (subscribedSimID == preferenceManager.getSIMSubscriptionId() ||
-                subscribedSimID == preferenceManager.getSIMSubscriptionIdSub() ||
-                (subscribedSimID.length > 1 && preferenceManager.getSIMSubscriptionId()?.substring(0,18)
-                    ?.let { subscribedSimID.contains(it) } == true))
-                { allCallLogsList!!.add(
-                    SampleEntity(
-                        name,
-                        number,
-                        date,
-                        duration,
-                        type,
-                        subscribedSimID,
-                        callLogId
+            if (!subscribedSimID.isNullOrEmpty()) {
+                if (subscribedSimID == preferenceManager.getSIMSubscriptionId() ||
+                    subscribedSimID == preferenceManager.getSIMSubscriptionIdSub() ||
+                    (subscribedSimID.length > 1 && preferenceManager.getSIMSubscriptionId()
+                        ?.substring(0, 18)
+                        ?.let { subscribedSimID.contains(it) } == true)
+                ) {
+                    allCallLogsList!!.add(
+                        SampleEntity(
+                            name,
+                            number,
+                            date,
+                            duration,
+                            type,
+                            subscribedSimID,
+                            callLogId
+                        )
                     )
-                )
-                Log.d("MY_APP_CALL_LOGS", "$number $duration $type $name")
-                Log.d("subscription_Id", "$subscribedSimID and number = $number")
+                    Log.d("MY_APP_CALL_LOGS", "$number $duration $type $name")
+                    Log.d("subscription_Id", "$subscribedSimID and number = $number")
 
-                when (type) {
-                    "1" -> {
-                        incomingCallList!!.add(
-                            SampleEntity(
-                                name,
-                                number,
-                                date,
-                                duration,
-                                type,
-                                subscribedSimID,
-                                callLogId
+                    when (type) {
+                        "1" -> {
+                            incomingCallList!!.add(
+                                SampleEntity(
+                                    name,
+                                    number,
+                                    date,
+                                    duration,
+                                    type,
+                                    subscribedSimID,
+                                    callLogId
+                                )
                             )
-                        )
-                    }
-                    "2" -> {
-                        outGoingCallList!!.add(
-                            SampleEntity(
-                                name,
-                                number,
-                                date,
-                                duration,
-                                type,
-                                subscribedSimID,
-                                callLogId
+                        }
+                        "2" -> {
+                            outGoingCallList!!.add(
+                                SampleEntity(
+                                    name,
+                                    number,
+                                    date,
+                                    duration,
+                                    type,
+                                    subscribedSimID,
+                                    callLogId
+                                )
                             )
-                        )
-                    }
-                    "3" -> {
-                        missedCallList!!.add(
-                            SampleEntity(
-                                name,
-                                number,
-                                date,
-                                duration,
-                                type,
-                                subscribedSimID,
-                                callLogId
+                        }
+                        "3" -> {
+                            missedCallList!!.add(
+                                SampleEntity(
+                                    name,
+                                    number,
+                                    date,
+                                    duration,
+                                    type,
+                                    subscribedSimID,
+                                    callLogId
+                                )
                             )
-                        )
-                    }
-                    "5", "10" -> {
-                        rejectedCallList!!.add(
-                            SampleEntity(
-                                name,
-                                number,
-                                date,
-                                duration,
-                                type,
-                                subscribedSimID,
-                                callLogId
+                        }
+                        "5", "10" -> {
+                            rejectedCallList!!.add(
+                                SampleEntity(
+                                    name,
+                                    number,
+                                    date,
+                                    duration,
+                                    type,
+                                    subscribedSimID,
+                                    callLogId
+                                )
                             )
-                        )
+                        }
                     }
                 }
             }
