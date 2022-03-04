@@ -140,7 +140,11 @@ class CallLogsViewModel @Inject constructor(
             val convertedUserData = clientDetailAdapter.fromJson(prefSavedUserData!!)
             Log.d("RegisteredUserTime", "${convertedUserData?.registrationDate}")
             val finalConvertedDateInMillis =
-                GlobalMethods.getMilliFromDate(convertedUserData?.registrationDate)
+                GlobalMethods.getMilliFromDate(if (!convertedUserData?.registrationDate.isNullOrEmpty()){
+                    convertedUserData?.registrationDate
+                }else{
+                   "2022-01-01 20:20:20"
+                })
             preferenceManager.saveFirstTimeRegisterMillis(finalConvertedDateInMillis)
 
             val finalConvertedSyncedTimeInMillis = GlobalMethods.getMilliFromDate(convertedUserData?.lastSynced)

@@ -17,8 +17,8 @@ android {
         applicationId "com.eazybe.callLogger"
         minSdk 23
         targetSdk 31
-        versionCode 12
-        versionName '1.11'
+        versionCode 13
+        versionName '1.12'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -104,6 +104,8 @@ dependencies {
 
     //smartlook
     implementation 'com.smartlook.recording:app:1.8.7-native'
+
+    implementation 'androidx.work:work-runtime-ktx:2.7.1'
 
  
 

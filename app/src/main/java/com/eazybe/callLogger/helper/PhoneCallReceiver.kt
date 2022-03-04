@@ -26,6 +26,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import java.io.IOException
 import java.util.*
 import javax.inject.Inject
 
@@ -224,51 +225,65 @@ class PhoneCallReceiver : BroadcastReceiver() {
         context: Context,
         callLogId: String
     ) = scope.launch {
-        Log.d("ClientNumber1", clientId.toString())
-        baseRepository.updateClientCallLog(
-            SaveCallLogs(
-                callDuration = GlobalMethods.convertSecondsInHoursFormat(callDuration.toInt()),
-                callTime = GlobalMethods.convertMillisToDateAndTime(callTime),
-                callType = callType.toInt(),
-                clientId = clientId,
-                syncDatetime = GlobalMethods.convertMillisToDateAndTime(syncDateTime),
-                userMobile = userNumber,
-                userName = userName
-            )
-        ).let { response ->
-            if (response?.type == true) {
-                Log.d("Response", "Success, call notification")
-                Log.d("CallType", callType)
-                Log.d("ClientId", clientId.toString())
-                sendNotification(context, userNumber, syncDateTime)
 
-                //Save the last sync_date.
-                preferenceManager.saveLastSyncedTimeInMillis(syncDateTime)
-                //We have to put a check to see whether the app is on foreground or not.
-
-                val currentState = application.getCurrentState()
-                Log.d("currentStateOfApp", "$currentState")
-
-                if (isAppInforegrounded()) {
-                    updateExistingCallLogs(
-                        callType,
-                        "app running",
-                        SampleEntity(
-                            userName,
-                            userNumber,
-                            callTime,
-                            callDuration,
-                            callType,
-                            subscribedSimID,
-                            callLogId
-                        )
+        if (GlobalMethods.hasInternetConnection(context)){
+            try {
+                Log.d("ClientNumber1", clientId.toString())
+                baseRepository.updateClientCallLog(
+                    SaveCallLogs(
+                        callDuration = GlobalMethods.convertSecondsInHoursFormat(callDuration.toInt()),
+                        callTime = GlobalMethods.convertMillisToDateAndTime(callTime),
+                        callType = callType.toInt(),
+                        clientId = clientId,
+                        syncDatetime = GlobalMethods.convertMillisToDateAndTime(syncDateTime),
+                        userMobile = userNumber,
+                        userName = userName
                     )
-                    preferenceManager.getLastSyncedTimeInMillis()
+                ).let { response ->
+                    if (response?.type == true) {
+                        Log.d("Response", "Success, call notification")
+                        Log.d("CallType", callType)
+                        Log.d("ClientId", clientId.toString())
+                        sendNotification(context, userNumber, syncDateTime)
+
+                        //Save the last sync_date.
+                        preferenceManager.saveLastSyncedTimeInMillis(syncDateTime)
+                        //We have to put a check to see whether the app is on foreground or not.
+
+                        val currentState = application.getCurrentState()
+                        Log.d("currentStateOfApp", "$currentState")
+
+                        if (isAppInforegrounded()) {
+                            updateExistingCallLogs(
+                                callType,
+                                "app running",
+                                SampleEntity(
+                                    userName,
+                                    userNumber,
+                                    callTime,
+                                    callDuration,
+                                    callType,
+                                    subscribedSimID,
+                                    callLogId
+                                )
+                            )
+                            preferenceManager.getLastSyncedTimeInMillis()
+                        }else{
+                            Log.d("AppInForeground", "False")
+                        }
+
+                    } else
+                        Log.d("Response", "Success, Failed to update in the backend")
                 }
+            }catch (t: Throwable){
+                when(t) {
+                    is IOException ->  Log.d("Response", "${t.printStackTrace()}")
+                    else -> Log.d("Response", "${t.printStackTrace()}")
+                }
+            }
 
-            } else
-                Log.d("Response", "Success, Failed to update in the backend")
-
+    }else{
+            Log.d("Response", "No, Internet Connection")
         }
     }
 
@@ -280,7 +295,8 @@ class PhoneCallReceiver : BroadcastReceiver() {
         val intent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
-        val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
         val channelId = "Call Logger"
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(context, channelId)

@@ -8,6 +8,9 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.ConnectivityManager
+import android.net.ConnectivityManager.*
+import android.net.NetworkCapabilities.*
 import android.net.Uri
 import android.os.Build
 import android.util.Log
@@ -17,6 +20,8 @@ import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.res.ResourcesCompat
 import com.judemanutd.autostarter.AutoStartPermissionHelper
 import com.eazybe.callLogger.R
+import com.eazybe.callLogger.container.CallLoggerApplication
+import dagger.hilt.android.internal.Contexts.getApplication
 import www.sanju.motiontoast.MotionToast
 import www.sanju.motiontoast.MotionToastStyle
 import java.text.ParseException
@@ -316,5 +321,31 @@ object GlobalMethods {
         val clipData = ClipData.newPlainText("text", textToCopy)
         clipboardManager.setPrimaryClip(clipData)
         Toast.makeText(context, "$textToCopy copied to clipboard", Toast.LENGTH_LONG).show()
+    }
+
+     fun hasInternetConnection(context: Context): Boolean {
+        val connectivityManager = getApplication(context).getSystemService(
+            Context.CONNECTIVITY_SERVICE
+        ) as ConnectivityManager
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val activeNetwork = connectivityManager.activeNetwork ?: return false
+            val capabilities = connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
+            return when {
+                capabilities.hasTransport(TRANSPORT_WIFI) -> true
+                capabilities.hasTransport(TRANSPORT_CELLULAR) -> true
+                capabilities.hasTransport(TRANSPORT_ETHERNET) -> true
+                else -> false
+            }
+        } else {
+            connectivityManager.activeNetworkInfo?.run {
+                return when(type) {
+                    TYPE_WIFI -> true
+                    TYPE_MOBILE -> true
+                    TYPE_ETHERNET -> true
+                    else -> false
+                }
+            }
+        }
+        return false
     }
 }
