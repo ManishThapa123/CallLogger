@@ -17,6 +17,7 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.eazybe.callLogger.BaseActivity
 import com.eazybe.callLogger.MainActivity
 import com.eazybe.callLogger.databinding.SingUpFragmentBinding
 import com.eazybe.callLogger.helper.GlobalMethods
@@ -246,7 +247,7 @@ class SignUpFragment : Fragment() {
                     "User has been registered..",
                     "success", requireContext()
                 )
-                val intent = Intent(requireContext(), MainActivity::class.java)
+                val intent = Intent(requireContext(), BaseActivity::class.java)
                 intent.flags =
                     Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(intent)
@@ -259,7 +260,7 @@ class SignUpFragment : Fragment() {
                     "Redirecting..",
                     "warning", requireContext()
                 )
-                val intent = Intent(requireContext(), MainActivity::class.java)
+                val intent = Intent(requireContext(), BaseActivity::class.java)
                 intent.flags =
                     Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(intent)

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/followUp"
+    app:startDestination="@id/followUpFragment">
+
+    <fragment
+        android:id="@+id/followUpFragment"
+        android:name="com.eazybe.callLogger.ui.FollowUps.FollowUpFragment"
+        android:label="follow_up_fragment"
+        tools:layout="@layout/follow_up_fragment" />
+</navigation>

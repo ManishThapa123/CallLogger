@@ -73,8 +73,20 @@ class PreferenceManager constructor(private val context: Context) {
         return sharedPreferences.getString(AppConstants.CLIENT_REGISTRATION_DATA_SAVED, null)
     }
 
-    fun saveSIMSubscriptionId(subId: String){
-        spEditor.putString(AppConstants.SIM_SUBSCRIPTION_ID_SAVED,subId)
+
+    //to save data after registration/login
+    fun saveClientRegistrationDataEmail(status: String) {
+        spEditor.putString(AppConstants.CLIENT_REGISTRATION_DATA_EMAIL, status)
+        spEditor.commit()
+    }
+
+    //to get auth credentials
+    fun getClientRegistrationDataEmail(): String? {
+        return sharedPreferences.getString(AppConstants.CLIENT_REGISTRATION_DATA_EMAIL, null)
+    }
+
+    fun saveSIMSubscriptionId(subId: String) {
+        spEditor.putString(AppConstants.SIM_SUBSCRIPTION_ID_SAVED, subId)
         spEditor.commit()
     }
 
@@ -82,8 +94,8 @@ class PreferenceManager constructor(private val context: Context) {
         return sharedPreferences.getString(AppConstants.SIM_SUBSCRIPTION_ID_SAVED, null)
     }
 
-    fun saveSIMSubscriptionIdSub(subId: String){
-        spEditor.putString(AppConstants.SIM_SUBSCRIPTION_ID_SUB_SAVED,subId)
+    fun saveSIMSubscriptionIdSub(subId: String) {
+        spEditor.putString(AppConstants.SIM_SUBSCRIPTION_ID_SUB_SAVED, subId)
         spEditor.commit()
     }
 
@@ -102,6 +114,15 @@ class PreferenceManager constructor(private val context: Context) {
 
     fun getOrgState(): Boolean {
         return sharedPreferences.getBoolean(AppConstants.ORG_STATE_SAVED, false)
+    }
+
+    fun saveCallLogAccessState(saveCallLogState: Boolean) {
+        spEditor.putBoolean(AppConstants.CALL_LOG_STATE_SAVED, true)
+        spEditor.commit()
+    }
+
+    fun getCallLogAccessState(): Boolean {
+        return sharedPreferences.getBoolean(AppConstants.CALL_LOG_STATE_SAVED, false)
     }
 
 }

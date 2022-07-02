@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/leads"
+    app:startDestination="@id/leadsFragment">
+
+    <fragment
+        android:id="@+id/leadsFragment"
+        android:name="com.eazybe.callLogger.ui.Leads.LeadsFragment"
+        android:label="leads_fragment"
+        tools:layout="@layout/leads_fragment" />
+</navigation>

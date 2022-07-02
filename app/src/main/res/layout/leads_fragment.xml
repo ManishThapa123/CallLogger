@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.Leads.LeadsFragment">
+
+    <TextView
+        android:id="@+id/txtDefaultLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dimens_20"
+        android:layout_marginTop="@dimen/dimen_12"
+        android:fontFamily="@font/montserrat_regular"
+        android:text="Default Labels"
+        android:textAllCaps="true"
+        android:textSize="11dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cvDefault1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dimens_20"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="@dimen/dimens_20"
+        android:clickable="true"
+        android:elevation="@dimen/dimen_12"
+        android:focusable="true"
+        app:cardCornerRadius="@dimen/dimen_12"
+        app:layout_constraintTop_toBottomOf="@id/txtDefaultLabel">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="@dimen/dimen_12">
+
+            <ImageView
+                android:id="@+id/imgCardIcon"
+                android:layout_width="@dimen/dimens_20"
+                android:layout_height="@dimen/dimens_20"
+                android:src="@drawable/ic_leads_icon"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/dark" />
+
+            <TextView
+                android:id="@+id/txtAllLeads"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimens_20"
+                android:fontFamily="@font/montserrat_bold"
+                android:text="All Leads"
+                android:textColor="@color/dark"
+                android:textSize="@dimen/dimen_16"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/imgCardIcon"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/txtAllLeadsCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dimens_20"
+                android:fontFamily="@font/montserrat_bold"
+                android:textAllCaps="true"
+                android:textColor="@color/dark"
+                android:textSize="@dimen/dimens_14"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/imgArrowForward"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="26559595" />
+
+            <ImageView
+                android:id="@+id/imgArrowForward"
+                android:layout_width="@dimen/dimens_18"
+                android:layout_height="@dimen/dimens_18"
+                android:src="@drawable/ic_front_arrow"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cvDefault2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dimens_20"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="@dimen/dimens_20"
+        android:clickable="true"
+        android:elevation="@dimen/dimen_12"
+        android:focusable="true"
+        app:cardCornerRadius="@dimen/dimen_12"
+        app:layout_constraintTop_toBottomOf="@id/cvDefault1">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="@dimen/dimen_12">
+
+            <ImageView
+                android:id="@+id/imgCardIcon2"
+                android:layout_width="@dimen/dimens_20"
+                android:layout_height="@dimen/dimens_20"
+                android:src="@drawable/ic_new_leads_icon"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/dark" />
+
+            <TextView
+                android:id="@+id/txtAllLeads2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimens_20"
+                android:fontFamily="@font/montserrat_bold"
+                android:text="New Leads"
+                android:textColor="@color/dark"
+                android:textSize="@dimen/dimen_16"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/imgCardIcon2"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/txtAllLeadsCount2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dimens_20"
+                android:fontFamily="@font/montserrat_bold"
+                android:textAllCaps="true"
+                android:textColor="@color/dark"
+                android:textSize="@dimen/dimens_14"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/imgArrowForward2"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="98" />
+
+            <ImageView
+                android:id="@+id/imgArrowForward2"
+                android:layout_width="@dimen/dimens_18"
+                android:layout_height="@dimen/dimens_18"
+                android:src="@drawable/ic_front_arrow"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/txtYourLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dimens_20"
+        android:layout_marginTop="@dimen/dimen_12"
+        android:fontFamily="@font/montserrat_regular"
+        android:text="Your Labels"
+        android:textAllCaps="true"
+        android:textSize="11dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cvDefault2" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewYourLabels"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/dimens_20"
+        android:layout_marginTop="@dimen/dimen_8"
+        android:layout_marginEnd="@dimen/dimens_20"
+        app:layout_constraintBottom_toTopOf="@id/btnNewLabel"
+        app:layout_constraintTop_toBottomOf="@+id/txtYourLabel"
+        tools:listitem="@layout/item_your_labels" />
+
+    <ImageView
+        android:id="@+id/imgLabelHintText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dimen_8"
+        android:src="@drawable/ic_labels_hint_text"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/btnNewLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/recyclerViewYourLabels" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnNewLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_12"
+        android:layout_marginBottom="@dimen/dimen_32"
+        android:backgroundTint="@color/colorPrimary"
+        android:text="Create New Label"
+        android:textAllCaps="false"
+        app:cornerRadius="@dimen/dimen_12"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

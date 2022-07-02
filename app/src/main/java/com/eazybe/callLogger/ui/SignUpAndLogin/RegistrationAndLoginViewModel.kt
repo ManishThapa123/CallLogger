@@ -7,10 +7,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.eazybe.callLogger.api.models.requests.GoogleSignUpRequest
 import com.eazybe.callLogger.api.models.requests.RegisterRequest
-import com.eazybe.callLogger.api.models.responses.LastSyncResponse
-import com.eazybe.callLogger.api.models.responses.RegisterData
-import com.eazybe.callLogger.api.models.responses.RegistrationResponse
+import com.eazybe.callLogger.api.models.requests.VerifyEmailOtp
+import com.eazybe.callLogger.api.models.responses.*
 import com.eazybe.callLogger.helper.CallLogsHelper
 import com.eazybe.callLogger.helper.GlobalMethods
 import com.eazybe.callLogger.helper.PreferenceManager
@@ -25,15 +25,33 @@ class RegistrationAndLoginViewModel @Inject constructor(
     private val preferenceManager: PreferenceManager,
     private val baseRepository: BaseRepository,
     private val callLogsHelper: CallLogsHelper,
-    private val clientDetailAdapter: JsonAdapter<RegisterData>
+    private val clientDetailAdapter: JsonAdapter<UserData>,
+    private val clientDetailEmailAdapter: JsonAdapter<WorkspaceDetails>
 ) :
     ViewModel() {
 
-    private val _userRegisteredResponse = MutableLiveData<RegistrationResponse>()
-    val userRegisteredResponse: LiveData<RegistrationResponse> = _userRegisteredResponse
+    private val _userRegisteredResponse = MutableLiveData<CreateOrUpdateUserResponse>()
+    val userRegisteredResponse: LiveData<CreateOrUpdateUserResponse> = _userRegisteredResponse
 
-    private val _userAlreadyExists = MutableLiveData<RegistrationResponse>()
-    val userAlreadyExists: LiveData<RegistrationResponse> = _userAlreadyExists
+    private val _userAlreadyExists = MutableLiveData<CreateOrUpdateUserResponse>()
+    val userAlreadyExists: LiveData<CreateOrUpdateUserResponse> = _userAlreadyExists
+
+
+    private val _sendToOtpScreen = MutableLiveData<String>()
+    val sendToOtpScreen: LiveData<String> = _sendToOtpScreen
+
+    private val _resendOTP = MutableLiveData<Boolean>()
+    val resendOTP: LiveData<Boolean> = _resendOTP
+
+    private val _userRegistered = MutableLiveData<Boolean>()
+    val userRegistered: LiveData<Boolean> = _userRegistered
+
+    private val _emailVerified = MutableLiveData<VerifyOTPResponse>()
+    val emailVerified: LiveData<VerifyOTPResponse> = _emailVerified
+
+    private val _gmailVerified = MutableLiveData<Boolean>()
+    val gmailVerified: LiveData<Boolean> = _gmailVerified
+
 
     private val _userLastSync = MutableLiveData<LastSyncResponse>()
     val userLastSync: LiveData<LastSyncResponse> = _userLastSync
@@ -102,7 +120,7 @@ class RegistrationAndLoginViewModel @Inject constructor(
                 if (response?.type == true) {
                     preferenceManager.saveLoginState(true)
                     val dataInString =
-                        clientDetailAdapter.toJson(response.registerData!![0])
+                        clientDetailAdapter.toJson(response.data)
                     preferenceManager.saveClientRegistrationData(dataInString)
                     _userRegisteredResponse.value = response!!
                     Log.d("Response", "User Registered")
@@ -110,9 +128,10 @@ class RegistrationAndLoginViewModel @Inject constructor(
                     if (response?.type == false &&
                         response.message == "User Existed. You Can't Process"
                     ) {
+
                         preferenceManager.saveLoginState(true)
                         val dataInString =
-                            clientDetailAdapter.toJson(response.registerData!![0])
+                            clientDetailAdapter.toJson(response.data)
                         preferenceManager.saveClientRegistrationData(dataInString)
                         //save to shared preferences
                         _userAlreadyExists.value = response!!
@@ -123,6 +142,62 @@ class RegistrationAndLoginViewModel @Inject constructor(
             }
         }
 
+    private fun callCreateCallyzerUserAgain() {
+        createOrUpdateCallyzerUser()
+    }
+
+    fun createOrUpdateCallyzerUser() = viewModelScope.launch {
+        val currentTimeInMillis = callLogsHelper.createDate(0)
+        //convert the millis to TimeStamp
+        val currentTimeConverted = GlobalMethods.convertMillisToDateAndTime(currentTimeInMillis)
+        Log.d(
+            "currentTimeConvertedDuringSignup",
+            "$currentTimeConverted = $currentTimeInMillis"
+        )
+
+        val clientEmailData =
+            clientDetailEmailAdapter.fromJson(preferenceManager.getClientRegistrationDataEmail()!!)
+        baseRepository.registerUser(
+            RegisterRequest(
+                1,
+                "",
+                "",
+                currentTimeConverted,
+                clientEmailData!!.id
+            )
+        )?.let { response ->
+            if (response?.type == true) {
+                if (response.data?.loggingStartsFrom.isNullOrEmpty()) {
+                    callCreateCallyzerUserAgain()
+                } else {
+                    preferenceManager.saveLoginState(true)
+                    val dataInString =
+                        clientDetailAdapter.toJson(response.data)
+                    preferenceManager.saveClientRegistrationData(dataInString)
+                    _userRegisteredResponse.value = response!!
+                    Log.d("Response", "User Registered")
+                }
+
+            } else {
+                if (response?.type == false &&
+                    response.message == "User Existed. You Can't Process"
+                ) {
+                    if (response.data?.loggingStartsFrom.isNullOrEmpty()) {
+                        callCreateCallyzerUserAgain()
+                    } else {
+                        preferenceManager.saveLoginState(true)
+                        val dataInString =
+                            clientDetailAdapter.toJson(response.data)
+                        preferenceManager.saveClientRegistrationData(dataInString)
+                        //save to shared preferences
+                        _userAlreadyExists.value = response!!
+                        Log.d("Response", "User Already Exists")
+                    }
+
+                }
+            }
+        }
+    }
 
     fun getSimCardInfos(context: FragmentActivity) = viewModelScope.launch {
 
@@ -152,6 +227,60 @@ class RegistrationAndLoginViewModel @Inject constructor(
                 _validateOrgCode.value = orgId!!
             } else {
                 _validateOrgCodeFailure.value = true
+            }
+        }
+    }
+
+    fun verifyEmailAndSendOtp(email: String) = viewModelScope.launch {
+        baseRepository.sendEmailOtp(email).let { response ->
+            if (response?.status == true) {
+                _sendToOtpScreen.value = email
+            }
+        }
+    }
+
+    fun resendOtp(userEmail: String) = viewModelScope.launch {
+        baseRepository.sendEmailOtp(userEmail).let { response ->
+            if (response?.status == true) {
+                _resendOTP.value = true
+            } else {
+                _resendOTP.value = false
+            }
+        }
+    }
+
+    /**
+     * To verify email and otp, returns workspace details when true.
+     */
+
+    fun verifyEmailOtp(email: String, otp: Int) = viewModelScope.launch {
+        baseRepository.verifyEmailOtp(VerifyEmailOtp(otp, email))?.let { response ->
+            if (response.status == true) {
+                val dataInString = clientDetailEmailAdapter.toJson(response.workspaceDetails)
+                preferenceManager.saveClientRegistrationDataEmail(dataInString)
+                preferenceManager.saveLoginState(true)
+                _emailVerified.value = response
+            }
+        }
+    }
+
+    fun verifyGmailSignUp(email: String, otp: String) = viewModelScope.launch {
+        baseRepository.verifyGmailSignUp(GoogleSignUpRequest(otp, email))?.let { response ->
+            if (response.status == true) {
+                val dataInString = clientDetailEmailAdapter.toJson(response.workspaceData)
+                preferenceManager.saveClientRegistrationDataEmail(dataInString)
+                preferenceManager.saveLoginState(true)
+                _gmailVerified.value = true
+            } else {
+                if (response.workspaceData != null) {
+                    val dataInString = clientDetailEmailAdapter.toJson(response.workspaceData)
+                    preferenceManager.saveClientRegistrationDataEmail(dataInString)
+                    preferenceManager.saveLoginState(true)
+                    _gmailVerified.value = true
+                } else {
+                    _gmailVerified.value = false
+                }
+
             }
         }
     }

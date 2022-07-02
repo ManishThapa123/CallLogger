@@ -6,8 +6,9 @@
     <item android:title="Dashboard"
         android:id="@+id/dashBoard"
         android:icon="@drawable/ic_dashboard"/>
-<!--    <item android:title="Contact"-->
-<!--        android:icon="@drawable/ic_contact"/>-->
+    <item android:title="Leads"
+        android:id="@+id/leadsFrag"
+        android:icon="@drawable/ic_contact"/>
 <!--    <item android:title="My Leads"-->
 <!--        android:icon="@drawable/ic_add_person"-->
 <!--        android:iconTint="@color/black"/>-->

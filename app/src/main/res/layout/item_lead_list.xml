@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/dimens_14">
+
+    <RelativeLayout
+        android:id="@+id/rlLeadInitials"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="6dp"
+        android:background="@drawable/lead_name_bg"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:fontFamily="@font/montserrat_bold"
+            android:text="JD"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/dimen_16" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/txtLeadName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dimens_12"
+        android:fontFamily="@font/montserrat_bold"
+        android:text="Johnny Depp"
+        android:textSize="@dimen/dimens_14"
+        app:layout_constraintBottom_toTopOf="@id/txtLeadFrom"
+        app:layout_constraintStart_toEndOf="@id/rlLeadInitials"
+        app:layout_constraintTop_toTopOf="@id/rlLeadInitials" />
+
+
+    <TextView
+        android:id="@+id/txtLeadFrom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dimens_12"
+        android:fontFamily="@font/montserrat_regular"
+        android:text="Facebook Lead Via Otics"
+        android:textSize="@dimen/dimens_12"
+        app:layout_constraintBottom_toBottomOf="@id/rlLeadInitials"
+        app:layout_constraintStart_toEndOf="@id/rlLeadInitials"
+        app:layout_constraintTop_toBottomOf="@id/txtLeadName" />
+
+    <ImageView
+        android:id="@+id/imgLeadFromLogo"
+        android:layout_width="@dimen/dimens_18"
+        android:layout_height="@dimen/dimens_18"
+        android:layout_marginEnd="@dimen/dimen_8"
+        android:src="@drawable/img_fb_logo"
+        app:layout_constraintBottom_toBottomOf="@+id/txtLeadFrom"
+        app:layout_constraintEnd_toEndOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

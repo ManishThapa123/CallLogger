@@ -813,12 +813,12 @@ class CallLogsHelper @Inject constructor(
 
                       if (!lastLogCount) {
                           if (!subscribedSimID.isNullOrEmpty()) {
-                              if (subscribedSimID == preferenceManager.getSIMSubscriptionId() ||
-                                  subscribedSimID == preferenceManager.getSIMSubscriptionIdSub() ||
-                                  (subscribedSimID.length > 1 && preferenceManager.getSIMSubscriptionId()
-                                      ?.substring(0, 18)
-                                      ?.let { subscribedSimID.contains(it) } == true)
-                              ) {
+//                              if (subscribedSimID == preferenceManager.getSIMSubscriptionId() ||
+//                                  subscribedSimID == preferenceManager.getSIMSubscriptionIdSub() ||
+//                                  (subscribedSimID.length > 1 && preferenceManager.getSIMSubscriptionId()
+//                                      ?.substring(0, 18)
+//                                      ?.let { subscribedSimID.contains(it) } == true)
+//                              ) {
                                   latestLog(
                                       SampleEntity(
                                           name,
@@ -833,7 +833,7 @@ class CallLogsHelper @Inject constructor(
                                   lastLogCount = true
                                   Log.d("MY_APP_CALL_LOGS", "$number $duration $type $name")
                                   Log.d("subscription_Id", "$subscribedSimID and number = $number")
-                              }
+//                              }
                           }
                       }
                   }
@@ -1038,12 +1038,12 @@ class CallLogsHelper @Inject constructor(
 //            Log.d("subscribedSimICCID", "${preferenceManager.getSIMSubscriptionId()?.substring(0,18)}")
 
             if (!subscribedSimID.isNullOrEmpty()) {
-                if (subscribedSimID == preferenceManager.getSIMSubscriptionId() ||
-                    subscribedSimID == preferenceManager.getSIMSubscriptionIdSub() ||
-                    (subscribedSimID.length > 1 && preferenceManager.getSIMSubscriptionId()
-                        ?.substring(0, 18)
-                        ?.let { subscribedSimID.contains(it) } == true)
-                ) {
+//                if (subscribedSimID == preferenceManager.getSIMSubscriptionId() ||
+//                    subscribedSimID == preferenceManager.getSIMSubscriptionIdSub() ||
+//                    (subscribedSimID.length > 1 && preferenceManager.getSIMSubscriptionId()
+//                        ?.substring(0, 18)
+//                        ?.let { subscribedSimID.contains(it) } == true)
+//                ) {
                     allCallLogsList!!.add(
                         SampleEntity(
                             name,
@@ -1112,7 +1112,7 @@ class CallLogsHelper @Inject constructor(
                             )
                         }
                     }
-                }
+//                }
             }
         }
         when (callType) {

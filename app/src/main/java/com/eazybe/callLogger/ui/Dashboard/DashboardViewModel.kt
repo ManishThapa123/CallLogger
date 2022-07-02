@@ -55,9 +55,13 @@ class DashboardViewModel @Inject constructor(
     val highestCallerCount: LiveData<String> = _highestCallerCount
 
     fun getDashBoardCounts() = viewModelScope.launch {
+        var totalOutGoings: Int? = 0
+        var totalIncomings: Int? = 0
+        var totalMissed: Int? = 0
 
         val totalOutGoingCallsCount = callLogsHelper.getTotalOutGoingCallsCount()
         _totalOutgoingCallsCount.value = "$totalOutGoingCallsCount"
+        totalOutGoings = totalOutGoingCallsCount
 
         val totalOutGoingCallsDuration = callLogsHelper.getTotalOutGoingCallsDuration()
         _totalOutGoingCallsDuration.value =
@@ -65,6 +69,7 @@ class DashboardViewModel @Inject constructor(
 
         val totalIncomingCallsCount = callLogsHelper.getTotalIncomingCallsCount()
         _totalIncomingCallsCount.value = "$totalIncomingCallsCount"
+        totalIncomings = totalIncomingCallsCount
 
         val totalIncomingCallsDuration = callLogsHelper.getTotalIncomingCallsDuration()
         _totalIncomingCallsDuration.value =
@@ -72,7 +77,6 @@ class DashboardViewModel @Inject constructor(
 
         val totalCallDuration = callLogsHelper.getTotalCallsDuration()
         _totalCallsDuration.value = GlobalMethods.convertSeconds(totalCallDuration.toInt())
-
 
         Log.d("totalOutGoingCallsCount", "$totalOutGoingCallsCount")
         Log.d("totalOutGoingCallsDuration", totalOutGoingCallsDuration)
@@ -113,17 +117,24 @@ class DashboardViewModel @Inject constructor(
         callLogsHelper.getAllCallLogs {
             totalPhoneCalls = "${it.size}"
         }
-        _totalPhoneCalls.value = totalPhoneCalls
 
         _neverAttendedCalls.value = "${callLogsHelper.getNeverAttendedCallsCount()}"
+        totalMissed = callLogsHelper.getNeverAttendedCallsCount()
 
         _notPickedUpByClient.value = "${callLogsHelper.getTotalNotPickedUpByClientCount()}"
+
+        _totalPhoneCalls.value = "${totalOutGoings+totalIncomings+totalMissed}"
 
     }
 
     fun getDashBoardCountsToday() = viewModelScope.launch {
+        var totalOutGoings: Int? = 0
+        var totalIncomings: Int? = 0
+        var totalMissed: Int? = 0
+
         val totalOutGoingCallsCount = callLogsHelper.getTotalOutGoingCallsCount(true)
         _totalOutgoingCallsCount.value = "$totalOutGoingCallsCount"
+        totalOutGoings = totalOutGoingCallsCount
 
         val totalOutGoingCallsDuration = callLogsHelper.getTotalOutGoingCallsDuration(true)
         _totalOutGoingCallsDuration.value =
@@ -131,6 +142,7 @@ class DashboardViewModel @Inject constructor(
 
         val totalIncomingCallsCount = callLogsHelper.getTotalIncomingCallsCount(true)
         _totalIncomingCallsCount.value = "$totalIncomingCallsCount"
+        totalIncomings = totalIncomingCallsCount
 
         val totalIncomingCallsDuration = callLogsHelper.getTotalIncomingCallsDuration(true)
         _totalIncomingCallsDuration.value =
@@ -174,13 +186,25 @@ class DashboardViewModel @Inject constructor(
                 )
             }
         }
-        //To get all calls Count
-        callLogsHelper.getAllCallLogs(true) {
-            _totalPhoneCalls.value = "${it.size}"
-        }
+
         //To get neverAttended calls Count
         _neverAttendedCalls.value = "${callLogsHelper.getNeverAttendedCallsCount(true)}"
+        totalMissed = callLogsHelper.getNeverAttendedCallsCount(true)
         //To get notPickedUpByClient calls Count
         _notPickedUpByClient.value = "${callLogsHelper.getTotalNotPickedUpByClientCount(true)}"
+
+        //To get all calls Count
+        _totalPhoneCalls.value = "${totalOutGoings+totalIncomings+totalMissed}"
+//        callLogsHelper.getAllCallLogs(true) {
+//            _totalPhoneCalls.value = "${it.size}"
+//        }
+    }
+
+    fun saveCallLogState() = viewModelScope.launch {
+        preferenceManager.saveCallLogAccessState(true)
+    }
+
+    fun getCallLogAccessState(): Boolean {
+        return preferenceManager.getCallLogAccessState()
     }
 }

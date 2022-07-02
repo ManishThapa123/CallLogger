@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eazybe.callLogger.api.models.requests.UpdateOrgRequest
 import com.eazybe.callLogger.api.models.responses.RegisterData
+import com.eazybe.callLogger.api.models.responses.UserData
 import com.eazybe.callLogger.helper.PreferenceManager
 import com.eazybe.callLogger.repository.BaseRepository
 import com.squareup.moshi.JsonAdapter
@@ -17,7 +18,7 @@ import javax.inject.Inject
 class AddOrganizationViewModel @Inject constructor(
     private val preferenceManager: PreferenceManager,
     private val baseRepository: BaseRepository,
-    private val clientDetailAdapter: JsonAdapter<RegisterData>
+    private val clientDetailAdapter: JsonAdapter<UserData>
 ) :
     ViewModel() {
 

@@ -17,8 +17,8 @@ android {
         applicationId "com.eazybe.callLogger"
         minSdk 23
         targetSdk 31
-        versionCode 13
-        versionName '1.12'
+        versionCode 14
+        versionName '1.13'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -38,6 +38,9 @@ android {
     }
     viewBinding {
         enabled = true
+    }
+    buildFeatures {
+        viewBinding true
     }
 }
 
@@ -98,6 +101,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
 
+
     //Stetho dependencies
     implementation 'com.facebook.stetho:stetho:1.6.0'
     implementation 'com.facebook.stetho:stetho-okhttp3:1.6.0'
@@ -107,7 +111,12 @@ dependencies {
 
     implementation 'androidx.work:work-runtime-ktx:2.7.1'
 
- 
+    implementation 'com.github.SimpleMobileTools:Simple-Commons:e3376e4f56'
+    //Image Recognition
+    implementation 'com.google.android.gms:play-services-mlkit-text-recognition:18.0.0'
+    implementation 'com.github.GoodieBag:Pinview:v1.4'
+
+    implementation 'com.google.android.gms:play-services-auth:20.2.0'
 
 }
 // Allow references to generated code

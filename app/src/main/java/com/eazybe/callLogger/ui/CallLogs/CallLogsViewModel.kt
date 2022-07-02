@@ -1,19 +1,20 @@
 package com.eazybe.callLogger.ui.CallLogs
 
 import android.content.Context
+import android.media.projection.MediaProjection
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.squareup.moshi.JsonAdapter
 import com.eazybe.callLogger.api.models.entities.CallDetailsWithCount
-import com.eazybe.callLogger.api.models.entities.Data
 import com.eazybe.callLogger.api.models.entities.SampleEntity
 import com.eazybe.callLogger.api.models.responses.RegisterData
+import com.eazybe.callLogger.api.models.responses.UserData
 import com.eazybe.callLogger.helper.CallLogsHelper
 import com.eazybe.callLogger.helper.GlobalMethods
 import com.eazybe.callLogger.helper.PreferenceManager
+import com.squareup.moshi.JsonAdapter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -22,7 +23,7 @@ import javax.inject.Inject
 class CallLogsViewModel @Inject constructor(
     private val preferenceManager: PreferenceManager,
     private val callLogsHelper: CallLogsHelper,
-    private val clientDetailAdapter: JsonAdapter<RegisterData>
+    private val clientDetailAdapter: JsonAdapter<UserData>
 ) : ViewModel() {
 
     private val _sampleData = MutableLiveData<List<SampleEntity>>()
@@ -60,6 +61,9 @@ class CallLogsViewModel @Inject constructor(
 
     private val _permissionState = MutableLiveData<Boolean>()
     val permissionState: LiveData<Boolean> = _permissionState
+
+    private val _callLogPermissionState = MutableLiveData<Boolean>()
+    val callLogPermissionState: LiveData<Boolean> = _callLogPermissionState
 
     private val _lastSynced = MutableLiveData<String?>()
     val lastSynced: LiveData<String?> = _lastSynced
@@ -132,22 +136,29 @@ class CallLogsViewModel @Inject constructor(
         }
     }
 
+    fun saveMediaProjectionToken(mediaProjection: MediaProjection) = viewModelScope.launch {
+
+    }
+
 
     fun saveRegisteredDateAndTime() = viewModelScope.launch {
         //Check Preferences for the saved Time.
         if (!preferenceManager.isSavedFirstRegisterTimeStamp()) {
             val prefSavedUserData = preferenceManager.getClientRegistrationData()
             val convertedUserData = clientDetailAdapter.fromJson(prefSavedUserData!!)
-            Log.d("RegisteredUserTime", "${convertedUserData?.registrationDate}")
+            Log.d("RegisteredUserTime", "${convertedUserData?.loggingStartsFrom}")
             val finalConvertedDateInMillis =
-                GlobalMethods.getMilliFromDate(if (!convertedUserData?.registrationDate.isNullOrEmpty()){
-                    convertedUserData?.registrationDate
-                }else{
-                   "2022-01-01 20:20:20"
-                })
+                GlobalMethods.getMilliFromDate(
+                    if (!convertedUserData?.loggingStartsFrom.isNullOrEmpty()) {
+                        convertedUserData?.loggingStartsFrom
+                    } else {
+                        "2022-01-01 20:20:20"
+                    }
+                )
             preferenceManager.saveFirstTimeRegisterMillis(finalConvertedDateInMillis)
 
-            val finalConvertedSyncedTimeInMillis = GlobalMethods.getMilliFromDate(convertedUserData?.lastSynced)
+            val finalConvertedSyncedTimeInMillis =
+                GlobalMethods.getMilliFromDate(convertedUserData?.lastSynced)
             preferenceManager.saveLastSyncedTimeInMillis(finalConvertedSyncedTimeInMillis)
         }
     }
@@ -168,5 +179,13 @@ class CallLogsViewModel @Inject constructor(
 
     fun deleteUserCallLog(callData: SampleEntity, context: Context) {
         callLogsHelper.deleteCallById(callData.callLogId!!, context)
+    }
+
+    fun saveCallLogState() = viewModelScope.launch {
+        preferenceManager.saveCallLogAccessState(true)
+    }
+
+    fun getCallLogAccessState(): Boolean {
+        return preferenceManager.getCallLogAccessState()
     }
 }

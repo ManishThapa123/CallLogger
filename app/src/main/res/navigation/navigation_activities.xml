@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_activities"
+    app:startDestination="@id/callLogPermissionFragment">
+
+
+    <fragment
+        android:id="@+id/callLogMainFragment"
+        android:name="com.eazybe.callLogger.ui.CallLogs.CallLog.CallLogMainFragment"
+        android:label="fragment_call_log_main"
+        tools:layout="@layout/fragment_call_log_main" />
+    <fragment
+        android:id="@+id/conversationFragment"
+        android:name="com.eazybe.callLogger.ui.CallLogs.Conversation.ConversationFragment"
+        android:label="conversation_fragment"
+        tools:layout="@layout/conversation_fragment" />
+
+    <action
+        android:id="@+id/gotoCallLogFragment"
+        app:destination="@id/callLogMainFragment"
+        app:enterAnim="@anim/nav_default_pop_enter_anim"
+        app:exitAnim="@anim/nav_default_pop_exit_anim"
+        app:popUpToInclusive="true"/>
+
+    <action
+        android:id="@+id/gotoConversationFragment"
+        app:destination="@id/conversationFragment"
+        app:enterAnim="@anim/nav_default_pop_enter_anim"
+        app:exitAnim="@anim/nav_default_pop_exit_anim" />
+
+    <fragment
+        android:id="@+id/callLogPermissionFragment"
+        android:name="com.eazybe.callLogger.ui.CallLogs.CallLog.CallLogPermissionFragment"
+        android:label="fragment_call_log_permission"
+        tools:layout="@layout/fragment_call_log_permission" />
+
+    <action
+        android:id="@+id/gotoPermissionsFragment"
+        app:destination="@id/callLogPermissionFragment"
+        app:enterAnim="@anim/nav_default_pop_enter_anim"
+        app:exitAnim="@anim/nav_default_pop_exit_anim" />
+
+</navigation>

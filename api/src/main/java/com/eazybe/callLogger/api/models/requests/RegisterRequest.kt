@@ -14,6 +14,6 @@ data class RegisterRequest(
     var clientName: String?,
     @Json(name = "last_synced")
     var lastSynced: String?,
-    @Json(name = "org_id")
-    var orgId: Int?
+    @Json(name = "workspace_id")
+    var workspaceId: Int?
 )

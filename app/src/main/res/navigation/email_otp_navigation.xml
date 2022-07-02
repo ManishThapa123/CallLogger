@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/email_otp_navigation"
+    app:startDestination="@id/signUpOtpFragment">
+    <fragment
+        android:id="@+id/signUpOtpFragment"
+        android:name="com.eazybe.callLogger.ui.SignUpAndLogin.SignUpOtpFragment"
+        android:label="fragment_sign_up_otp"
+        tools:layout="@layout/fragment_sign_up_otp">
+        <action
+            android:id="@+id/action_signUpOtpFragment_to_otpScreenFragment"
+            app:destination="@id/otpScreenFragment"
+            app:enterAnim="@anim/slide_in_from_right_to_left"
+            app:exitAnim="@anim/slide_out_from_right_to_left"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpTo="@layout/fragment_sign_up_otp">
+            <argument
+                android:name="email"
+                android:defaultValue="@null"
+                app:argType="string"
+                app:nullable="true" />
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/otpScreenFragment"
+        android:name="com.eazybe.callLogger.ui.SignUpAndLogin.OtpScreenFragment"
+        android:label="fragment_otp_screen"
+        tools:layout="@layout/fragment_otp_screen" />
+</navigation>

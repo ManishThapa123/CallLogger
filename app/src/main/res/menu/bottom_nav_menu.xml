@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/leads"
+        android:icon="@drawable/ic_leads_icon"
+        android:title="CRM" />
+
+<!--    <item-->
+<!--        android:id="@+id/followUp"-->
+<!--        android:icon="@drawable/ic_follow_up_icon"-->
+<!--        android:title="Follow Ups" />-->
+
+    <item
+        android:id="@+id/call"
+        android:icon="@drawable/ic_activity"
+        android:title="Conversations" />
+
+    <item
+        android:id="@+id/reports"
+        android:icon="@drawable/ic_reports_icon"
+        android:title="Reports" />
+
+    <item
+        android:id="@+id/accounts"
+        android:icon="@drawable/ic_accounts"
+        android:title="My Account" />
+</menu>

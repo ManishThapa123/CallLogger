@@ -4,4 +4,12 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="close">Close</string>
     <string name="open">Open</string>
+    <string name="settings">Settings</string>
+    <string name="clipboard">Clipboard</string>
+    <string name="followUp">Follow Up</string>
+    <string name="manage_clipboard_items">Manage Clipboard Items</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
+
 </resources>

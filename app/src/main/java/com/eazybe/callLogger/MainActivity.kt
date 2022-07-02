@@ -2,12 +2,15 @@ package com.eazybe.callLogger
 
 import android.content.Context
 import android.content.Intent
+import android.media.projection.MediaProjection
+import android.media.projection.MediaProjectionManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -17,8 +20,11 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.eazybe.callLogger.databinding.ActivityMainBinding
 import com.eazybe.callLogger.databinding.NavigationHeaderBinding
+import com.eazybe.callLogger.extensions.toast
 import com.eazybe.callLogger.helper.CallLogsUpdatingManager.allCallLog
 import com.eazybe.callLogger.helper.GlobalMethods
+import com.eazybe.callLogger.interfaces.ScreenshotInterface
+import com.eazybe.callLogger.keyboard.view.MyKeyboardView
 import com.eazybe.callLogger.ui.AddOrganization.AddOrganizationActivity
 import com.eazybe.callLogger.ui.CallLogs.CallLogsFragment1
 import com.eazybe.callLogger.ui.CallLogs.CallLogsFragment2
@@ -29,11 +35,25 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.content_main.*
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ScreenshotInterface {
     private lateinit var binding: ActivityMainBinding
     private var context: Context? = null
     private val callDetailsViewModel: CallLogsViewModel by viewModels()
+
+    private var keyboardView: MyKeyboardView? = null
+    private var mgr: MediaProjectionManager? = null
+    private var mediaProjection : MediaProjection? = null
     private lateinit var headerBinding: NavigationHeaderBinding
+    private val requestReadMediaProjectionPermission =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                mediaProjection = mgr!!.getMediaProjection(result.resultCode, result.data!!)
+
+                toast("Accepted permission")
+            } else {
+                toast("Denied permission")
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +63,8 @@ class MainActivity : AppCompatActivity() {
         headerBinding = NavigationHeaderBinding.bind(headerView)
         setContentView(view)
 
+        keyboardView = MyKeyboardView(this,null)
+        keyboardView!!.setListener(this)
         //For Navigation Drawer and Tool bar
         setSupportActionBar(binding.contentMain.toolBar)
         title = "Home"
@@ -61,14 +83,15 @@ class MainActivity : AppCompatActivity() {
         setUpAdapter()
 
         callDetailsViewModel.getAutoRunPermissionSavedState()
-        callDetailsViewModel.permissionState.observe({ lifecycle }) {
-            if (!it) {
-                Log.d("autoSavePermissionState","False")
-                GlobalMethods.checkIfAutoStartPermissionAvailable(this)
-                GlobalMethods.getAutoStartPermission(this)
-                callDetailsViewModel.saveAutoRunPermissionSavedState()
-            }
-        }
+//        callDetailsViewModel.permissionState.observe({ lifecycle }) {
+//            if (!it) {
+//                Log.d("autoSavePermissionState","False")
+//                GlobalMethods.checkIfAutoStartPermissionAvailable(this)
+//                GlobalMethods.getAutoStartPermission(this)
+//                callDetailsViewModel.saveAutoRunPermissionSavedState()
+//            }
+//        }
+//        askForMediaProjectionPermission()
         // call the view model to save the registered date in millis.
         callDetailsViewModel.saveRegisteredDateAndTime()
 
@@ -101,6 +124,11 @@ class MainActivity : AppCompatActivity() {
                     startActivity(intent)
                     binding.drawerLayout.close()
                 }
+                R.id.leadsFrag -> {
+                    val intent = Intent(this, BaseActivity::class.java)
+                    startActivity(intent)
+                    binding.drawerLayout.close()
+                }
             }
             true
         }
@@ -126,65 +154,65 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        val adapter = CallLogsViewPagerAdapter(fragsList, this)
-        binding.contentMain.fragmentViewPager.offscreenPageLimit = 7
-        binding.contentMain.fragmentViewPager.adapter = adapter
+//        val adapter = CallLogsViewPagerAdapter(fragsList, this)
+//        binding.contentMain.fragmentViewPager.offscreenPageLimit = 7
+//        binding.contentMain.fragmentViewPager.adapter = adapter
 
-        TabLayoutMediator(
-            binding.contentMain.tabLayout, binding.contentMain.fragmentViewPager
-        ) { tab, position ->
-            binding.apply {
-                when (position) {
-                    0 -> {
-                        tab.text = "All"
-                        tab.icon =
-                            AppCompatResources.getDrawable(this@MainActivity, R.drawable.ic_all_call)
-                    }
-                    1 -> {
-                        tab.text = "Incoming"
-                        tab.icon = AppCompatResources.getDrawable(
-                            this@MainActivity,
-                            R.drawable.ic_incoming
-                        )
-                    }
-                    2 -> {
-                        tab.text = "Outgoing"
-                        tab.icon = AppCompatResources.getDrawable(
-                            this@MainActivity,
-                            R.drawable.ic_outgoing
-                        )
-                    }
-                    3 -> {
-                        tab.text = "Missed"
-                        tab.icon = AppCompatResources.getDrawable(
-                            this@MainActivity,
-                            R.drawable.ic_missed
-                        )
-                    }
-                    4 -> {
-                        tab.text = "Rejected"
-                        tab.icon = AppCompatResources.getDrawable(
-                            this@MainActivity,
-                            R.drawable.ic_rejected
-                        )
-                    }
-                    5 -> {
-                        tab.text = "Never Attended"
-                        tab.icon = AppCompatResources.getDrawable(
-                            this@MainActivity,
-                            R.drawable.ic_never_attented
-                        )
-                    }
-                    6 -> {
-                        tab.text = "Not Picked up by client"
-                        tab.icon = AppCompatResources.getDrawable(
-                            this@MainActivity,
-                            R.drawable.ic_not_picked_up_by_client
-                        )
-                    }
-                }
-            }
-        }.attach()
+//        TabLayoutMediator(
+//            binding.contentMain.tabLayout, binding.contentMain.fragmentViewPager
+//        ) { tab, position ->
+//            binding.apply {
+//                when (position) {
+//                    0 -> {
+//                        tab.text = "All"
+//                        tab.icon =
+//                            AppCompatResources.getDrawable(this@MainActivity, R.drawable.ic_all_call)
+//                    }
+//                    1 -> {
+//                        tab.text = "Incoming"
+//                        tab.icon = AppCompatResources.getDrawable(
+//                            this@MainActivity,
+//                            R.drawable.ic_incoming
+//                        )
+//                    }
+//                    2 -> {
+//                        tab.text = "Outgoing"
+//                        tab.icon = AppCompatResources.getDrawable(
+//                            this@MainActivity,
+//                            R.drawable.ic_outgoing
+//                        )
+//                    }
+//                    3 -> {
+//                        tab.text = "Missed"
+//                        tab.icon = AppCompatResources.getDrawable(
+//                            this@MainActivity,
+//                            R.drawable.ic_missed
+//                        )
+//                    }
+//                    4 -> {
+//                        tab.text = "Rejected"
+//                        tab.icon = AppCompatResources.getDrawable(
+//                            this@MainActivity,
+//                            R.drawable.ic_rejected
+//                        )
+//                    }
+//                    5 -> {
+//                        tab.text = "Never Attended"
+//                        tab.icon = AppCompatResources.getDrawable(
+//                            this@MainActivity,
+//                            R.drawable.ic_never_attented
+//                        )
+//                    }
+//                    6 -> {
+//                        tab.text = "Not Picked up by client"
+//                        tab.icon = AppCompatResources.getDrawable(
+//                            this@MainActivity,
+//                            R.drawable.ic_not_picked_up_by_client
+//                        )
+//                    }
+//                }
+//            }
+//        }.attach()
 
         binding.contentMain.tabLayout.addOnTabSelectedListener(object :
             TabLayout.OnTabSelectedListener {
@@ -213,5 +241,12 @@ class MainActivity : AppCompatActivity() {
 
         })
     }
+    private fun askForMediaProjectionPermission(){
+        mgr = getSystemService(MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
+        requestReadMediaProjectionPermission.launch(mgr!!.createScreenCaptureIntent())
+    }
 
+    override fun getScreenshotPermissions() {
+    toast("Came here ask for permissions")
+    }
 }

@@ -1,14 +1,12 @@
 package com.eazybe.callLogger.api
 
-import com.eazybe.callLogger.api.models.requests.RegisterRequest
-import com.eazybe.callLogger.api.models.requests.SaveCallLogs
-import com.eazybe.callLogger.api.models.requests.UpdateOrgRequest
-import com.eazybe.callLogger.api.models.responses.GetOrganizationResponse
-import com.eazybe.callLogger.api.models.responses.LastSyncResponse
-import com.eazybe.callLogger.api.models.responses.RegistrationResponse
-import com.eazybe.callLogger.api.models.responses.SaveCallLogsResponse
+import com.eazybe.callLogger.api.models.requests.*
+import com.eazybe.callLogger.api.models.responses.*
 import retrofit2.Response
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Query
 
 /**
  *Request method and URL specified in the annotation
@@ -19,7 +17,7 @@ interface CallLoggerAPIInterface {
 
     @POST("createusercalllogs")
     suspend fun saveClientCallLogs(
-       @Body saveCallLogs: SaveCallLogs
+        @Body saveCallLogs: SaveCallLogs
     ): Response<SaveCallLogsResponse>
 
     @GET("lastsync")
@@ -29,8 +27,8 @@ interface CallLoggerAPIInterface {
 
     @POST("createCallyzerUser")
     suspend fun registerUser(
-    @Body registerRequest: RegisterRequest
-    ): Response<RegistrationResponse>
+        @Body registerRequest: RegisterRequest
+    ): Response<CreateOrUpdateUserResponse>
 
     @GET("getOrganizationDetails")
     suspend fun getOrganizationDetails(
@@ -41,4 +39,19 @@ interface CallLoggerAPIInterface {
     suspend fun updateUserOrganization(
         @Body updateOrgRequest: UpdateOrgRequest
     ): Response<GetOrganizationResponse>
+
+    @POST("resendEmailOtp")
+    suspend fun sendEmailOtp(
+        @Body sendOtpEmail: SendOtpEmail
+    ): Response<StatusResponse>
+
+    @POST("verifyemailotpworkspace")
+    suspend fun verifyEmailOtp(
+        @Body verifyEmailOtp: VerifyEmailOtp
+    ): Response<VerifyOTPResponse>
+
+    @POST("verifygooglesignupworkspace")
+    suspend fun verifyGoogleSignUp(
+        @Body googleSignUpRequest: GoogleSignUpRequest
+    ): Response<VerifyOTPResponse>
 }

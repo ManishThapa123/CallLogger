@@ -14,6 +14,8 @@ import android.net.NetworkCapabilities.*
 import android.net.Uri
 import android.os.Build
 import android.util.Log
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat.getSystemService
@@ -21,6 +23,7 @@ import androidx.core.content.res.ResourcesCompat
 import com.judemanutd.autostarter.AutoStartPermissionHelper
 import com.eazybe.callLogger.R
 import com.eazybe.callLogger.container.CallLoggerApplication
+import com.eazybe.callLogger.interfaces.ScreenshotInterface
 import dagger.hilt.android.internal.Contexts.getApplication
 import www.sanju.motiontoast.MotionToast
 import www.sanju.motiontoast.MotionToastStyle
@@ -31,6 +34,7 @@ import java.util.*
 @SuppressLint("StaticFieldLeak")
 object GlobalMethods {
 
+    var ssInterface: ScreenshotInterface? = null
     /**
      * Make a standard toast that just contains text.
      *
@@ -43,6 +47,18 @@ object GlobalMethods {
         Toast.makeText(context, message, Toast.LENGTH_LONG).show()
     }
 
+    fun saveContextForInterface(context: ScreenshotInterface){
+        ssInterface = context
+    }
+    fun getSSInterface() : ScreenshotInterface? {
+        return ssInterface
+    }
+
+    fun hideKeyboard(context: Context, root: View) {
+        val inputMethodManager =
+            context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(root.windowToken, 0)
+    }
     /**
      * In order to check if the device is supported by the library.
      * If false, the method will return true as long as the permission exist,

@@ -1,0 +1,272 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/keyboard_holder"
+    android:layout_width="match_parent"
+    android:background="@null"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimens_40"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:visibility="gone"
+        android:background="@color/grey_dark"
+        app:layout_constraintBottom_toTopOf="@+id/toolbar_holder"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:id="@+id/followUpContainer">
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:focusable="true"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="@dimen/dimens_6"
+                android:hint="Enter notes"
+                android:clickable="true"
+                android:layout_weight="1"
+                android:backgroundTint="@color/grayish"
+                android:focusableInTouchMode="true"
+                android:layout_marginStart="@dimen/dimens_20"
+                android:layout_height="wrap_content"
+                android:background="@color/cardview_dark_background"
+                android:id="@+id/editTextFollowUp"/>
+
+
+
+        <ImageButton
+            android:layout_width="@dimen/dimens_28"
+            android:layout_height="@dimen/dimens_28"
+            android:layout_weight="0.2"
+            android:background="@null"
+            android:layout_marginTop="@dimen/dimen_4"
+            android:layout_marginEnd="@dimen/dimen_4"
+            android:layout_marginBottom="@dimen/dimen_4"
+            android:src="@drawable/ic_send_vector"
+            android:id="@+id/send"
+            app:tint="@color/Orangish" />
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/toolbar_holder"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_above="@+id/keyboard_view"
+        app:layout_constraintBottom_toTopOf="@+id/keyboard_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/clipboard_clear"
+            android:layout_width="@dimen/toolbar_icon_height"
+            android:layout_height="@dimen/toolbar_icon_height"
+            android:layout_marginStart="@dimen/medium_margin"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Clear clipboard data"
+            android:padding="@dimen/small_margin"
+            android:src="@drawable/ic_delete_vector"
+            app:tint="@color/grayish"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <RelativeLayout
+            android:id="@+id/clipboard_value_holder"
+            android:layout_width="0dp"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/medium_margin"
+            android:layout_marginEnd="@dimen/medium_margin"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/pinned_clipboard_items"
+            app:layout_constraintStart_toEndOf="@+id/clipboard_clear"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/clipboard_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:autoLink="none"
+                android:background="@drawable/clipboard_background"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:lines="1"
+                android:paddingStart="@dimen/activity_margin"
+                android:paddingTop="@dimen/small_margin"
+                android:paddingEnd="@dimen/activity_margin"
+                android:paddingBottom="@dimen/small_margin"
+                android:textSize="@dimen/label_text_size"
+                tools:text="Clipboard content" />
+
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/pinned_clipboard_items"
+            android:layout_width="@dimen/toolbar_icon_height"
+            android:layout_height="@dimen/toolbar_icon_height"
+            android:layout_marginEnd="@dimen/medium_margin"
+            android:visibility="visible"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/settings"
+            android:padding="@dimen/small_margin"
+            android:src="@drawable/ic_clipboard_vector"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/settings_cog"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/grayish" />
+
+        <ImageView
+            android:id="@+id/settings_cog"
+            android:layout_width="@dimen/toolbar_icon_height"
+            android:layout_height="@dimen/toolbar_icon_height"
+            android:layout_marginEnd="@dimen/medium_margin"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/settings"
+            android:padding="@dimen/small_margin"
+            android:src="@drawable/ic_eazybe_hand_logo"
+            app:tint="@color/grayish"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/top_keyboard_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@drawable/divider"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <com.eazybe.callLogger.keyboard.view.MyKeyboardView
+        android:id="@+id/keyboard_view"
+        style="@style/MyKeyboardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/grayish"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <RelativeLayout
+        android:id="@+id/clipboard_manager_holder"
+        android:layout_width="match_parent"
+        android:layout_height="700dp"
+        android:clickable="true"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_holder"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <RelativeLayout
+            android:id="@+id/clipboard_manager_top_bar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/toolbar_height"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/clipboard_manager_close"
+                android:layout_width="@dimen/toolbar_icon_height"
+                android:layout_height="@dimen/toolbar_icon_height"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/clipboard"
+                android:padding="@dimen/small_margin"
+                android:src="@drawable/ic_arrow_left_vector" />
+
+            <TextView
+                android:id="@+id/clipboard_manager_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:layout_toStartOf="@+id/clipboard_manager_manage"
+                android:layout_toEndOf="@+id/clipboard_manager_close"
+                android:ellipsize="end"
+                android:lines="1"
+                android:text="@string/followUp"
+                android:textSize="@dimen/big_text_size" />
+
+            <ImageView
+                android:id="@+id/clipboard_manager_manage"
+                android:layout_width="@dimen/toolbar_icon_height"
+                android:layout_height="@dimen/toolbar_icon_height"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:layout_marginEnd="@dimen/medium_margin"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/manage_clipboard_items"
+                android:padding="@dimen/small_margin"
+                android:src="@drawable/ic_set_as_vector" />
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/clipboard_content_holder"
+            android:layout_width="match_parent"
+            android:layout_height="500dp"
+            android:layout_below="@+id/clipboard_manager_top_bar">
+
+            <TextView
+                android:id="@+id/clipboard_content_placeholder_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/activity_margin"
+                android:gravity="center_horizontal"
+                android:paddingStart="@dimen/big_margin"
+                android:paddingEnd="@dimen/big_margin"
+                android:text="Your follow up section is empty."
+                android:textSize="@dimen/bigger_text_size"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/clipboard_content_placeholder_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/clipboard_content_placeholder_1"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/activity_margin"
+                android:gravity="center_horizontal"
+                android:paddingStart="@dimen/big_margin"
+                android:paddingEnd="@dimen/big_margin"
+                android:text="Once you copy some text, it will show up here."
+                android:textSize="@dimen/normal_text_size"
+                android:visibility="gone" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/clips_list"
+                android:layout_width="match_parent"
+                android:layout_height="500dp"
+                tools:listitem="@layout/follow_up_items"
+                android:padding="@dimen/small_margin"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+        </RelativeLayout>
+
+
+
+        <ImageView
+            android:id="@+id/top_clipboard_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@drawable/divider"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

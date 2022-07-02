@@ -8,6 +8,7 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.motion.widget.MotionLayout
+import com.eazybe.callLogger.BaseActivity
 import com.eazybe.callLogger.MainActivity
 import com.eazybe.callLogger.databinding.ActivitySplashBinding
 import com.eazybe.callLogger.helper.GlobalMethods
@@ -61,7 +62,8 @@ class SplashActivity : AppCompatActivity() {
 
                 if (isLoggedIn) {
                     // Start activity
-                    val intent = Intent(this@SplashActivity, MainActivity::class.java)
+//                    val intent = Intent(this@SplashActivity, MainActivity::class.java)
+                    val intent = Intent(this@SplashActivity, BaseActivity::class.java)
                     intent.flags =
                         Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                     startActivity(intent)

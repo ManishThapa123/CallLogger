@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.CallLogs.CallLog.CallLogPermissionFragment">
+
+    <ImageView
+        android:id="@+id/syncCallsImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/sync_call_image"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnSyncCallLogs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dimens_40"
+        android:layout_marginEnd="@dimen/dimens_40"
+        android:text="Sync calls logs with eazybe"
+        android:textAllCaps="false"
+        app:backgroundTint="#5956E9"
+        app:cornerRadius="@dimen/dimens_8"
+        app:layout_constraintTop_toBottomOf="@id/syncCallsImage" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
