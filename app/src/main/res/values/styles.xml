@@ -10,6 +10,8 @@
 
     <style name="MyKeyboardView" parent="MyKeyboard">
         <item name="keyTextSize">@dimen/keyboard_text_size</item>
+        <item name="keyBackground">@drawable/bg_keyboard_key</item>
+
     </style>
 
     <style name="MyKeyboardViewPopup" parent="MyKeyboard">

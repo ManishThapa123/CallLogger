@@ -8,6 +8,7 @@
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/drawable/baseline_call_black_24dp.xml" value="0.24074074074074073" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/drawable/baseline_dialpad_white_24dp.xml" value="0.2703125" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/drawable/baseline_person_outline_black_24dp.xml" value="0.2703125" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/drawable/bg_keyboard_key.xml" value="0.1595" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/drawable/bottom_nav_selector.xml" value="0.158" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/drawable/call_disabled.xml" value="0.2703125" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/drawable/call_icon.xml" value="0.24074074074074073" />
@@ -39,6 +40,7 @@
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/drawable/ic_caps_underlined_vector.xml" value="0.158" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/drawable/ic_caps_vector.xml" value="0.158" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/drawable/ic_circular_label_color.xml" value="0.158" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/drawable/ic_clear_vector.xml" value="0.1595" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/drawable/ic_clipboard_vector.xml" value="0.158" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/drawable/ic_compare.xml" value="0.2703125" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/drawable/ic_contact.xml" value="0.2703125" />

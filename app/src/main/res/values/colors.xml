@@ -5,7 +5,7 @@
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
+    <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
     <color name="capsule">#EFEAFF</color>
 
@@ -25,8 +25,8 @@
     <color name="gray_complimentary">#B0A8B9</color>
     <color name="white_complimentary">#FEF6FF</color>
     <color name="dark">#3D4043</color>
-    <color name="key_press_color">#11ffffff</color>
-    <color name="you_keyboard_background_color">#fbfbfb</color>
+    <color name="key_press_color">#000000</color>
+    <color name="you_keyboard_background_color">#f0f0f0</color>
     <color name="you_keyboard_toolbar_color">#f0f0f0</color>
     <color name="light_blue_600">#FF039BE5</color>
     <color name="light_blue_900">#FF01579B</color>

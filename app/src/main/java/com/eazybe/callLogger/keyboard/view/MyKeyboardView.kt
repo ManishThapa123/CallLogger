@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.RippleDrawable
+import android.os.Build
 import android.os.Handler
 import android.os.Message
 import android.util.AttributeSet
@@ -43,6 +44,7 @@ import kotlinx.android.synthetic.main.keyboard_view.view.*
 import java.util.*
 
 @SuppressLint("UseCompatLoadingForDrawables")
+@Suppress("DEPRECATION")
 class MyKeyboardView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet?,
@@ -91,6 +93,7 @@ class MyKeyboardView @JvmOverloads constructor(
 
     private var mLabelTextSize = 0
     private var mKeyTextSize = 0
+
 
     private var mTextColor = 0
     private var mBackgroundColor = 0
@@ -197,8 +200,11 @@ class MyKeyboardView @JvmOverloads constructor(
     init {
         val attributes =
             context.obtainStyledAttributes(attrs, R.styleable.MyKeyboardView, 0, defStyleRes)
+
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+
         val keyTextSize = 0
+
         val indexCnt = attributes.indexCount
 
         try {
@@ -214,15 +220,15 @@ class MyKeyboardView @JvmOverloads constructor(
         }
 
         mPopupLayout = R.layout.keyboard_popup_keyboard
-        mKeyBackground = resources.getDrawable(R.drawable.keyboard_key_selector, context.theme)
+        mKeyBackground = resources.getDrawable(R.drawable.bg_keyboard_key, context.theme)
         mVerticalCorrection = resources.getDimension(R.dimen.vertical_correction).toInt()
         mLabelTextSize = resources.getDimension(R.dimen.label_text_size).toInt()
         mPreviewHeight = resources.getDimension(R.dimen.key_height).toInt()
         mSpaceMoveThreshold = resources.getDimension(R.dimen.medium_margin).toInt()
-        mTextColor = context.getProperTextColor()
-        mBackgroundColor = context.getProperBackgroundColor()
-        mPrimaryColor = context.getProperPrimaryColor()
 
+        mTextColor = R.color.black
+        mBackgroundColor = R.color.white_complimentary
+        mPrimaryColor = R.color.white
 
         mPreviewPopup = PopupWindow(context)
         mPreviewText =
@@ -273,27 +279,24 @@ class MyKeyboardView @JvmOverloads constructor(
         closeClipboardManager()
 
         if (visibility == VISIBLE) {
-            mTextColor = context.getProperTextColor()
-            mBackgroundColor = context.getProperBackgroundColor()
-            mPrimaryColor = context.getProperPrimaryColor()
+            mTextColor = R.color.black
+            mBackgroundColor = R.color.white
+            mPrimaryColor = R.color.white
+
             val strokeColor = context.getStrokeColor()
 
-            val toolbarColor = if (context.config.isUsingSystemTheme) {
-                resources.getColor(R.color.you_keyboard_toolbar_color, context.theme)
-            } else {
-                mBackgroundColor.darkenColor()
-            }
+            //top Tool Bar Color
+            val toolbarColor = resources.getColor(R.color.you_keyboard_toolbar_color, context.theme)
 
-            val darkerColor = if (context.config.isUsingSystemTheme) {
-                resources.getColor(R.color.you_keyboard_background_color, context.theme)
-            } else {
-                mBackgroundColor.darkenColor(2)
-            }
+            //Keyboard Background, behind the keys color
+            val darkerColor = resources.getColor(R.color.you_keyboard_toolbar_color, context.theme)
+
 
             val miniKeyboardBackgroundColor = if (context.config.isUsingSystemTheme) {
                 resources.getColor(R.color.you_keyboard_toolbar_color, context.theme)
             } else {
-                mBackgroundColor.darkenColor(4)
+                resources.getColor(R.color.you_keyboard_toolbar_color, context.theme)
+//                mBackgroundColor.darkenColor(4)
             }
 
             if (changedView == mini_keyboard_view) {
@@ -304,7 +307,9 @@ class MyKeyboardView @JvmOverloads constructor(
                     .applyColorFilter(strokeColor)
                 background = previewBackground
             } else {
+
                 background.applyColorFilter(darkerColor)
+
             }
 
             val rippleBg = resources.getDrawable(
@@ -330,9 +335,10 @@ class MyKeyboardView @JvmOverloads constructor(
                     setLinkTextColor(mTextColor)
                 }
 
-                settings_cog.applyColorFilter(mTextColor)
-                pinned_clipboard_items.applyColorFilter(mTextColor)
-                clipboard_clear.applyColorFilter(mTextColor)
+
+                settings_cog.setColorFilter(mTextColor)
+                pinned_clipboard_items.setColorFilter(mTextColor)
+                clipboard_clear.setColorFilter(mTextColor)
             }
 
             mClipboardManagerHolder?.apply {
@@ -555,6 +561,9 @@ class MyKeyboardView @JvmOverloads constructor(
         canvas.drawBitmap(mBuffer!!, 0f, 0f, null)
     }
 
+    /**
+     * Key board drawn over here.
+     */
     @SuppressLint("UseCompatLoadingForDrawables")
     private fun onBufferDraw() {
         if (mBuffer == null || mKeyboardChanged) {
@@ -581,7 +590,7 @@ class MyKeyboardView @JvmOverloads constructor(
         paint.color = mTextColor
         val smallLetterPaint = Paint().apply {
             set(paint)
-            color = paint.color.adjustAlpha(0.8f)
+            color = paint.color.adjustAlpha(1f)
             textSize = mTopSmallNumberSize
             typeface = Typeface.DEFAULT
         }
@@ -593,19 +602,14 @@ class MyKeyboardView @JvmOverloads constructor(
         for (i in 0 until keyCount) {
             val key = keys[i]
             val code = key.code
+            //this is the key
             var keyBackground = mKeyBackground
             if (code == KEYCODE_SPACE) {
-                keyBackground = if (context.config.isUsingSystemTheme) {
-                    resources.getDrawable(
-                        R.drawable.keyboard_space_background_material,
-                        context.theme
-                    )
-                } else {
-                    resources.getDrawable(R.drawable.keyboard_space_background, context.theme)
-                }
+                keyBackground = resources.getDrawable(R.drawable.keyboard_space_background, context.theme)
+
             } else if (code == KEYCODE_ENTER) {
                 keyBackground =
-                    resources.getDrawable(R.drawable.keyboard_enter_background, context.theme)
+                    resources.getDrawable(R.drawable.keyboard_enter_background)
             }
 
             // Switch the character to uppercase if shift is pressed
@@ -621,9 +625,11 @@ class MyKeyboardView @JvmOverloads constructor(
                 else -> intArrayOf()
             }
 
-            if (key.focused || code == KEYCODE_ENTER) {
-                keyBackground.applyColorFilter(mPrimaryColor)
+            //when the key is focused
+            if (key.focused) {
+                keyBackground.setColorFilter(mPrimaryColor,PorterDuff.Mode.SRC)
             }
+
 
             canvas.translate(key.x.toFloat(), key.y.toFloat())
             keyBackground.draw(canvas)
@@ -632,13 +638,17 @@ class MyKeyboardView @JvmOverloads constructor(
                 if (label.length > 1) {
                     paint.textSize = mLabelTextSize.toFloat()
                     paint.typeface = Typeface.DEFAULT_BOLD
+
                 } else {
                     paint.textSize = mKeyTextSize.toFloat()
                     paint.typeface = Typeface.DEFAULT
+
+
                 }
 
+                //long tap on button
                 paint.color = if (key.focused) {
-                    mPrimaryColor.getContrastColor()
+                    resources.getColor(R.color.white)
                 } else {
                     mTextColor
                 }
@@ -659,8 +669,12 @@ class MyKeyboardView @JvmOverloads constructor(
                     )
                 }
 
+
                 // Turn off drop shadow
-                paint.setShadowLayer(0f, 0f, 0f, 0)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    paint.setShadowLayer(1f, 0f, 0f, 0xFF000000)
+                }
+
             } else if (key.icon != null && mKeyboard != null) {
                 if (code == KEYCODE_SHIFT) {
                     val drawableId = when (mKeyboard!!.mShiftState) {
@@ -672,9 +686,9 @@ class MyKeyboardView @JvmOverloads constructor(
                 }
 
                 if (code == KEYCODE_ENTER) {
-                    key.icon!!.applyColorFilter(mPrimaryColor.getContrastColor())
+                    key.icon!!.setTint(resources.getColor(R.color.black))
                 } else if (code == KEYCODE_DELETE || code == KEYCODE_SHIFT) {
-                    key.icon!!.applyColorFilter(mTextColor)
+                    key.icon!!.setTint(resources.getColor(R.color.black))
                 }
 
                 val drawableX = (key.width - key.icon!!.intrinsicWidth) / 2
@@ -687,7 +701,7 @@ class MyKeyboardView @JvmOverloads constructor(
             canvas.translate(-key.x.toFloat(), -key.y.toFloat())
         }
 
-        // Overlay a dark rectangle to dim the keyboard
+        // Overlay a dark rectangle to dim the keyboard when long pressed
         if (mMiniKeyboardOnScreen) {
             paint.color = Color.BLACK.adjustAlpha(0.3f)
             canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), paint)
@@ -698,78 +712,7 @@ class MyKeyboardView @JvmOverloads constructor(
         mDirtyRect.setEmpty()
     }
 
-//    private fun handleClipboard() {
-//        if (mToolbarHolder != null && mPopupParent.id != R.id.mini_keyboard_view) {
-//            val clipboardContent = context.getCurrentClip()
-//            if (clipboardContent?.isNotEmpty() == true) {
-//                mToolbarHolder?.apply {
-//                    clipboard_value.apply {
-//                        text = clipboardContent
-//                        removeUnderlines()
-//                        setOnClickListener {
-//                            mOnKeyboardActionListener!!.onText(clipboardContent.toString())
-//                            vibrateIfNeeded()
-//                        }
-//                    }
-//
-//                    toggleClipboardVisibility(true)
-//                }
-//            } else {
-//                hideClipboardViews()
-//            }
-//        } else {
-//            hideClipboardViews()
-//        }
-//    }
 
-//    private fun hideClipboardViews() {
-//        mToolbarHolder?.apply {
-//            clipboard_value_holder?.beGone()
-//            clipboard_value_holder?.alpha = 0f
-//            clipboard_clear?.beGone()
-//            clipboard_clear?.alpha = 0f
-//        }
-//    }
-
-//    private fun clearClipboardContent() {
-//        val clipboardManager = (context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
-//        if (isPiePlus()) {
-//            clipboardManager.clearPrimaryClip()
-//        } else {
-//            val clip = ClipData.newPlainText("", "")
-//            clipboardManager.setPrimaryClip(clip)
-//        }
-//    }
-
-//    private fun toggleClipboardVisibility(show: Boolean) {
-//        if ((show && mToolbarHolder?.clipboard_value_holder!!.alpha == 0f) || (!show && mToolbarHolder?.clipboard_value_holder!!.alpha == 1f)) {
-//            val newAlpha = if (show) 1f else 0f
-//            val animations = ArrayList<ObjectAnimator>()
-//            val clipboardValueAnimation = ObjectAnimator.ofFloat(mToolbarHolder!!.clipboard_value_holder!!, "alpha", newAlpha)
-//            animations.add(clipboardValueAnimation)
-//
-//            val clipboardClearAnimation = ObjectAnimator.ofFloat(mToolbarHolder!!.clipboard_clear!!, "alpha", newAlpha)
-//            animations.add(clipboardClearAnimation)
-//
-//            val animSet = AnimatorSet()
-//            animSet.playTogether(*animations.toTypedArray())
-//            animSet.duration = 150
-//            animSet.interpolator = AccelerateInterpolator()
-//            animSet.doOnStart {
-//                if (show) {
-//                    mToolbarHolder?.clipboard_value_holder?.beVisible()
-//                    mToolbarHolder?.clipboard_clear?.beVisible()
-//                }
-//            }
-//            animSet.doOnEnd {
-//                if (!show) {
-//                    mToolbarHolder?.clipboard_value_holder?.beGone()
-//                    mToolbarHolder?.clipboard_clear?.beGone()
-//                }
-//            }
-//            animSet.start()
-//        }
-//    }
 
     private fun getPressedKeyIndex(x: Int, y: Int): Int {
         return mKeys.indexOfFirst {
@@ -858,8 +801,8 @@ class MyKeyboardView @JvmOverloads constructor(
             } else {
                 mPreviewText!!.setTextSize(
                     TypedValue.COMPLEX_UNIT_PX,
-                    mPreviewTextSizeLarge.toFloat()
-                )
+                    mPreviewTextSizeLarge.toFloat())
+
                 mPreviewText!!.typeface = Typeface.DEFAULT
             }
 
@@ -873,7 +816,8 @@ class MyKeyboardView @JvmOverloads constructor(
         val previewBackgroundColor = if (context.config.isUsingSystemTheme) {
             resources.getColor(R.color.you_keyboard_toolbar_color, context.theme)
         } else {
-            mBackgroundColor.darkenColor(4)
+            resources.getColor(R.color.you_keyboard_toolbar_color, context.theme)
+//            mBackgroundColor.darkenColor(4)
         }
 
         val previewBackground = mPreviewText!!.background as LayerDrawable
@@ -1412,58 +1356,9 @@ class MyKeyboardView @JvmOverloads constructor(
 
     private fun openClipboardManager() {
         mClipboardManagerHolder!!.clipboard_manager_holder.beVisible()
-//        setupStoredClips()
         setupNotesData()
     }
 
-//    private fun setupStoredClips() {
-//        ensureBackgroundThread {
-//            val clips = ArrayList<ListItem>()
-//            val clipboardContent = context.getCurrentClip()
-//
-//            val pinnedClips = context.clipsDB.getClips()
-//            val isCurrentClipPinnedToo = pinnedClips.any { clipboardContent?.isNotEmpty() == true && it.value.trim() == clipboardContent }
-//
-//            if (!isCurrentClipPinnedToo && clipboardContent?.isNotEmpty() == true) {
-//                val section = ClipsSectionLabel(context.getString(R.string.clipboard_current), true)
-//                clips.add(section)
-//
-//                val clip = Clip(-1, clipboardContent)
-//                clips.add(clip)
-//            }
-//
-//            if (!isCurrentClipPinnedToo && clipboardContent?.isNotEmpty() == true) {
-//                val section = ClipsSectionLabel(context.getString(R.string.clipboard_pinned), false)
-//                clips.add(section)
-//            }
-//
-//            clips.addAll(pinnedClips)
-//            Handler(Looper.getMainLooper()).post {
-//                setupClipsAdapter(clips)
-//            }
-//        }
-//    }
-
-//    private fun setupClipsAdapter(clips: ArrayList<ListItem>) {
-//        mClipboardManagerHolder?.apply {
-//            clipboard_content_placeholder_1.beVisibleIf(clips.isEmpty())
-//            clipboard_content_placeholder_2.beVisibleIf(clips.isEmpty())
-//            clips_list.beVisibleIf(clips.isNotEmpty())
-//        }
-//
-//        val refreshClipsListener = object : RefreshClipsListener {
-//            override fun refreshClips() {
-//                setupStoredClips()
-//            }
-//        }
-//
-//        val adapter = ClipsKeyboardAdapter(context, clips, refreshClipsListener) { clip ->
-//            mOnKeyboardActionListener!!.onText(clip.value)
-//            vibrateIfNeeded()
-//        }
-//
-//        mClipboardManagerHolder?.clips_list?.adapter = adapter
-//    }
 
     private fun closing() {
         if (mPreviewPopup.isShowing) {

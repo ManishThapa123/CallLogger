@@ -6,11 +6,13 @@
 
     <declare-styleable name="MyKeyboardView">
         <attr name="keyTextSize" format="dimension" />
+
     </declare-styleable>
 
     <declare-styleable name="MyKeyboard">
         <attr name="keyWidth" format="fraction" />
         <attr name="horizontalGap" format="fraction" />
+
     </declare-styleable>
 
     <declare-styleable name="MyKeyboard_Key">
@@ -35,6 +37,8 @@
         <attr name="keyIcon" format="reference" />
         <!-- Top small number shown above letters of the first row. -->
         <attr name="topSmallNumber" format="string" />
+
+        <attr name="keyBackground" format="reference" />
     </declare-styleable>
     <declare-styleable name="FullscreenAttrs">
         <attr name="fullscreenBackgroundColor" format="color" />

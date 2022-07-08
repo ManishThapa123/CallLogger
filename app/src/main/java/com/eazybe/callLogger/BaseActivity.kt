@@ -14,6 +14,8 @@ import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.eazybe.callLogger.databinding.ActivityBaseBinding
 import com.eazybe.callLogger.extensions.toast
+import com.eazybe.callLogger.interfaces.ScreenshotInterface
+import com.eazybe.callLogger.keyboard.view.MyKeyboardView
 import com.eazybe.callLogger.ui.CallLogs.CallLogsViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,12 +24,13 @@ import dagger.hilt.android.AndroidEntryPoint
  * New Architecture along with the bottom navigation
  */
 @AndroidEntryPoint
-class BaseActivity : AppCompatActivity() {
+class BaseActivity : AppCompatActivity(),ScreenshotInterface {
     private lateinit var binding: ActivityBaseBinding
     private lateinit var navController: NavController
     private val callDetailsViewModel: CallLogsViewModel by viewModels()
     private var mgr: MediaProjectionManager? = null
     private var mediaProjection: MediaProjection? = null
+    private var keyboardView: MyKeyboardView? = null
 
     private val requestReadMediaProjectionPermission =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -46,6 +49,8 @@ class BaseActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
+        keyboardView = MyKeyboardView(this,null)
+        keyboardView!!.setListener(this)
         //Finding the Navigation Controller
         val navController = findNavController(R.id.myNavHostFragment)
 
@@ -109,6 +114,10 @@ class BaseActivity : AppCompatActivity() {
     private fun askForMediaProjectionPermission() {
         mgr = getSystemService(MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
         requestReadMediaProjectionPermission.launch(mgr!!.createScreenCaptureIntent())
+    }
+
+    override fun getScreenshotPermissions() {
+        TODO("Not yet implemented")
     }
 
 }

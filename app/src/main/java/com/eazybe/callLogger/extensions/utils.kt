@@ -98,18 +98,20 @@ fun Context.getCurrentClip(): String? {
 fun Context.getStrokeColor(): Int {
     return if (config.isUsingSystemTheme) {
         if (isUsingSystemDarkTheme()) {
-            resources.getColor(R.color.md_grey_800, theme)
+            resources.getColor(R.color.black, theme)
         } else {
-            resources.getColor(R.color.md_grey_400, theme)
+            resources.getColor(R.color.black, theme)
         }
     } else {
         val lighterColor = getProperBackgroundColor().lightenColor()
         if (lighterColor == Color.WHITE || lighterColor == Color.BLACK) {
-            resources.getColor(R.color.divider_grey, theme)
+            resources.getColor(R.color.black, theme)
         } else {
             lighterColor
         }
     }
+
+
 }
 
 
