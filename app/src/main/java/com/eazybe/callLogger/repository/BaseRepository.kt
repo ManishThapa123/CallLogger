@@ -50,4 +50,9 @@ class BaseRepository @Inject constructor(
         val verifyOtp = apiService.verifyGoogleSignUp(verifyGmail)
         return verifyOtp.body()
     }
+
+    suspend fun getAllCustomerFollowups(userMobile: String): AllCustomerFollowUpResponse? {
+        val followUps = apiService.getAllCustomerFollowups(userMobile)
+        return followUps.body()
+    }
 }

@@ -117,6 +117,7 @@ dependencies {
     implementation 'com.github.GoodieBag:Pinview:v1.4'
 
     implementation 'com.google.android.gms:play-services-auth:20.2.0'
+    implementation 'com.github.florent37:singledateandtimepicker:2.2.7'
 
 }
 // Allow references to generated code

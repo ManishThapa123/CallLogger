@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/user/.gradle/caches/transforms-3/2e8873a79eb96e137d405d6cf59ba8e2/transformed/jetified-Simple-Commons-e3376e4f56/res/drawable/widget_round_background.xml" value="0.2595" />
         <entry key="..\:/Users/user/.gradle/caches/transforms-3/7e6f9dbf1fa0fc9a340cfafb70351a4e/transformed/jetified-MotionToast-1.4/res/drawable/ic_delete_.xml" value="0.2574074074074074" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.165625" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/drawable/baseline_call_black_24dp.xml" value="0.24074074074074073" />
@@ -24,9 +25,11 @@
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/drawable/card_corner_background.xml" value="0.158" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/drawable/card_drawable.xml" value="0.2703125" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/drawable/card_drawable_photo.xml" value="0.158" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/drawable/chip_background.xml" value="0.198" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/drawable/clipboard_background.xml" value="0.158" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/drawable/device_connect.xml" value="0.26615384615384613" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/drawable/divider.xml" value="0.158" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/drawable/edit_text_bg.xml" value="0.198" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/drawable/ic_about.xml" value="0.2703125" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/drawable/ic_accounts.xml" value="0.158" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/drawable/ic_activity.xml" value="0.158" />
@@ -81,6 +84,7 @@
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/drawable/keyboard_key_selector.xml" value="0.158" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/drawable/keyboard_space_background.xml" value="0.158" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/drawable/keyboard_space_background_material.xml" value="0.158" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/drawable/keyboard_top_corner.xml" value="0.1105" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/drawable/lead_name_bg.xml" value="0.158" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/drawable/material_button_background.xml" value="0.158" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/drawable/minikeyboard_background.xml" value="0.158" />
@@ -105,7 +109,7 @@
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/layout/content_main.xml" value="0.176" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/layout/conversation_fragment.xml" value="0.16944444444444445" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/layout/follow_up_fragment.xml" value="0.25416666666666665" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/layout/follow_up_items.xml" value="0.16944444444444445" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/layout/follow_up_items.xml" value="0.2" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/layout/fragment_call_log_main.xml" value="0.16006944444444443" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/layout/fragment_call_log_permission.xml" value="0.16944444444444445" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/layout/fragment_call_logs1.xml" value="0.25416666666666665" />
@@ -124,7 +128,7 @@
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/layout/item_your_labels.xml" value="0.264" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/layout/key_preview.xml" value="0.16944444444444445" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/layout/keyboard_popup_keyboard.xml" value="0.16944444444444445" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/layout/keyboard_view.xml" value="0.176" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/layout/keyboard_view.xml" value="0.1" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/layout/leads_fragment.xml" value="0.264" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/layout/login_fragment.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/user/AndroidStudioProjects/CallLogger/app/src/main/res/layout/navigation_header.xml" value="0.25416666666666665" />

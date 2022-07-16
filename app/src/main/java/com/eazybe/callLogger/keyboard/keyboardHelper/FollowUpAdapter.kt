@@ -1,31 +1,46 @@
 package com.eazybe.callLogger.keyboard.keyboardHelper
 
+import android.content.Context
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.eazybe.callLogger.R
+import com.eazybe.callLogger.api.models.entities.Data
 import com.eazybe.callLogger.api.models.entities.SampleNotes
+import com.eazybe.callLogger.api.models.responses.DataFollowUp
 import com.eazybe.callLogger.databinding.FollowUpItemsBinding
 
-class FollowUpAdapter(): ListAdapter<SampleNotes, FollowUpAdapter.ViewHolder>(object : DiffUtil.ItemCallback<SampleNotes>(){
-    override fun areItemsTheSame(oldItem: SampleNotes, newItem: SampleNotes): Boolean {
-        return "${oldItem.notes}" == "${newItem.notes}"
+class FollowUpAdapter(contextParent: Context): ListAdapter<DataFollowUp, FollowUpAdapter.ViewHolder>(object : DiffUtil.ItemCallback<DataFollowUp>(){
+
+    override fun areItemsTheSame(oldItem: DataFollowUp, newItem: DataFollowUp): Boolean {
+        return "${oldItem.id}" == "${newItem.id}"
     }
 
-    override fun areContentsTheSame(oldItem: SampleNotes, newItem: SampleNotes): Boolean {
-        return "${oldItem.notes}" == "${newItem.notes}"
+    override fun areContentsTheSame(oldItem: DataFollowUp, newItem: DataFollowUp): Boolean {
+        return "${oldItem.id}" == "${newItem.id}"
     }
 
 }) {
 
+    private val context = contextParent
+
     inner class ViewHolder(val binding: FollowUpItemsBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-            fun bind(notes: SampleNotes, position: Int){
+            fun bind(notes: DataFollowUp, position: Int){
                 binding.apply {
-                    followUpText.text = notes.notes
-                    followUpDateTime.text = notes.dateTime
+                    followUpText.text = notes.notes?.get(0)?.note
+                    followUpDateTime.text = notes.notes?.get(0)?.date
+
+                    when(position){
+                        0 -> {
+                            clFollowUp.setBackgroundColor(context.resources.getColor(R.color.purple_200))
+                        }
+                    }
                 }
             }
     }

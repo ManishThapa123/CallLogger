@@ -54,4 +54,11 @@ interface CallLoggerAPIInterface {
     suspend fun verifyGoogleSignUp(
         @Body googleSignUpRequest: GoogleSignUpRequest
     ): Response<VerifyOTPResponse>
+
+
+    //Follow Up API
+    @GET("allCustomerFollowups")
+    suspend fun getAllCustomerFollowups(
+        @Query("user_mobile_No") userMobile: String?
+    ): Response<AllCustomerFollowUpResponse>
 }

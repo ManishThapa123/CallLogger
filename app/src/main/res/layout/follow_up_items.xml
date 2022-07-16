@@ -1,30 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/dimens_12"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_margin="@dimen/dimens_2"
+    app:cardCornerRadius="@dimen/dimens_12"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clFollowUp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/montserrat_alternates_semibold"
-        android:text="Follow Up Dummy Text"
-        android:id="@+id/followUpText"
+        android:layout_height="match_parent"
+        android:padding="@dimen/dimens_8">
 
-        android:textSize="@dimen/dimens_14"
-        android:textColor="@color/white"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        <TextView
+            android:id="@+id/followUpText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_alternates_semibold"
+            android:text="Call Scheduled for finalising"
+            android:textColor="@color/black"
+            android:textSize="@dimen/dimens_14"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/followUpDateTime"
-        android:fontFamily="@font/montserrat_regular"
-        android:text="12 dec 2022 | 12:30 pm"
-        android:textSize="@dimen/dimens_12"
-        android:textColor="@color/white"
-        app:layout_constraintTop_toBottomOf="@+id/followUpText"
-        app:layout_constraintEnd_toEndOf="parent"/>
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageView
+            android:id="@+id/followUpCal"
+            android:layout_width="@dimen/dimens_12"
+            android:layout_height="@dimen/dimens_12"
+            android:layout_marginTop="@dimen/dimens_8"
+            android:src="@drawable/followup_cal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/followUpText" />
+
+        <TextView
+            android:id="@+id/followUpDateTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dimens_8"
+            android:layout_marginTop="@dimen/dimens_8"
+            android:fontFamily="@font/montserrat_regular"
+            android:text="12 dec 2022 | 12:30 pm"
+            android:textColor="@color/black"
+            android:textSize="@dimen/dimens_12"
+            app:layout_constraintStart_toEndOf="@+id/followUpCal"
+            app:layout_constraintTop_toBottomOf="@+id/followUpText" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

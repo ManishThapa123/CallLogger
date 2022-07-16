@@ -11,7 +11,6 @@ object CallLoggerClient {
 //    val API_PREFIX = "https://partner.hansmatrimony.com/api/"
     val API_PREFIX = "https://eazybe.com/api/v1/whatzapp/"
 
-
     /**
      * The Retrofit class generates an implementation of the [ApiInterface] interface.
      */

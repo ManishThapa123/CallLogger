@@ -58,6 +58,7 @@ class BaseActivity : AppCompatActivity(),ScreenshotInterface {
         binding.bottomNavigation.setupWithNavController(navController)
 
         setupBottomNavigation()
+        binding.searchBtn
 //        askForMediaProjectionPermission()
     }
 

@@ -16,7 +16,11 @@ import com.eazybe.callLogger.helper.AppConstants.SHIFT_ON_PERMANENT
 import com.eazybe.callLogger.interfaces.ScreenshotInterface
 import com.eazybe.callLogger.keyboard.keyboardHelper.MyKeyboard
 import com.eazybe.callLogger.keyboard.view.MyKeyboardView
+import com.eazybe.callLogger.repository.BaseRepository
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.keyboard_view.view.*
+import javax.inject.Inject
+
 
 class KeyboardIME: InputMethodService(), MyKeyboardView.OnKeyboardActionListener{
     private var SHIFT_PERM_TOGGLE_SPEED = 500   // how quickly do we have to doubletap shift to enable permanent caps lock
@@ -32,6 +36,7 @@ class KeyboardIME: InputMethodService(), MyKeyboardView.OnKeyboardActionListener
     private var enterKeyType = EditorInfo.IME_ACTION_NONE
     private var switchToLetters = false
     private var keyboardHolder1: View? = null
+
 
     override fun onInitializeInterface() {
         super.onInitializeInterface()
@@ -89,11 +94,17 @@ class KeyboardIME: InputMethodService(), MyKeyboardView.OnKeyboardActionListener
 
     override fun onKey(code: Int) {
 
-        if (keyboardView!!.checkIfFocused()) {
-            keyboardView!!.commitText(code.toChar().toString())
-        } else {
+//        if (keyboardView!!.checkIfFocused()) {
+//            val inputConnection = keyboardView!!.getInputConnection()?.onCreateInputConnection(EditorInfo())
+//        }else{
+//            val inputConnection = currentInputConnection
+//        }
 
-            val inputConnection = currentInputConnection
+            val inputConnection = if (keyboardView!!.checkIfFocused()){
+                keyboardView!!.getInputConnection()?.onCreateInputConnection(EditorInfo())
+            }else{
+                currentInputConnection
+            }
             if (keyboard == null || inputConnection == null) {
                 return
             }
@@ -104,7 +115,7 @@ class KeyboardIME: InputMethodService(), MyKeyboardView.OnKeyboardActionListener
 
             when (code) {
                 MyKeyboard.KEYCODE_DELETE -> {
-                    toast("Delete pressed")
+
                     if (keyboard!!.mShiftState == SHIFT_ON_ONE_CHAR) {
                         keyboard!!.mShiftState = SHIFT_OFF
                     }
@@ -204,7 +215,7 @@ class KeyboardIME: InputMethodService(), MyKeyboardView.OnKeyboardActionListener
             if (code != MyKeyboard.KEYCODE_SHIFT) {
                 updateShiftKeyState()
             }
-        }
+
     }
     override fun onActionUp() {
         if (switchToLetters) {
@@ -239,6 +250,8 @@ class KeyboardIME: InputMethodService(), MyKeyboardView.OnKeyboardActionListener
         super.onUpdateSelection(oldSelStart, oldSelEnd, newSelStart, newSelEnd, candidatesStart, candidatesEnd)
         if (newSelStart == newSelEnd) {
             keyboardView?.closeClipboardManager()
+            keyboardView?.closeTopBar()
+
         }
     }
     private fun moveCursor(moveRight: Boolean) {
