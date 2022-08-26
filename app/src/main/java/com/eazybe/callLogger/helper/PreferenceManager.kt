@@ -35,6 +35,41 @@ class PreferenceManager constructor(private val context: Context) {
         return sharedPreferences.getString(AppConstants.TIMESTAMP_LAST_SYNCED, null)
     }
 
+    fun saveLastSyncedTime(timeInMillis: String) {
+        spEditor.putString(AppConstants.LAST_SYNCED_TIME, timeInMillis)
+        spEditor.commit()
+    }
+
+    fun getLastSyncedTimeAmplify(): String? {
+        return sharedPreferences.getString(AppConstants.LAST_SYNCED_TIME, null)
+    }
+
+    fun saveExpiryTime(time: String) {
+        spEditor.putString(AppConstants.EXPIRY_TIME, time)
+        spEditor.commit()
+    }
+
+    fun getExpiryTime(): String? {
+        return sharedPreferences.getString(AppConstants.EXPIRY_TIME, null)
+    }
+
+    fun saveExpiryState(state: String) {
+        spEditor.putString(AppConstants.EXPIRY_STATE, state)
+        spEditor.commit()
+    }
+
+    fun getExpiryState(): String? {
+        return sharedPreferences.getString(AppConstants.EXPIRY_STATE, null)
+    }
+    fun saveWhatsAppExpiry(time: String) {
+        spEditor.putString(AppConstants.WHATSAPP_EXPIRY_TIME, time)
+        spEditor.commit()
+    }
+
+    fun getWhatsAppExpiry(): String? {
+        return sharedPreferences.getString(AppConstants.WHATSAPP_EXPIRY_TIME, null)
+    }
+
     fun savePermissionState(savePermission: Boolean) {
         spEditor.putBoolean(AppConstants.PERMISSION_STATE_SAVED, true)
         spEditor.commit()
@@ -123,6 +158,15 @@ class PreferenceManager constructor(private val context: Context) {
 
     fun getCallLogAccessState(): Boolean {
         return sharedPreferences.getBoolean(AppConstants.CALL_LOG_STATE_SAVED, false)
+    }
+
+    fun saveSyncState(syncState: Boolean) {
+        spEditor.putBoolean(AppConstants.CALL_SYNC_STATE, syncState)
+        spEditor.commit()
+
+    }
+    fun getSyncState(): Boolean {
+        return sharedPreferences.getBoolean(AppConstants.CALL_SYNC_STATE, false)
     }
 
 }

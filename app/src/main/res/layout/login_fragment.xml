@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/dimens_16"
-    tools:context=".ui.SignUpAndLogin.LoginFragment">
+    tools:context=".ui.SignUpAndLogin.Old.LoginFragment">
 
 
     <LinearLayout

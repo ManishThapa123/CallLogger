@@ -16,7 +16,6 @@ import com.eazybe.callLogger.BaseActivity
 import com.eazybe.callLogger.R
 import com.eazybe.callLogger.api.models.entities.SampleEntity
 import com.eazybe.callLogger.api.models.requests.SaveCallLogs
-import com.eazybe.callLogger.api.models.responses.RegisterData
 import com.eazybe.callLogger.api.models.responses.UserData
 import com.eazybe.callLogger.api.models.responses.WorkspaceDetails
 import com.eazybe.callLogger.container.CallLoggerApplication
@@ -36,6 +35,9 @@ import javax.inject.Inject
 class PhoneCallReceiver : BroadcastReceiver() {
     @Inject
     lateinit var callLogsHelper: CallLogsHelper
+
+    @Inject
+    lateinit var amplifyHelper: AmplifyHelper
 
     @Inject
     lateinit var baseRepository: BaseRepository
@@ -74,32 +76,12 @@ class PhoneCallReceiver : BroadcastReceiver() {
                 savedNumber = intent.extras!!.getString(PHONE_NUMBER)!!
             }
 
-            val clientData =
-                clientDetailAdapter.fromJson(preferenceManager.getClientRegistrationData()!!)
-
-            val clientEmailData =
-                clientDetailEmailAdapter.fromJson(preferenceManager.getClientRegistrationDataEmail()!!)
-
-            if (preferenceManager.getCallLogAccessState()) {
-                callLogsHelper.getLatestCallLog { callDetails ->
-                    Log.d("latestOutgoingCall", "$callDetails")
-                    updateLatestCallLog(
-                        clientEmailData?.id!!,
-                        if (callDetails.userName.isNullOrEmpty())
-                            "Unknown"
-                        else
-                            callDetails.userName!!,
-                        callDetails.userNumber!!,
-                        callDetails.time!!,
-                        callDetails.callDuration!!,
-                        callDetails.callType!!,
-                        callDetails.subscribedSimID!!,
-                        callLogsHelper.createDate(0),
-                        context!!,
-                        callDetails.callLogId!!
-                    )
-                }
+            callLogsHelper.getLatestCallLog { callDetails ->
+                if (preferenceManager.getSyncState())
+                    amplifyHelper.checkUserLastSynced(arrayListOf(callDetails))
             }
+
+
         } else {
             val stateStr = intent?.extras!!.getString(TelephonyManager.EXTRA_STATE)
             var state = 0
@@ -116,17 +98,25 @@ class PhoneCallReceiver : BroadcastReceiver() {
 
                 }
             }
+
             onCallStateChanged(context!!, state)
+
         }
     }
 
     private fun onCallStateChanged(context: Context, state: Int) {
-        val clientData =
-            clientDetailAdapter.fromJson(preferenceManager.getClientRegistrationData()!!)
 
-
-        val clientEmailData =
-            clientDetailEmailAdapter.fromJson(preferenceManager.getClientRegistrationDataEmail()!!)
+//        val clientEmailData =
+//            clientDetailEmailAdapter.fromJson(preferenceManager.getClientRegistrationDataEmail())
+//
+//        val clientData =
+//            clientDetailAdapter.fromJson(preferenceManager.getClientRegistrationData()!!)
+//
+//        val workspaceId= if (clientEmailData?.id != null){
+//            clientEmailData.id
+//        }else{
+//            clientData?.id
+//        }
 
         if (lastState == state) {
             //No change, debounce extras
@@ -138,6 +128,7 @@ class PhoneCallReceiver : BroadcastReceiver() {
             TelephonyManager.CALL_STATE_RINGING -> {
                 isIncoming = true
                 callStartTime = Date()
+                println("Ringing...")
 //                showToast(context, "Call Ringing")
             }
             TelephonyManager.CALL_STATE_OFFHOOK -> {
@@ -146,6 +137,7 @@ class PhoneCallReceiver : BroadcastReceiver() {
                     isIncoming = false
                     callStartTime = Date()
                 }
+                println("Ringing to off hook...")
 //                showToast(context, "Out going Call Started")
             }
 
@@ -154,77 +146,31 @@ class PhoneCallReceiver : BroadcastReceiver() {
                 when {
                     lastState == TelephonyManager.CALL_STATE_RINGING -> {
                         //Ring but no pickup-  a miss
-                        if (preferenceManager.getCallLogAccessState()) {
-                            callLogsHelper.getLatestCallLog { callDetails ->
-                                Log.d("latestIncomingCall", "$callDetails")
-
-                                updateLatestCallLog(
-                                    clientEmailData?.id!!,
-                                    if (callDetails.userName.isNullOrEmpty())
-                                        "Unknown"
-                                    else
-                                        callDetails.userName!!,
-                                    callDetails.userNumber!!,
-                                    callDetails.time!!,
-                                    callDetails.callDuration!!,
-                                    callDetails.callType!!,
-                                    callDetails.subscribedSimID!!,
-                                    callLogsHelper.createDate(0),
-                                    context,
-                                    callDetails.callLogId!!
-                                )
-//                            showToast(context, "Call Type: ${callDetails.callType!!}")
-                            }
+                        callLogsHelper.getLatestCallLog { callDetails ->
+                            if (preferenceManager.getSyncState())
+                                amplifyHelper.checkUserLastSynced(arrayListOf(callDetails))
                         }
+                        println("Ringing and missed...")
 //                        showToast(context, "Call Missed")
                     }
                     isIncoming -> {
                         //this means call was incoming and picked up and ended.
-                        if (preferenceManager.getCallLogAccessState()) {
-                            callLogsHelper.getLatestCallLog { callDetails ->
-                                Log.d("latestIncomingCall", "$callDetails")
-                                updateLatestCallLog(
-                                    clientEmailData?.id!!,
-                                    if (callDetails.userName.isNullOrEmpty())
-                                        "Unknown"
-                                    else
-                                        callDetails.userName!!,
-                                    callDetails.userNumber!!,
-                                    callDetails.time!!,
-                                    callDetails.callDuration!!,
-                                    callDetails.callType!!,
-                                    callDetails.subscribedSimID!!,
-                                    callLogsHelper.createDate(0),
-                                    context,
-                                    callDetails.callLogId!!
-                                )
-
-                            }
+                        callLogsHelper.getLatestCallLog { callDetails ->
+                            if (preferenceManager.getSyncState())
+                                amplifyHelper.checkUserLastSynced(arrayListOf(callDetails))
                         }
+                        println("Ringing and incoming...")
+
 //                        showToast(context, "Call Incoming Ended")
                     }
                     else -> {
                         //this means call was outgoing and picked up and ended.
-                        if (preferenceManager.getCallLogAccessState()) {
-                            callLogsHelper.getLatestCallLog { callDetails ->
-                                Log.d("latestOutgoingCall", "$callDetails")
-                                updateLatestCallLog(
-                                    clientEmailData?.id!!,
-                                    if (callDetails.userName.isNullOrEmpty())
-                                        "Unknown"
-                                    else
-                                        callDetails.userName!!,
-                                    callDetails.userNumber!!,
-                                    callDetails.time!!,
-                                    callDetails.callDuration!!,
-                                    callDetails.callType!!,
-                                    callDetails.subscribedSimID!!,
-                                    callLogsHelper.createDate(0),
-                                    context,
-                                    callDetails.callLogId!!
-                                )
-                            }
+                        callLogsHelper.getLatestCallLog { callDetails ->
+                            if (preferenceManager.getSyncState())
+                                amplifyHelper.checkUserLastSynced(arrayListOf(callDetails))
                         }
+                        println("Outgoing...")
+
 //                        showToast(context, "Out going Call Ended")
                     }
 
@@ -376,3 +322,13 @@ class PhoneCallReceiver : BroadcastReceiver() {
         return (appProcessInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_TOP_SLEEPING)
     }
 }
+
+//type Chatter @model @searchable
+//{
+//    id: ID!
+//    Name: String
+//    CreatedByUser: String!
+//    Photo: AWSURL
+//    Number: String
+//
+//    CallLogs: [CallLogs]@hasMany(indexName: "CallLogsByChatter", fields: ["id"]) }

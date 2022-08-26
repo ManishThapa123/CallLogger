@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.amplifyframework.core.Amplify
 import com.eazybe.callLogger.BaseActivity
 import com.eazybe.callLogger.databinding.FragmentSignUpOtpBinding
 import com.eazybe.callLogger.helper.GlobalMethods
@@ -133,6 +134,19 @@ class SignUpOtpFragment : Fragment() {
                     requireContext()
                 )
             }
+        }
+
+        registrationAndLoginViewModel.configureAmplify.observe({lifecycle}){convertedUserData ->
+            if (convertedUserData != null){
+                Amplify.DataStore.start(
+                    { Log.i("MyAmplifyApp", "DataStore started")
+                        registrationAndLoginViewModel.createAmplifyUser(convertedUserData)},
+                    { Log.e("MyAmplifyApp", "Error starting DataStore", it) }
+                )
+
+
+            }
+
         }
 
         registrationAndLoginViewModel.userRegisteredResponse.observe({ lifecycle }) {

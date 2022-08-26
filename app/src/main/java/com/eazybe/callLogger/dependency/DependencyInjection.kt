@@ -11,6 +11,7 @@ import com.eazybe.callLogger.api.models.responses.RegisterData
 import com.eazybe.callLogger.api.models.responses.UserData
 import com.eazybe.callLogger.api.models.responses.WorkspaceDetails
 import com.eazybe.callLogger.container.CallLoggerApplication
+import com.eazybe.callLogger.helper.AmplifyHelper
 import com.eazybe.callLogger.helper.CallLogsHelper
 import com.eazybe.callLogger.helper.PreferenceManager
 import com.eazybe.callLogger.repository.BaseRepository
@@ -69,6 +70,14 @@ object DependencyInjection {
         @NotNull preferenceManager: PreferenceManager,
         @ApplicationContext context: Context
     ): CallLogsHelper = CallLogsHelper(context, preferenceManager)
+
+
+    @Provides
+    @Singleton
+    fun provideAmplifyHelper(
+        @NotNull preferenceManager: PreferenceManager,
+        @ApplicationContext context: Context
+    ): AmplifyHelper = AmplifyHelper(context, preferenceManager, provideClientRegistrationEmailDataAdapter())
 
     /**
      * provides instance of adapter which serializes and deserialized [RegisterData]

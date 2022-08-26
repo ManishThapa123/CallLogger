@@ -43,7 +43,7 @@ data class UserData(
     @Json(name = "mute_notification")
     var muteNotification: Int?,
     @Json(name = "name")
-    var name: Any?,
+    var name: String?,
     @Json(name = "org_id")
     var orgId: Any?,
     @Json(name = "otp")

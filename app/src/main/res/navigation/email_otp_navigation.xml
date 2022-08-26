@@ -29,5 +29,31 @@
         android:id="@+id/otpScreenFragment"
         android:name="com.eazybe.callLogger.ui.SignUpAndLogin.OtpScreenFragment"
         android:label="fragment_otp_screen"
-        tools:layout="@layout/fragment_otp_screen" />
+        tools:layout="@layout/fragment_otp_screen" >
+        <action
+            android:id="@+id/action_otpScreenFragment_to_onboardingFragmentName"
+            app:destination="@id/onboardingFragmentName"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpTo="@id/otpScreenFragment"/>
+    </fragment>
+    <fragment
+        android:id="@+id/onboardingFragmentName"
+        android:name="com.eazybe.callLogger.ui.SignUpAndLogin.Onboarding.OnboardingFragmentName"
+        android:label="OnboardingFragmentName" >
+        <action
+            android:id="@+id/action_onboardingFragmentName_to_onboardingFragmentOrganization"
+            app:destination="@id/onboardingFragmentOrganization"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpTo="@id/onboardingFragmentName"/>
+    </fragment>
+    <fragment
+        android:id="@+id/onboardingFragmentOrganization"
+        android:name="com.eazybe.callLogger.ui.SignUpAndLogin.Onboarding.OnboardingFragmentOrganization"
+        android:label="OnboardingFragmentOrganization" />
 </navigation>

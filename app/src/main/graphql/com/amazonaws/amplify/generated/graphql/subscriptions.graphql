@@ -1,0 +1,370 @@
+# this is an auto generated file. This will be overwritten
+subscription OnCreateUser {
+  onCreateUser {
+    id
+    Userid
+    Name
+    Email
+    Whatsappno
+    Photo
+    LastSync
+    CallLogs {
+      items {
+        id
+        Duration
+        Userid
+        Chatid
+        Datetime
+        Direction
+        Calltime
+        CreatedByUser
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+subscription OnUpdateUser {
+  onUpdateUser {
+    id
+    Userid
+    Name
+    Email
+    Whatsappno
+    Photo
+    LastSync
+    CallLogs {
+      items {
+        id
+        Duration
+        Userid
+        Chatid
+        Datetime
+        Direction
+        Calltime
+        CreatedByUser
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+subscription OnDeleteUser {
+  onDeleteUser {
+    id
+    Userid
+    Name
+    Email
+    Whatsappno
+    Photo
+    LastSync
+    CallLogs {
+      items {
+        id
+        Duration
+        Userid
+        Chatid
+        Datetime
+        Direction
+        Calltime
+        CreatedByUser
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+subscription OnCreateCallLogs {
+  onCreateCallLogs {
+    id
+    Duration
+    Userid
+    Chatid
+    Datetime
+    Direction
+    user {
+      id
+      Userid
+      Name
+      Email
+      Whatsappno
+      Photo
+      LastSync
+      CallLogs {
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    chatter {
+      ChatterId
+      id
+      Name
+      CreatedByUser
+      Photo
+      Number
+      Direction
+      CallLogs {
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    Calltime
+    CreatedByUser
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+subscription OnUpdateCallLogs {
+  onUpdateCallLogs {
+    id
+    Duration
+    Userid
+    Chatid
+    Datetime
+    Direction
+    user {
+      id
+      Userid
+      Name
+      Email
+      Whatsappno
+      Photo
+      LastSync
+      CallLogs {
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    chatter {
+      ChatterId
+      id
+      Name
+      CreatedByUser
+      Photo
+      Number
+      Direction
+      CallLogs {
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    Calltime
+    CreatedByUser
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+subscription OnDeleteCallLogs {
+  onDeleteCallLogs {
+    id
+    Duration
+    Userid
+    Chatid
+    Datetime
+    Direction
+    user {
+      id
+      Userid
+      Name
+      Email
+      Whatsappno
+      Photo
+      LastSync
+      CallLogs {
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    chatter {
+      ChatterId
+      id
+      Name
+      CreatedByUser
+      Photo
+      Number
+      Direction
+      CallLogs {
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    Calltime
+    CreatedByUser
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+subscription OnCreateChatter {
+  onCreateChatter {
+    ChatterId
+    id
+    Name
+    CreatedByUser
+    Photo
+    Number
+    Direction
+    CallLogs {
+      items {
+        id
+        Duration
+        Userid
+        Chatid
+        Datetime
+        Direction
+        Calltime
+        CreatedByUser
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+subscription OnUpdateChatter {
+  onUpdateChatter {
+    ChatterId
+    id
+    Name
+    CreatedByUser
+    Photo
+    Number
+    Direction
+    CallLogs {
+      items {
+        id
+        Duration
+        Userid
+        Chatid
+        Datetime
+        Direction
+        Calltime
+        CreatedByUser
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+subscription OnDeleteChatter {
+  onDeleteChatter {
+    ChatterId
+    id
+    Name
+    CreatedByUser
+    Photo
+    Number
+    Direction
+    CallLogs {
+      items {
+        id
+        Duration
+        Userid
+        Chatid
+        Datetime
+        Direction
+        Calltime
+        CreatedByUser
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}

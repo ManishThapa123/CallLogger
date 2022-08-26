@@ -1,0 +1,557 @@
+# this is an auto generated file. This will be overwritten
+query SearchUsers(
+  $filter: SearchableUserFilterInput
+  $sort: [SearchableUserSortInput]
+  $limit: Int
+  $nextToken: String
+  $from: Int
+  $aggregates: [SearchableUserAggregationInput]
+) {
+  searchUsers(
+    filter: $filter
+    sort: $sort
+    limit: $limit
+    nextToken: $nextToken
+    from: $from
+    aggregates: $aggregates
+  ) {
+    items {
+      id
+      Userid
+      Name
+      Email
+      Whatsappno
+      Photo
+      LastSync
+      CallLogs {
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    nextToken
+    total
+    aggregateItems {
+      name
+      result {
+        ... on SearchableAggregateScalarResult {
+          value
+        }
+        ... on SearchableAggregateBucketResult {
+          buckets {
+            key
+            doc_count
+          }
+        }
+      }
+    }
+  }
+}
+query SearchCallLogs(
+  $filter: SearchableCallLogsFilterInput
+  $sort: [SearchableCallLogsSortInput]
+  $limit: Int
+  $nextToken: String
+  $from: Int
+  $aggregates: [SearchableCallLogsAggregationInput]
+) {
+  searchCallLogs(
+    filter: $filter
+    sort: $sort
+    limit: $limit
+    nextToken: $nextToken
+    from: $from
+    aggregates: $aggregates
+  ) {
+    items {
+      id
+      Duration
+      Userid
+      Chatid
+      Datetime
+      Direction
+      user {
+        id
+        Userid
+        Name
+        Email
+        Whatsappno
+        Photo
+        LastSync
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      chatter {
+        ChatterId
+        id
+        Name
+        CreatedByUser
+        Photo
+        Number
+        Direction
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      Calltime
+      CreatedByUser
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    nextToken
+    total
+    aggregateItems {
+      name
+      result {
+        ... on SearchableAggregateScalarResult {
+          value
+        }
+        ... on SearchableAggregateBucketResult {
+          buckets {
+            key
+            doc_count
+          }
+        }
+      }
+    }
+  }
+}
+query SearchChatters(
+  $filter: SearchableChatterFilterInput
+  $sort: [SearchableChatterSortInput]
+  $limit: Int
+  $nextToken: String
+  $from: Int
+  $aggregates: [SearchableChatterAggregationInput]
+) {
+  searchChatters(
+    filter: $filter
+    sort: $sort
+    limit: $limit
+    nextToken: $nextToken
+    from: $from
+    aggregates: $aggregates
+  ) {
+    items {
+      ChatterId
+      id
+      Name
+      CreatedByUser
+      Photo
+      Number
+      Direction
+      CallLogs {
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    nextToken
+    total
+    aggregateItems {
+      name
+      result {
+        ... on SearchableAggregateScalarResult {
+          value
+        }
+        ... on SearchableAggregateBucketResult {
+          buckets {
+            key
+            doc_count
+          }
+        }
+      }
+    }
+  }
+}
+query GetUser($Userid: ID!) {
+  getUser(Userid: $Userid) {
+    id
+    Userid
+    Name
+    Email
+    Whatsappno
+    Photo
+    LastSync
+    CallLogs {
+      items {
+        id
+        Duration
+        Userid
+        Chatid
+        Datetime
+        Direction
+        Calltime
+        CreatedByUser
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+query ListUsers(
+  $Userid: ID
+  $filter: ModelUserFilterInput
+  $limit: Int
+  $nextToken: String
+  $sortDirection: ModelSortDirection
+) {
+  listUsers(
+    Userid: $Userid
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    sortDirection: $sortDirection
+  ) {
+    items {
+      id
+      Userid
+      Name
+      Email
+      Whatsappno
+      Photo
+      LastSync
+      CallLogs {
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    nextToken
+    startedAt
+  }
+}
+query SyncUsers(
+  $filter: ModelUserFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncUsers(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      Userid
+      Name
+      Email
+      Whatsappno
+      Photo
+      LastSync
+      CallLogs {
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    nextToken
+    startedAt
+  }
+}
+query GetCallLogs($id: ID!) {
+  getCallLogs(id: $id) {
+    id
+    Duration
+    Userid
+    Chatid
+    Datetime
+    Direction
+    user {
+      id
+      Userid
+      Name
+      Email
+      Whatsappno
+      Photo
+      LastSync
+      CallLogs {
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    chatter {
+      ChatterId
+      id
+      Name
+      CreatedByUser
+      Photo
+      Number
+      Direction
+      CallLogs {
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    Calltime
+    CreatedByUser
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+query ListCallLogs(
+  $filter: ModelCallLogsFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listCallLogs(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      Duration
+      Userid
+      Chatid
+      Datetime
+      Direction
+      user {
+        id
+        Userid
+        Name
+        Email
+        Whatsappno
+        Photo
+        LastSync
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      chatter {
+        ChatterId
+        id
+        Name
+        CreatedByUser
+        Photo
+        Number
+        Direction
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      Calltime
+      CreatedByUser
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    nextToken
+    startedAt
+  }
+}
+query SyncCallLogs(
+  $filter: ModelCallLogsFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncCallLogs(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      Duration
+      Userid
+      Chatid
+      Datetime
+      Direction
+      user {
+        id
+        Userid
+        Name
+        Email
+        Whatsappno
+        Photo
+        LastSync
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      chatter {
+        ChatterId
+        id
+        Name
+        CreatedByUser
+        Photo
+        Number
+        Direction
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      Calltime
+      CreatedByUser
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    nextToken
+    startedAt
+  }
+}
+query GetChatter($ChatterId: ID!) {
+  getChatter(ChatterId: $ChatterId) {
+    ChatterId
+    id
+    Name
+    CreatedByUser
+    Photo
+    Number
+    Direction
+    CallLogs {
+      items {
+        id
+        Duration
+        Userid
+        Chatid
+        Datetime
+        Direction
+        Calltime
+        CreatedByUser
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+query ListChatters(
+  $ChatterId: ID
+  $filter: ModelChatterFilterInput
+  $limit: Int
+  $nextToken: String
+  $sortDirection: ModelSortDirection
+) {
+  listChatters(
+    ChatterId: $ChatterId
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    sortDirection: $sortDirection
+  ) {
+    items {
+      ChatterId
+      id
+      Name
+      CreatedByUser
+      Photo
+      Number
+      Direction
+      CallLogs {
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    nextToken
+    startedAt
+  }
+}
+query SyncChatters(
+  $filter: ModelChatterFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncChatters(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      ChatterId
+      id
+      Name
+      CreatedByUser
+      Photo
+      Number
+      Direction
+      CallLogs {
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    nextToken
+    startedAt
+  }
+}

@@ -1,5 +1,6 @@
 package com.eazybe.callLogger.ui.CallLogs.CallLog
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -14,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.eazybe.callLogger.R
 import com.eazybe.callLogger.databinding.FragmentCallLogMainBinding
+import com.eazybe.callLogger.interfaces.UpdateExpiryTime
 import com.eazybe.callLogger.ui.CallLogs.CallLogsFragment1
 import com.eazybe.callLogger.ui.CallLogs.CallLogsFragment2
 import com.eazybe.callLogger.ui.CallLogs.CallLogsViewModel
@@ -26,10 +28,37 @@ import dagger.hilt.android.AndroidEntryPoint
 class CallLogMainFragment : Fragment() {
     private lateinit var binding: FragmentCallLogMainBinding
     private val callDetailsViewModel: CallLogsViewModel by viewModels()
+    private var updateExpiryTime: UpdateExpiryTime? = null
+
+//    As soon as user comes for first time to Calls Screen show him the Sim selection
+//
+//After selecting the sim show Call Logs and on top where Sync button is there, show a button that asks the user to sync call logs
+//
+//After he clicks on that ask him if he wants to sync call logs to server
+//
+//After this process is the same
+//
+//Reports section for a user who has not synced his call logs will also be different as there you'll ask the user to sync call logs and redirect to same popup that asks him to sync call logs
+//
+//App me whatsapp screen Sync Whatsapp UI still left
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         callDetailsViewModel.saveRegisteredDateAndTime()
+//        callDetailsViewModel.getSyncedTimeAndSaveInPreference()
+        observeViewModel()
+    }
+
+    private fun observeViewModel() {
+        callDetailsViewModel.updateExpiryTime.observe({lifecycle}){
+            updateExpiryTime?.updateExpiryTime(it)
+        }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is UpdateExpiryTime)
+            updateExpiryTime = context
     }
 
     override fun onCreateView(
@@ -50,12 +79,10 @@ class CallLogMainFragment : Fragment() {
             Handler(Looper.getMainLooper()).postDelayed({
                 hideProgressBar()
                 setUpAdapter()
-            }, 400)
+            }, 600)
         } catch (e: Exception) {
 
         }
-
-
         setOnClickListener()
     }
 

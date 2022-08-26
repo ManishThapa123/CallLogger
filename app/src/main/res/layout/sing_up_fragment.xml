@@ -7,7 +7,7 @@
     android:paddingStart="@dimen/dimens_24"
     android:paddingTop="@dimen/dimens_8"
     android:paddingEnd="@dimen/dimens_24"
-    tools:context=".ui.SignUpAndLogin.SignUpFragment">
+    tools:context=".ui.SignUpAndLogin.Old.SignUpFragment">
 
     <LinearLayout
         android:id="@+id/llPhoneNumber"

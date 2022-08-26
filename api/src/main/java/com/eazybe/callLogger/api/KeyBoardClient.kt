@@ -2,6 +2,7 @@ package com.eazybe.callLogger.api
 
 import com.eazybe.callLogger.api.models.responses.AllCustomerFollowUpResponse
 import com.eazybe.callLogger.api.models.responses.CreateFollowUpResponse
+import com.eazybe.callLogger.api.models.responses.Tags.TagsResponse
 import com.facebook.stetho.okhttp3.StethoInterceptor
 import okhttp3.OkHttpClient
 import retrofit2.Response
@@ -45,8 +46,7 @@ class KeyBoardClient : KeyBoardApiInterface {
         followUpDate: String?,
         noteDate: String?,
         noteComment: String?,
-        workspaceId: String?
-    ): Response<CreateFollowUpResponse> {
+        workspaceId: String?): Response<CreateFollowUpResponse> {
         return serviceKeyBoard.createFollowUp(
             userMobile,
             customerMobile,
@@ -58,4 +58,10 @@ class KeyBoardClient : KeyBoardApiInterface {
             noteComment,
             workspaceId)
     }
+
+    override suspend fun getTags(userMobile: String?, chatId: String?): Response<TagsResponse> {
+        return serviceKeyBoard.getTags(userMobile,chatId)
+    }
+
+
 }

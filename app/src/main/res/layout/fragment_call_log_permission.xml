@@ -6,26 +6,110 @@
     android:layout_height="match_parent"
     tools:context=".ui.CallLogs.CallLog.CallLogPermissionFragment">
 
-    <ImageView
-        android:id="@+id/syncCallsImage"
+    <TextView
+        android:id="@+id/welcomeTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/sync_call_image"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:fontFamily="@font/poppins_semibold"
+        android:text="Select SIM to continue"
+        android:textColor="@color/grayish"
+        android:layout_marginStart="@dimen/dimens_20"
+        android:layout_marginTop="@dimen/dimens_12"
+        android:textSize="@dimen/dimens_20"
+        android:textStyle="bold" />
+
+<xyz.teamgravity.imageradiobutton.GravityRadioGroup
+    android:layout_width="wrap_content"
+    android:id="@+id/doubleSimRadio"
+    android:padding="@dimen/dimens_16"
+    android:layout_height="wrap_content"
+    android:visibility="gone"
+    app:layout_constraintStart_toStartOf="parent"
+    android:orientation="horizontal"
+    android:layout_marginTop="@dimen/dimens_8"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/welcomeTxt">
+    <xyz.teamgravity.imageradiobutton.GravityImageRadioButton
+        android:id="@+id/sim1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:padding="@dimen/dimens_50"
+        app:girbImage="@drawable/sim_card_black"
+        app:girbPressedTextColor="@color/black"
+        app:girbText="sim1"
+        app:girbUnpressedTextColor="@color/grayish" />
+    <xyz.teamgravity.imageradiobutton.GravityImageRadioButton
+        android:id="@+id/sim2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:padding="@dimen/dimens_50"
+        app:girbImage="@drawable/sim_card_black"
+        app:girbPressedTextColor="@color/black"
+        app:girbText="sim2"
+        app:girbUnpressedTextColor="@color/grayish" />
+</xyz.teamgravity.imageradiobutton.GravityRadioGroup>
+
+    <xyz.teamgravity.imageradiobutton.GravityRadioGroup
+        android:layout_width="wrap_content"
+        android:id="@+id/singleSimRadio"
+        android:padding="@dimen/dimens_16"
+        android:visibility="visible"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/dimens_8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/welcomeTxt">
+        <xyz.teamgravity.imageradiobutton.GravityImageRadioButton
+            android:id="@+id/sim1Single"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="@dimen/dimens_50"
+            app:girbImage="@drawable/sim_card_black"
+            app:girbPressedTextColor="@color/black"
+            app:girbText="sim card 1"
+            app:girbUnpressedTextColor="@color/grayish" />
+
+    </xyz.teamgravity.imageradiobutton.GravityRadioGroup>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimens_12"
+        android:paddingStart="@dimen/dimens_20"
+        android:paddingEnd="@dimen/dimens_20"
+        android:gravity="center"
+        android:textColor="@color/purple"
+        android:layout_marginBottom="200dp"
+        android:fontFamily="@font/poppins"
+        android:visibility="gone"
+        android:id="@+id/selectSimText"
+      app:layout_constraintBottom_toBottomOf="parent"
+        android:text= "Go to call logs section and select a sim to continue."/>
+
+
+
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnSyncCallLogs"
-        android:layout_width="match_parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dimens_40"
         android:layout_marginEnd="@dimen/dimens_40"
-        android:text="Sync calls logs with eazybe"
+        android:layout_marginBottom="200dp"
+        android:text="Next"
         android:textAllCaps="false"
+        android:paddingStart="@dimen/dimen_32"
+        android:paddingEnd="@dimen/dimen_32"
         app:backgroundTint="#5956E9"
         app:cornerRadius="@dimen/dimens_8"
-        app:layout_constraintTop_toBottomOf="@id/syncCallsImage" />
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

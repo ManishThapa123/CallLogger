@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
@@ -12,6 +13,7 @@ import com.eazybe.callLogger.R
 import com.eazybe.callLogger.databinding.FragmentCallLogsParentBinding
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.fragment_call_logs_parent.*
 
 @AndroidEntryPoint
 class CallLogsParentFragment : Fragment() {
@@ -46,8 +48,11 @@ class CallLogsParentFragment : Fragment() {
             binding.root.let { Navigation.findNavController(it.findViewById(R.id.activitiesFragmentNavHost)) }
         if (accessState)
             navController.navigate(R.id.gotoCallLogFragment)
-        else
+        else {
             navController.navigate(R.id.gotoPermissionsFragment)
+        }
+
+
         binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
 
@@ -56,12 +61,19 @@ class CallLogsParentFragment : Fragment() {
                         val accessState2 = callDetailsViewModel.getCallLogAccessState()
                         if (accessState2)
                             navController.navigate(R.id.gotoCallLogFragment)
-                        else
-                            navController.navigate(R.id.gotoPermissionsFragment)
+                        else {
+                            navController.navigate(R.id.gotoPermissionsFragment, bundleOf("tabName" to "call"))
+                        }
 
                     }
                     1 -> {
-                        navController.navigate(R.id.gotoConversationFragment)
+                        val accessState2 = callDetailsViewModel.getCallLogAccessState()
+                        if (accessState2)
+                            navController.navigate(R.id.gotoReportsFragment)
+                        else
+
+                            navController.navigate(R.id.gotoPermissionsFragment, bundleOf("tabName" to "report"))
+
                     }
                 }
             }

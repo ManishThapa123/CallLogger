@@ -2,10 +2,12 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/bottomNavigation"
-    app:startDestination="@id/leads">
+    app:startDestination="@id/call">
 
-    <include app:graph="@navigation/leads_nav_graph" />
-    <include app:graph="@navigation/follow_up_nav_graph" />
+<!--    <include app:graph="@navigation/leads_nav_graph" />-->
+<!--    <include app:graph="@navigation/follow_up_nav_graph" />-->
     <include app:graph="@navigation/calls_nav_graph" />
-    <include app:graph="@navigation/reports_nav_graph" />
+    <include app:graph="@navigation/conversation_nav_graph" />
+    <include app:graph="@navigation/my_account_nav_graph" />
+<!--    <include app:graph="@navigation/reports_nav_graph" />-->
 </navigation>

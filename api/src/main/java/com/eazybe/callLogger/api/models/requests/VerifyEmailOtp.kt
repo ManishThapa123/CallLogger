@@ -9,5 +9,7 @@ data class VerifyEmailOtp(
     @Json(name = "otp")
     var otp: Int?,
     @Json(name = "userEmail")
-    var userEmail: String?
+    var userEmail: String?,
+    @Json(name = "registration_time")
+    var syncTime: String?
 )

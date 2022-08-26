@@ -4,6 +4,8 @@ import com.eazybe.callLogger.api.CallLoggerAPIInterface
 import com.eazybe.callLogger.api.models.requests.*
 import com.eazybe.callLogger.api.models.responses.*
 import com.eazybe.callLogger.helper.PreferenceManager
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import javax.inject.Inject
 
 class BaseRepository @Inject constructor(
@@ -54,5 +56,28 @@ class BaseRepository @Inject constructor(
     suspend fun getAllCustomerFollowups(userMobile: String): AllCustomerFollowUpResponse? {
         val followUps = apiService.getAllCustomerFollowups(userMobile)
         return followUps.body()
+    }
+
+    suspend fun saveSyncItems(saveSyncCallsRequest: SaveSyncCallsRequestItem): SaveSyncItemResponse? {
+
+        val syncList = ArrayList<SaveSyncCallsRequestItem>()
+        syncList.add(saveSyncCallsRequest)
+
+        val syncItems = apiService.saveSyncItems(syncList)
+        return syncItems.body()
+    }
+
+    suspend fun getLastSynced(workspaceId: String): GetLastSyncedResponse? {
+        val lastSynced = apiService.getLastSynced(workspaceId)
+        return lastSynced.body()
+    }
+
+    suspend fun updateUserDetails(
+        file: MultipartBody.Part?,
+        workspace_id: Int,
+        name: RequestBody): UpdateUserDetailsResponse? {
+
+        val userDetails = apiService.updateUserDetails(file,workspace_id,name)
+        return userDetails.body()
     }
 }

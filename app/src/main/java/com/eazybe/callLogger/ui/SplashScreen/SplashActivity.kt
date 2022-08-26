@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +13,7 @@ import androidx.constraintlayout.motion.widget.MotionLayout
 import com.eazybe.callLogger.BaseActivity
 import com.eazybe.callLogger.MainActivity
 import com.eazybe.callLogger.databinding.ActivitySplashBinding
+import com.eazybe.callLogger.databinding.ActivitySplashMainBinding
 import com.eazybe.callLogger.helper.GlobalMethods
 import com.eazybe.callLogger.ui.Onboarding.OnBoardingActivity
 import com.eazybe.callLogger.ui.SignUpAndLogin.RegisterActivity
@@ -18,96 +21,130 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {
-    private lateinit var binding: ActivitySplashBinding
+    private lateinit var binding: ActivitySplashMainBinding
     private val splashViewModel: SplashViewModel by viewModels()
     private var isPermissionSaved: Boolean = false
     private var isLoggedIn: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivitySplashBinding.inflate(layoutInflater)
+        binding = ActivitySplashMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
         splashViewModel.getPermissionSavedState()
         splashViewModel.getLoginState()
         observeViewModel()
+        startHandler()
 
-        binding.splashMotionLayout.setTransitionListener(object : MotionLayout.TransitionListener {
-            override fun onTransitionStarted(
-                motionLayout: MotionLayout?,
-                startId: Int,
-                endId: Int
-            ) {
-            }
+//        binding.splashMotionLayout.setTransitionListener(object : MotionLayout.TransitionListener {
+//            override fun onTransitionStarted(
+//                motionLayout: MotionLayout?,
+//                startId: Int,
+//                endId: Int
+//            ) {
+//            }
+//
+//            override fun onTransitionChange(
+//                motionLayout: MotionLayout?,
+//                startId: Int,
+//                endId: Int,
+//                progress: Float
+//            ) {
+//
+//                when {
+//                    progress > 0.65f -> {
+//                        binding.imageView.setBackgroundColor(Color.WHITE)
+//
+//                    }
+//                    progress > 0.45f -> {
+//                        binding.imageView2.visibility = View.GONE
+//                    }
+//                }
+//            }
+//
+//            override fun onTransitionCompleted(motionLayout: MotionLayout?, currentId: Int) {
+//
+//                if (isLoggedIn) {
+//                    // Start activity
+////                    val intent = Intent(this@SplashActivity, MainActivity::class.java)
+//                    val intent = Intent(this@SplashActivity, BaseActivity::class.java)
+//                    intent.flags =
+//                        Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+//                    startActivity(intent)
+//                    finish()
+//
+//                    // Animate the loading of new activity
+////                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+//                    // Close this activity
+//
+//                } else if (isPermissionSaved) {
+//                    val intent = Intent(this@SplashActivity, RegisterActivity::class.java)
+//                    intent.flags =
+//                        Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+//                    startActivity(intent)
+//
+//                    // Animate the loading of new activity
+////                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+//                    // Close this activity
+//                    finish()
+//
+//                } else {
+//                    // Start activity
+////
+//                    val intent = Intent(this@SplashActivity, OnBoardingActivity::class.java)
+//                    intent.flags =
+//                        Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+//                    startActivity(intent)
+//                    // Animate the loading of new activity
+////                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+//                    // Close this activity
+//                    finish()
+//
+//                }
+//            }
+//
+//            override fun onTransitionTrigger(
+//                motionLayout: MotionLayout?,
+//                triggerId: Int,
+//                positive: Boolean,
+//                progress: Float
+//            ) {
+//            }
+//
+//        })
+    }
 
-            override fun onTransitionChange(
-                motionLayout: MotionLayout?,
-                startId: Int,
-                endId: Int,
-                progress: Float
-            ) {
-
-                when {
-                    progress > 0.65f -> {
-                        binding.imageView.setBackgroundColor(Color.WHITE)
-
-                    }
-                    progress > 0.45f -> {
-                        binding.imageView2.visibility = View.GONE
-                    }
-                }
-            }
-
-            override fun onTransitionCompleted(motionLayout: MotionLayout?, currentId: Int) {
-
-                if (isLoggedIn) {
+    private fun startHandler() {
+        Handler(Looper.getMainLooper()).postDelayed({
+            when {
+                isLoggedIn -> {
                     // Start activity
-//                    val intent = Intent(this@SplashActivity, MainActivity::class.java)
+        //                    val intent = Intent(this@SplashActivity, MainActivity::class.java)
                     val intent = Intent(this@SplashActivity, BaseActivity::class.java)
                     intent.flags =
                         Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                     startActivity(intent)
                     finish()
-
-                    // Animate the loading of new activity
-//                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-                    // Close this activity
-
-                } else if (isPermissionSaved) {
+                }
+                isPermissionSaved -> {
                     val intent = Intent(this@SplashActivity, RegisterActivity::class.java)
                     intent.flags =
                         Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                     startActivity(intent)
-
-                    // Animate the loading of new activity
-//                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-                    // Close this activity
                     finish()
 
-                } else {
-                    // Start activity
-//
+                }
+                else -> {
                     val intent = Intent(this@SplashActivity, OnBoardingActivity::class.java)
                     intent.flags =
                         Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                     startActivity(intent)
-                    // Animate the loading of new activity
-//                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-                    // Close this activity
                     finish()
 
                 }
             }
+        },2000)
 
-            override fun onTransitionTrigger(
-                motionLayout: MotionLayout?,
-                triggerId: Int,
-                positive: Boolean,
-                progress: Float
-            ) {
-            }
-
-        })
     }
 
     private fun observeViewModel() {

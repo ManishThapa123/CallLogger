@@ -2,15 +2,21 @@ package com.eazybe.callLogger.ui.SignUpAndLogin
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import com.amplifyframework.AmplifyException
+import com.amplifyframework.core.Amplify
 import com.eazybe.callLogger.BaseActivity
 import com.eazybe.callLogger.databinding.FragmentOtpScreenBinding
 import com.eazybe.callLogger.helper.GlobalMethods
+import com.eazybe.callLogger.ui.SignUpAndLogin.RegistrationAndLoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class OtpScreenFragment : Fragment() {
@@ -20,6 +26,7 @@ class OtpScreenFragment : Fragment() {
 
     private var userEmail: String? = null
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -28,8 +35,11 @@ class OtpScreenFragment : Fragment() {
         return binding.root
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
         if (!arguments?.getString("email").isNullOrEmpty()) {
             arguments.let {
                 userEmail = it?.getString("email")
@@ -37,6 +47,7 @@ class OtpScreenFragment : Fragment() {
         }
         observeViewModel()
         setOnClickListeners()
+
     }
 
     private fun observeViewModel() {
@@ -79,11 +90,42 @@ class OtpScreenFragment : Fragment() {
             }
         }
 
+        registrationAndLoginViewModel.configureAmplify.observe({lifecycle}){convertedUserData ->
+
+            if (convertedUserData != null){
+                try {
+                    Amplify.DataStore.start(
+                        { Log.i("MyAmplifyApp", "DataStore started")
+                            registrationAndLoginViewModel.createAmplifyUser(convertedUserData)},
+                        { Log.e("MyAmplifyApp", "Error starting DataStore", it) }
+                    )
+                }
+                catch (e: AmplifyException){
+                    Log.d("Exception", "Amplify already Configured")
+                }
+            }
+
+        }
+
         registrationAndLoginViewModel.userRegisteredResponse.observe({lifecycle}){
-            val intent = Intent(requireContext(), BaseActivity::class.java)
-            intent.flags =
-                Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-            startActivity(intent)
+
+            registrationAndLoginViewModel.checkNameAndOrganization()
+
+
+        }
+
+        registrationAndLoginViewModel.redirectToHomeActivity.observe({lifecycle}){
+            binding.pbProgress.visibility = View.GONE
+            if (it){
+                val intent = Intent(requireContext(), BaseActivity::class.java)
+                intent.flags =
+                    Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                startActivity(intent)
+            }else{
+                val action =
+                    OtpScreenFragmentDirections.actionOtpScreenFragmentToOnboardingFragmentName()
+                findNavController().navigate(action)
+            }
         }
     }
 
@@ -93,6 +135,7 @@ class OtpScreenFragment : Fragment() {
             pinView.setPinViewEventListener { pinview, fromUser ->
                 GlobalMethods.hideKeyboard(requireContext(), binding.root)
             }
+
             ibBack.setOnClickListener {
                 activity?.onBackPressed()
             }
@@ -100,7 +143,9 @@ class OtpScreenFragment : Fragment() {
                 registrationAndLoginViewModel.resendOtp(userEmail!!)
             }
             signUpBtn.setOnClickListener {
+                binding.pbProgress.visibility = View.VISIBLE
                 registrationAndLoginViewModel.verifyEmailOtp(userEmail!!, pinView.value.toInt())
+
             }
         }
     }

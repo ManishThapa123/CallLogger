@@ -93,7 +93,7 @@ class MainActivity : AppCompatActivity(), ScreenshotInterface {
 //        }
 //        askForMediaProjectionPermission()
         // call the view model to save the registered date in millis.
-        callDetailsViewModel.saveRegisteredDateAndTime()
+//        callDetailsViewModel.saveRegisteredDateAndTime()
 
         allCallLog.observe({ lifecycle }) {
             callDetailsViewModel.getLastSynced()

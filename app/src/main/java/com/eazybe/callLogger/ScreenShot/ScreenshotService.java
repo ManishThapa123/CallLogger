@@ -25,7 +25,6 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 import com.eazybe.callLogger.BuildConfig;
-import com.eazybe.callLogger.MainActivity;
 import com.eazybe.callLogger.R;
 
 import java.io.File;
@@ -212,4 +211,5 @@ public class ScreenshotService extends Service {
 
         return(PendingIntent.getService(this, 0, i, 0));
     }
+
 }

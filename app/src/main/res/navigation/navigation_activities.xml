@@ -13,7 +13,7 @@
         tools:layout="@layout/fragment_call_log_main" />
     <fragment
         android:id="@+id/conversationFragment"
-        android:name="com.eazybe.callLogger.ui.CallLogs.Conversation.ConversationFragment"
+        android:name="com.eazybe.callLogger.ui.Conversation.ConversationFragment"
         android:label="conversation_fragment"
         tools:layout="@layout/conversation_fragment" />
 
@@ -40,6 +40,22 @@
         android:id="@+id/gotoPermissionsFragment"
         app:destination="@id/callLogPermissionFragment"
         app:enterAnim="@anim/nav_default_pop_enter_anim"
-        app:exitAnim="@anim/nav_default_pop_exit_anim" />
+        app:exitAnim="@anim/nav_default_pop_exit_anim">
+        <argument
+            android:name="tabName"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </action>
+    <fragment
+        android:id="@+id/reportsFragment2"
+        android:name="com.eazybe.callLogger.ui.Dashboard.ReportsFragment"
+        android:label="reports_fragment"
+        tools:layout="@layout/reports_fragment" />
 
+    <action
+        android:id="@+id/gotoReportsFragment"
+        app:destination="@id/reportsFragment2"
+        app:enterAnim="@anim/nav_default_pop_enter_anim"
+        app:exitAnim="@anim/nav_default_pop_exit_anim" />
 </navigation>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@null">
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="360dp"
+        android:layout_margin="@dimen/dimen_32"
+        android:elevation="@dimen/dimens_12"
+        android:id="@+id/cardView"
+        android:background="@drawable/gradient_background"
+        app:cardCornerRadius="@dimen/dimens_16"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/dimens_16"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimens_12"
+                android:layout_marginTop="@dimen/dimens_12"
+                android:fontFamily="@font/poppins_semibold"
+                android:text="Note"
+                android:textColor="@color/black"
+                android:textSize="@dimen/dimens_18" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimens_36"
+                android:fontFamily="@font/poppins"
+                android:gravity="center"
+                android:text="@string/call_sync_text"
+                android:textColor="@color/black"
+                android:textSize="@dimen/dimens_14" />
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dimens_36"
+                android:id="@+id/btnOk"
+                android:backgroundTint="@color/purple"
+                android:text="Okay"
+                app:cornerRadius="@dimen/dimens_8"
+                android:shadowColor="@color/grey_dark"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+
+    </androidx.cardview.widget.CardView>
+
+    <ImageView
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:elevation="@dimen/dimens_28"
+        app:layout_constraintTop_toTopOf="@+id/cardView"
+        app:layout_constraintEnd_toEndOf="@+id/cardView"
+        android:layout_marginEnd="@dimen/dimens_8"
+        android:src="@drawable/top_right_dialog_image"
+        android:layout_marginTop="-10dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

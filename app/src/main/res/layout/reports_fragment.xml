@@ -9,33 +9,32 @@
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintTop_toTopOf="parent"
     tools:context=".ui.Dashboard.ReportsFragment">
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="visible"
         android:id="@+id/lLParent"
         android:orientation="vertical">
+        <ProgressBar
+            android:id="@+id/pbProgress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:progressTint="@color/purple_500"
+            android:visibility="gone"
+            android:layout_gravity="center"/>
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:id="@+id/clDashBoard"
             android:visibility="gone"
             android:layout_height="wrap_content">
 
-            <ImageButton
-                android:id="@+id/ibBack"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dimens_20"
-                android:background="@drawable/ic_back_arrow"
-                app:layout_constraintBottom_toBottomOf="@id/header_title"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/header_title"
-                app:tint="@color/black" />
-
             <TextView
                 android:id="@+id/header_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:layout_marginTop="@dimen/dimens_20"
                 android:fontFamily="@font/poppins_semibold"
                 android:text="Dashboard"
@@ -44,19 +43,31 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/eazybe_link"
+                android:textSize="@dimen/dimens_12"
+                android:layout_marginStart="@dimen/dimens_12"
+                android:layout_marginEnd="@dimen/dimens_12"
+                android:gravity="center"
+                android:fontFamily="@font/poppins"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/header_title"
+                android:id="@+id/workspaceText"/>
 
             <TextView
                 android:id="@+id/callSummaryTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dimens_20"
-                android:layout_marginTop="@dimen/dimens_16"
+                android:layout_marginTop="@dimen/dimens_12"
                 android:fontFamily="@font/poppins_medium"
                 android:text="Call Summary"
                 android:textColor="@color/grayish"
                 android:textSize="@dimen/dimens_16"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/header_title" />
+                app:layout_constraintTop_toBottomOf="@id/workspaceText" />
 
             <Spinner
                 android:id="@+id/dateDropDown"
@@ -67,6 +78,8 @@
                 app:layout_constraintBottom_toBottomOf="@+id/callSummaryTxt"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/callSummaryTxt" />
+
+
 
             <LinearLayout
                 android:id="@+id/linearLayoutSet1"

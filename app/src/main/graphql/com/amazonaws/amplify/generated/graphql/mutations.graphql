@@ -1,0 +1,397 @@
+# this is an auto generated file. This will be overwritten
+mutation CreateUser(
+  $input: CreateUserInput!
+  $condition: ModelUserConditionInput
+) {
+  createUser(input: $input, condition: $condition) {
+    id
+    Userid
+    Name
+    Email
+    Whatsappno
+    Photo
+    LastSync
+    CallLogs {
+      items {
+        id
+        Duration
+        Userid
+        Chatid
+        Datetime
+        Direction
+        Calltime
+        CreatedByUser
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+mutation UpdateUser(
+  $input: UpdateUserInput!
+  $condition: ModelUserConditionInput
+) {
+  updateUser(input: $input, condition: $condition) {
+    id
+    Userid
+    Name
+    Email
+    Whatsappno
+    Photo
+    LastSync
+    CallLogs {
+      items {
+        id
+        Duration
+        Userid
+        Chatid
+        Datetime
+        Direction
+        Calltime
+        CreatedByUser
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+mutation DeleteUser(
+  $input: DeleteUserInput!
+  $condition: ModelUserConditionInput
+) {
+  deleteUser(input: $input, condition: $condition) {
+    id
+    Userid
+    Name
+    Email
+    Whatsappno
+    Photo
+    LastSync
+    CallLogs {
+      items {
+        id
+        Duration
+        Userid
+        Chatid
+        Datetime
+        Direction
+        Calltime
+        CreatedByUser
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+mutation CreateCallLogs(
+  $input: CreateCallLogsInput!
+  $condition: ModelCallLogsConditionInput
+) {
+  createCallLogs(input: $input, condition: $condition) {
+    id
+    Duration
+    Userid
+    Chatid
+    Datetime
+    Direction
+    user {
+      id
+      Userid
+      Name
+      Email
+      Whatsappno
+      Photo
+      LastSync
+      CallLogs {
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    chatter {
+      ChatterId
+      id
+      Name
+      CreatedByUser
+      Photo
+      Number
+      Direction
+      CallLogs {
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    Calltime
+    CreatedByUser
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+mutation UpdateCallLogs(
+  $input: UpdateCallLogsInput!
+  $condition: ModelCallLogsConditionInput
+) {
+  updateCallLogs(input: $input, condition: $condition) {
+    id
+    Duration
+    Userid
+    Chatid
+    Datetime
+    Direction
+    user {
+      id
+      Userid
+      Name
+      Email
+      Whatsappno
+      Photo
+      LastSync
+      CallLogs {
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    chatter {
+      ChatterId
+      id
+      Name
+      CreatedByUser
+      Photo
+      Number
+      Direction
+      CallLogs {
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    Calltime
+    CreatedByUser
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+mutation DeleteCallLogs(
+  $input: DeleteCallLogsInput!
+  $condition: ModelCallLogsConditionInput
+) {
+  deleteCallLogs(input: $input, condition: $condition) {
+    id
+    Duration
+    Userid
+    Chatid
+    Datetime
+    Direction
+    user {
+      id
+      Userid
+      Name
+      Email
+      Whatsappno
+      Photo
+      LastSync
+      CallLogs {
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    chatter {
+      ChatterId
+      id
+      Name
+      CreatedByUser
+      Photo
+      Number
+      Direction
+      CallLogs {
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    Calltime
+    CreatedByUser
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+mutation CreateChatter(
+  $input: CreateChatterInput!
+  $condition: ModelChatterConditionInput
+) {
+  createChatter(input: $input, condition: $condition) {
+    ChatterId
+    id
+    Name
+    CreatedByUser
+    Photo
+    Number
+    Direction
+    CallLogs {
+      items {
+        id
+        Duration
+        Userid
+        Chatid
+        Datetime
+        Direction
+        Calltime
+        CreatedByUser
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+mutation UpdateChatter(
+  $input: UpdateChatterInput!
+  $condition: ModelChatterConditionInput
+) {
+  updateChatter(input: $input, condition: $condition) {
+    ChatterId
+    id
+    Name
+    CreatedByUser
+    Photo
+    Number
+    Direction
+    CallLogs {
+      items {
+        id
+        Duration
+        Userid
+        Chatid
+        Datetime
+        Direction
+        Calltime
+        CreatedByUser
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+mutation DeleteChatter(
+  $input: DeleteChatterInput!
+  $condition: ModelChatterConditionInput
+) {
+  deleteChatter(input: $input, condition: $condition) {
+    ChatterId
+    id
+    Name
+    CreatedByUser
+    Photo
+    Number
+    Direction
+    CallLogs {
+      items {
+        id
+        Duration
+        Userid
+        Chatid
+        Datetime
+        Direction
+        Calltime
+        CreatedByUser
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}

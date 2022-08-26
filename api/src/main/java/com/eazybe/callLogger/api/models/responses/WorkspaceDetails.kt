@@ -43,9 +43,9 @@ data class WorkspaceDetails(
     @Json(name = "mute_notification")
     var muteNotification: Int?,
     @Json(name = "name")
-    var name: Any?,
+    var name: String?,
     @Json(name = "org_id")
-    var orgId: Any?,
+    var orgId: Int?,
     @Json(name = "otp")
     var otp: Any?,
     @Json(name = "parent_id")
@@ -59,5 +59,9 @@ data class WorkspaceDetails(
     @Json(name = "user_system_labels")
     var userSystemLabels: String?,
     @Json(name = "user_type")
-    var userType: Int?
+    var userType: Int?,
+    @Json(name = "profile_pic")
+    var profilePic: String?,
+    @Json(name = "org_name")
+    var orgName: String?
 )

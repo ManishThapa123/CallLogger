@@ -1,12 +1,8 @@
 package com.eazybe.callLogger.helper
 
-import a.a.b.a.c.l.e.c
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
-import android.content.Intent
+import android.content.*
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.net.ConnectivityManager.*
@@ -18,23 +14,27 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.res.ResourcesCompat
-import com.judemanutd.autostarter.AutoStartPermissionHelper
+import com.amplifyframework.core.model.temporal.Temporal
 import com.eazybe.callLogger.R
-import com.eazybe.callLogger.container.CallLoggerApplication
 import com.eazybe.callLogger.interfaces.ScreenshotInterface
+import com.judemanutd.autostarter.AutoStartPermissionHelper
 import dagger.hilt.android.internal.Contexts.getApplication
 import www.sanju.motiontoast.MotionToast
 import www.sanju.motiontoast.MotionToastStyle
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 @SuppressLint("StaticFieldLeak")
 object GlobalMethods {
 
     var ssInterface: ScreenshotInterface? = null
+
     /**
      * Make a standard toast that just contains text.
      *
@@ -47,10 +47,11 @@ object GlobalMethods {
         Toast.makeText(context, message, Toast.LENGTH_LONG).show()
     }
 
-    fun saveContextForInterface(context: ScreenshotInterface){
+    fun saveContextForInterface(context: ScreenshotInterface) {
         ssInterface = context
     }
-    fun getSSInterface() : ScreenshotInterface? {
+
+    fun getSSInterface(): ScreenshotInterface? {
         return ssInterface
     }
 
@@ -59,6 +60,12 @@ object GlobalMethods {
             context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(root.windowToken, 0)
     }
+    fun showKeyboard(context: Context, root: View) {
+        val inputMethodManager =
+            context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.showSoftInput(root, InputMethodManager.SHOW_IMPLICIT)
+    }
+
     /**
      * In order to check if the device is supported by the library.
      * If false, the method will return true as long as the permission exist,
@@ -123,15 +130,29 @@ object GlobalMethods {
      * [phoneNumberWithCountryCode] is a required param.
      */
     fun openNumberInWhatsapp(phoneNumberWithCountryCode: String, context: Context) {
+
+        val url = "https://api.whatsapp.com/send?phone=" + "${phoneNumberWithCountryCode}&text=Hello"
         try {
-            val url = "https://api.whatsapp.com/send?phone=$phoneNumberWithCountryCode"
-            context.packageManager.getPackageInfo("com.whatsapp", PackageManager.GET_ACTIVITIES)
-            val i = Intent(Intent.ACTION_VIEW)
-            i.data = Uri.parse(url)
-            context.startActivity(i)
+
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                this.data = Uri.parse(url)
+                this.`package` = "com.whatsapp"
+            }
+            try {
+                context.startActivity(intent)
+            } catch (ex : ActivityNotFoundException){
+                Toast.makeText(
+                   context,
+                    "Whatsapp is not installed.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         } catch (e: PackageManager.NameNotFoundException) {
-            Toast.makeText(context, "Whatsapp is not installed in your phone.", Toast.LENGTH_SHORT)
-                .show()
+            Toast.makeText(
+                context,
+                "Whatsapp is not installed in your phone.",
+                Toast.LENGTH_SHORT
+            ).show()
             e.printStackTrace()
         }
     }
@@ -160,7 +181,7 @@ object GlobalMethods {
     fun callUser(phoneNumberWithCountryCode: String, context: Context) {
         try {
             val uri = Uri.parse("tel:$phoneNumberWithCountryCode")
-            val intent = Intent(Intent.ACTION_DIAL,uri)
+            val intent = Intent(Intent.ACTION_DIAL, uri)
             context.startActivity(intent)
         } catch (e: Exception) {
             Toast.makeText(context, "Couldn't place your call...", Toast.LENGTH_SHORT)
@@ -178,6 +199,56 @@ object GlobalMethods {
         Log.d("dateInFormat", convertedDate)
         return convertedDate
     }
+
+    fun convertFollowUpDate(date: Date): String {
+        //"2022-8-11 13:04:05"
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        val convertedDate = dateFormat.format(date)
+        return convertedDate
+    }
+
+    fun createDateToday(): String {
+        val calendar: Calendar = Calendar.getInstance()
+        calendar.add(Calendar.DATE, 0)
+        return convertMillisToDateAndTime("${calendar.timeInMillis}")
+    }
+
+    fun convertSyncedDateToMillis(date: String): String {
+        //"2022-8-11 13:04:05"
+        //"2022-08-17T09:17:56.757Z
+//        val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+//        val convertedDate = dateFormat.parse(date)!!.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+//        "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+//
+//        val updatedDate = date.dropLast(4)
+//        val newDate = updatedDate+"000Z"
+
+        val localDate =
+            LocalDateTime.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"))
+
+        val milliSec = localDate.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+
+        return "$milliSec"
+    }
+
+    fun convertSyncedDateToMillisGetSync(date: String): String {
+        //"2022-8-11 13:04:05"
+//        val newDate = "$date.000Z"
+
+        val localDate =
+            LocalDateTime.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"))
+
+        val milliSec = localDate.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+
+        return "$milliSec"
+    }
+
+    fun convertDisplayUpDate(date: Date): String {
+        val dateFormat = SimpleDateFormat("dd MMM yyyy hh:mm aaa", Locale.getDefault())
+        val convertedDate = dateFormat.format(date)
+        return convertedDate
+    }
+
 
     /**
      * In order to convert the milliseconds to Time Stamp using SimpleDateFormat.
@@ -202,11 +273,12 @@ object GlobalMethods {
     /**
      * In order to calculate the time difference using millis
      */
-    fun calculateTimeDifference(date1: Long, date2: Long): Long{
+    fun calculateTimeDifference(date1: Long, date2: Long): Long {
         val diff = date2 - date1
         val seconds = diff / 1000
         return seconds
     }
+
     /**
      * In order to convert the milliseconds to Hours, minutes format
      */
@@ -215,6 +287,15 @@ object GlobalMethods {
         val convertedDate = dateFormat.format(millis.toLong())
         Log.d("dateInFormat", convertedDate)
         return convertedDate
+    }
+
+    fun convertMillisToTempDate(millis: String): Temporal.DateTime {
+
+        val date = Date(millis.toLong())
+        val offsetMillis = TimeZone.getDefault().getOffset(date.time)
+        val offsetSeconds = TimeUnit.MILLISECONDS.toSeconds(offsetMillis.toLong()).toInt()
+        return Temporal.DateTime(date, offsetSeconds)
+
     }
 
     /**
@@ -332,20 +413,22 @@ object GlobalMethods {
         return "${date.time}"
     }
 
-     fun copyTextToClipboard(textToCopy: String, context: Context) {
-        val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    fun copyTextToClipboard(textToCopy: String, context: Context) {
+        val clipboardManager =
+            context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clipData = ClipData.newPlainText("text", textToCopy)
         clipboardManager.setPrimaryClip(clipData)
         Toast.makeText(context, "$textToCopy copied to clipboard", Toast.LENGTH_LONG).show()
     }
 
-     fun hasInternetConnection(context: Context): Boolean {
+    fun hasInternetConnection(context: Context): Boolean {
         val connectivityManager = getApplication(context).getSystemService(
             Context.CONNECTIVITY_SERVICE
         ) as ConnectivityManager
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val activeNetwork = connectivityManager.activeNetwork ?: return false
-            val capabilities = connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
+            val capabilities =
+                connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
             return when {
                 capabilities.hasTransport(TRANSPORT_WIFI) -> true
                 capabilities.hasTransport(TRANSPORT_CELLULAR) -> true
@@ -354,7 +437,7 @@ object GlobalMethods {
             }
         } else {
             connectivityManager.activeNetworkInfo?.run {
-                return when(type) {
+                return when (type) {
                     TYPE_WIFI -> true
                     TYPE_MOBILE -> true
                     TYPE_ETHERNET -> true
@@ -364,4 +447,6 @@ object GlobalMethods {
         }
         return false
     }
+
+
 }

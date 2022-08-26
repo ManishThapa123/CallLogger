@@ -2,6 +2,7 @@ package com.eazybe.callLogger.api
 
 import com.eazybe.callLogger.api.models.responses.AllCustomerFollowUpResponse
 import com.eazybe.callLogger.api.models.responses.CreateFollowUpResponse
+import com.eazybe.callLogger.api.models.responses.Tags.TagsResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -27,4 +28,10 @@ interface KeyBoardApiInterface {
         @Query("noteComment") noteComment: String?,
         @Query("workspace_id") workspaceId: String?
     ): Response<CreateFollowUpResponse>
+
+    @GET("getallcolumns")
+    suspend fun getTags(
+        @Query("user_mobile") userMobile: String?,
+        @Query("chat_id") chatId: String?
+    ): Response<TagsResponse>
 }

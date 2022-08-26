@@ -6,8 +6,10 @@
     android:layout_height="match_parent"
     tools:context=".ui.SignUpAndLogin.OtpScreenFragment">
 
+
     <RelativeLayout
         android:layout_width="match_parent"
+        android:id="@+id/rLMain"
         android:layout_height="match_parent">
 
         <ImageView
@@ -20,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/imgBackground"
-            android:layout_marginTop="-100dp"
+            android:layout_marginTop="-210dp"
             android:background="@drawable/card_corner_background"
             android:orientation="vertical"
             android:padding="@dimen/dimens_20">
@@ -55,7 +57,7 @@
                 android:id="@+id/enterOtpTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimens_10"
+                android:layout_marginTop="@dimen/dimens_8"
                 android:fontFamily="@font/montserrat_regular"
                 android:text="Enter the OTP send to you on"
                 android:textColor="#3D4043"
@@ -106,7 +108,7 @@
                 android:id="@+id/signUpBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_32"
+                android:layout_marginTop="@dimen/dimens_6"
                 android:padding="@dimen/dimens_10"
                 android:text="Sign Up"
                 android:textSize="@dimen/dimens_16"
@@ -129,4 +131,15 @@
         android:textSize="@dimen/dimens_14"
         app:layout_constraintBottom_toBottomOf="parent" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <ProgressBar
+        android:layout_width="@dimen/dimens_60"
+        android:id="@+id/pbProgress"
+        android:visibility="gone"
+        android:layout_height="@dimen/dimens_60"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+

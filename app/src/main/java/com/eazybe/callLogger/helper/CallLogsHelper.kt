@@ -81,6 +81,9 @@ class CallLogsHelper @Inject constructor(
             Log.d("fromDate2", fromDate!!)
         }
 
+//        fromDate = preferenceManager.getLastSyncedTime()
+        Log.d("FirstTimeDate", "$fromDate")
+
         //from date will be the date of registration, the user has signed up.
         val mSelectionArgs = arrayOf(fromDate, createDate(1))
         GlobalMethods.convertMillisToDateAndTime(fromDate!!)
@@ -124,8 +127,7 @@ class CallLogsHelper @Inject constructor(
                             type,
                             subscribedSimID,
                             callLogId
-                        )
-                    )
+                        ))
                     Log.d("MY_APP_CALL_LOGS", "$number $duration $type $name")
                     Log.d("subscription_Id", "$subscribedSimID and number = $number")
 
@@ -338,7 +340,7 @@ class CallLogsHelper @Inject constructor(
     }
 
     fun getTotalOutGoingCallsCount(forToday: Boolean = false): Int {
-        if (outGoingCallList == null)
+//        if (outGoingCallList == null)
             loadCallLogs()
 
         var output = 0
@@ -359,7 +361,7 @@ class CallLogsHelper @Inject constructor(
     }
 
     fun getTotalOutGoingCallsDuration(forToday: Boolean = false): String {
-        if (outGoingCallList == null)
+//        if (outGoingCallList == null)
             loadCallLogs()
 
         var output = 0L
@@ -380,7 +382,7 @@ class CallLogsHelper @Inject constructor(
     }
 
     fun getTotalIncomingCallsCount(forToday: Boolean = false): Int {
-        if (incomingCallList == null)
+//        if (incomingCallList == null)
             loadCallLogs()
 
         var output = 0
@@ -401,7 +403,7 @@ class CallLogsHelper @Inject constructor(
     }
 
     fun getTotalIncomingCallsDuration(forToday: Boolean = false): String {
-        if (incomingCallList == null)
+//        if (incomingCallList == null)
             loadCallLogs()
 
         var output = 0L
@@ -775,6 +777,9 @@ class CallLogsHelper @Inject constructor(
             preferenceManager.saveFirstTimeRegisterMillis(fromDate!!)
             Log.d("fromDate2", fromDate!!)
         }
+//        fromDate = preferenceManager.getLastSyncedTime()
+        Log.d("FirstTimeDate", "$fromDate")
+
         //from date will be the date of registration, the user has signed up.
         val mSelectionArgs = arrayOf(fromDate, createDate(1))
         GlobalMethods.convertMillisToDateAndTime(fromDate!!)
@@ -813,12 +818,12 @@ class CallLogsHelper @Inject constructor(
 
                       if (!lastLogCount) {
                           if (!subscribedSimID.isNullOrEmpty()) {
-//                              if (subscribedSimID == preferenceManager.getSIMSubscriptionId() ||
-//                                  subscribedSimID == preferenceManager.getSIMSubscriptionIdSub() ||
-//                                  (subscribedSimID.length > 1 && preferenceManager.getSIMSubscriptionId()
-//                                      ?.substring(0, 18)
-//                                      ?.let { subscribedSimID.contains(it) } == true)
-//                              ) {
+                              if (subscribedSimID == preferenceManager.getSIMSubscriptionId() ||
+                                  subscribedSimID == preferenceManager.getSIMSubscriptionIdSub() ||
+                                  (subscribedSimID.length > 1 && preferenceManager.getSIMSubscriptionId()
+                                      ?.substring(0, 18)
+                                      ?.let { subscribedSimID.contains(it) } == true)
+                              ) {
                                   latestLog(
                                       SampleEntity(
                                           name,
@@ -833,7 +838,7 @@ class CallLogsHelper @Inject constructor(
                                   lastLogCount = true
                                   Log.d("MY_APP_CALL_LOGS", "$number $duration $type $name")
                                   Log.d("subscription_Id", "$subscribedSimID and number = $number")
-//                              }
+                              }
                           }
                       }
                   }
@@ -883,6 +888,8 @@ class CallLogsHelper @Inject constructor(
             Log.d("fromDate2", fromDate!!)
         }
 
+//        fromDate = preferenceManager.getLastSyncedTime()
+        Log.d("FirstTimeDate", "$fromDate")
         //from date will be the date of registration, the user has signed up.
         val mSelectionArgs = arrayOf(fromDate, createDate(1))
         GlobalMethods.convertMillisToDateAndTime(fromDate!!)
@@ -994,12 +1001,16 @@ class CallLogsHelper @Inject constructor(
         //When saved use the same date, else create the current date or call an api in this case.
         if (preferenceFirstTimeRegisteredDate) {
             fromDate = preferenceManager.getFirstTimeRegisterMillis()
+
         } else {
 //            fromDate = "1636455990849"
             fromDate = createDate(0)
             preferenceManager.saveFirstTimeRegisterMillis(fromDate!!)
             Log.d("fromDate2", fromDate!!)
         }
+
+//        fromDate = preferenceManager.getLastSyncedTimeAmplify()
+        Log.d("FirstTimeDate", "$fromDate")
 
         //from date will be the date of registration, the user has signed up.
         val mSelectionArgs = arrayOf(fromDate, createDate(1))
@@ -1038,12 +1049,11 @@ class CallLogsHelper @Inject constructor(
 //            Log.d("subscribedSimICCID", "${preferenceManager.getSIMSubscriptionId()?.substring(0,18)}")
 
             if (!subscribedSimID.isNullOrEmpty()) {
-//                if (subscribedSimID == preferenceManager.getSIMSubscriptionId() ||
-//                    subscribedSimID == preferenceManager.getSIMSubscriptionIdSub() ||
-//                    (subscribedSimID.length > 1 && preferenceManager.getSIMSubscriptionId()
-//                        ?.substring(0, 18)
-//                        ?.let { subscribedSimID.contains(it) } == true)
-//                ) {
+                if (subscribedSimID == preferenceManager.getSIMSubscriptionId() ||
+                    subscribedSimID == preferenceManager.getSIMSubscriptionIdSub() ||
+                    (subscribedSimID.length > 1 && preferenceManager.getSIMSubscriptionId()
+                        ?.substring(0, 18)
+                        ?.let { subscribedSimID.contains(it) } == true)) {
                     allCallLogsList!!.add(
                         SampleEntity(
                             name,
@@ -1112,9 +1122,13 @@ class CallLogsHelper @Inject constructor(
                             )
                         }
                     }
-//                }
+                }
             }
         }
+
+//        Log.d("LastCallTime", "${GlobalMethods.convertMillisToDateAndTime(allCallLogsList!!.first().time.toString())}")
+
+
         when (callType) {
             "All" -> callData(allCallLogsList)
             "Outgoing" -> callData(outGoingCallList)

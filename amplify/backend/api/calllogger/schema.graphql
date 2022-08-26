@@ -1,0 +1,49 @@
+input AMPLIFY { globalAuthRule: AuthRule = { allow: public } }
+
+
+enum
+Direction
+{
+    Incoming
+    Outgoing
+    Missed
+    Rejected
+}
+
+type User @model @searchable
+{
+    id: ID!
+    Userid: ID! @primaryKey
+    Name: String
+    Email: String!
+    Whatsappno: Int
+    Photo: AWSURL
+    LastSync: AWSDateTime!
+    CallLogs: [CallLogs] @hasMany(indexName: "CallLogsByUserId", fields: ["Userid"]) }
+
+
+type CallLogs @model @searchable
+{
+    id: ID!
+    Duration: Int!
+    Userid: ID!@index(name: "CallLogsByUserId", sortKeyFields: ["Chatid","Datetime"])
+    Chatid: ID!@index(name: "CallLogsByChatter", sortKeyFields: [,"Userid","Datetime"])
+    Datetime: AWSDateTime!
+    Direction: String!
+    user: User @belongsTo
+    chatter:Chatter @belongsTo
+    Calltime: Float!
+    CreatedByUser: String!
+}
+
+type Chatter @model @searchable
+{
+    ChatterId : ID! @primaryKey
+    id: ID!
+    Name: String
+    CreatedByUser: String!
+    Photo: AWSURL
+    Number: String
+    Direction: String
+
+    CallLogs: [CallLogs]@hasMany(indexName: "CallLogsByChatter", fields: ["id"]) }

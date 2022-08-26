@@ -38,7 +38,7 @@ class FollowUpAdapter(contextParent: Context): ListAdapter<DataFollowUp, FollowU
 
                     when(position){
                         0 -> {
-                            clFollowUp.setBackgroundColor(context.resources.getColor(R.color.purple_200))
+//                            clFollowUp.setBackgroundColor(context.resources.getColor(R.color.purple_200))
                         }
                     }
                 }

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.SignUpAndLogin.SignUpOtpFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/imgBackground"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/sign_up_background" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/imgBackground"
+            android:layout_marginTop="-100dp"
+            android:background="@drawable/card_corner_background"
+            android:orientation="vertical"
+            android:padding="@dimen/dimens_24">
+
+            <TextView
+                android:id="@+id/welcomeTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_semibold"
+                android:text="Join an existing organisation"
+                android:textColor="#3D4043"
+                android:textSize="@dimen/dimens_20"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtCode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_32"
+                android:fontFamily="@font/poppins"
+                android:text="Code*"
+                android:textSize="@dimen/dimens_16" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/txtInputName"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="OJU542123"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txtOrg"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/poppins"
+                        android:gravity="start|center"
+                        android:inputType="text"
+                        android:textSize="@dimen/dimens_12" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+    </RelativeLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/registerButton"
+        android:layout_width="wrap_content"
+        android:layout_height="54dp"
+        android:layout_marginStart="@dimen/dimens_24"
+        android:layout_marginEnd="@dimen/dimens_24"
+
+        android:backgroundTint="@color/grey"
+        android:text="Join now"
+        android:drawableEnd="@drawable/ic_clip"
+        android:textAllCaps="false"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginBottom="@dimen/dimens_20"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="18sp"
+        android:paddingStart="@dimen/dimens_24"
+        app:cornerRadius="@dimen/dimens_16"
+       app:layout_constraintBottom_toTopOf="@+id/txtSkip"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Skip for Now"
+        android:layout_marginBottom="@dimen/dimens_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:textColor="@color/grey"
+        android:fontFamily="@font/poppins_semibold"
+        android:textSize="@dimen/dimens_16"
+        android:id="@+id/txtSkip"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

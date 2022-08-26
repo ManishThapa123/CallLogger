@@ -8,11 +8,15 @@ plugins {
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
 
+
 }
 
 android {
     compileSdk 31
-
+    aaptOptions {
+        noCompress "tflite"
+        noCompress "lite"
+    }
     defaultConfig {
         applicationId "com.eazybe.callLogger"
         minSdk 23
@@ -21,6 +25,9 @@ android {
         versionName '1.14'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        ndk {
+            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86'
+        }
     }
 
     buildTypes {
@@ -30,6 +37,8 @@ android {
         }
     }
     compileOptions {
+        // Support for Java 8 features
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -118,6 +127,39 @@ dependencies {
 
     implementation 'com.google.android.gms:play-services-auth:20.2.0'
     implementation 'com.github.florent37:singledateandtimepicker:2.2.7'
+
+
+    //Amplify
+    // Amplify core dependency
+    implementation 'com.amplifyframework:core:1.36.2'
+
+    implementation 'com.amplifyframework:aws-datastore:1.36.2'
+
+    // Support for Java 8 features
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
+
+    // Add this line.
+    implementation 'com.amplifyframework:aws-api:1.36.2'
+
+    implementation 'com.github.raheemadamboev:image-radio-button-android:1.0.4'
+
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+
+    implementation 'com.github.CanHub:Android-Image-Cropper:3.2.1'
+
+    // glide library
+    implementation 'com.github.bumptech.glide:glide:4.13.2'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.13.2'
+
+    //Glimpse auto crop
+    implementation 'com.github.the-super-toys.glimpse-android:glimpse-core:0.0.5'
+
+    //only required for glide extensions
+    implementation 'com.github.the-super-toys.glimpse-android:glimpse-glide:0.0.5'
+
+    implementation 'org.tensorflow:tensorflow-lite:0.0.0-nightly'
+
+    implementation 'com.airbnb.android:lottie:5.2.0'
 
 }
 // Allow references to generated code

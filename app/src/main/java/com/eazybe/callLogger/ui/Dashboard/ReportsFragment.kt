@@ -2,6 +2,8 @@ package com.eazybe.callLogger.ui.Dashboard
 
 import android.R
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +14,7 @@ import androidx.fragment.app.viewModels
 import com.eazybe.callLogger.databinding.ReportsFragmentBinding
 import com.robinhood.ticker.TickerUtils
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.reports_fragment.*
 
 @AndroidEntryPoint
 class ReportsFragment : Fragment() {
@@ -19,8 +22,13 @@ class ReportsFragment : Fragment() {
     private lateinit var binding: ReportsFragmentBinding
     private val dashboardViewModel: DashboardViewModel by viewModels()
     private val dateArray = arrayOf("Today", "All Time")
+    private var selectedSpinner : String? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        observeViewModel()
 
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -29,44 +37,60 @@ class ReportsFragment : Fragment() {
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        when(selectedSpinner){
+            "Today" -> {
+                dashboardViewModel.getDashBoardCountsToday()
+            }
+            "All" -> {
+                dashboardViewModel.getDashBoardCounts()
+            }
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        showProgressBar()
+        //Call it here phonebook.
+        try {
+            Handler(Looper.getMainLooper()).postDelayed({
+                hideProgressBar()
+                if (dashboardViewModel.getCallLogAccessState()) {
+                    binding.imgSyncCalls.visibility = View.GONE
+                    binding.clDashBoard.visibility = View.VISIBLE
+                    val arrayAdapter =
+                        ArrayAdapter(requireContext(), R.layout.simple_spinner_dropdown_item, dateArray)
+                    binding.dateDropDown.adapter = arrayAdapter
+                    binding.dateDropDown.onItemSelectedListener =
+                        object : AdapterView.OnItemSelectedListener {
+                            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                                when (dateArray[p2]) {
+                                    "Today" -> {
+                                        dashboardViewModel.getDashBoardCountsToday()
+                                        selectedSpinner = "Today"
+                                    }
+                                    "All Time" -> {
+                                        dashboardViewModel.getDashBoardCounts()
+                                        selectedSpinner = "All"
+                                    }
+                                }
+                            }
 
-        if (dashboardViewModel.getCallLogAccessState()) {
-            binding.imgSyncCalls.visibility = View.GONE
-            binding.clDashBoard.visibility = View.VISIBLE
-            val arrayAdapter =
-                ArrayAdapter(requireContext(), R.layout.simple_spinner_dropdown_item, dateArray)
-            binding.dateDropDown.adapter = arrayAdapter
-            binding.dateDropDown.onItemSelectedListener =
-                object : AdapterView.OnItemSelectedListener {
-                    override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                        when (dateArray[p2]) {
-                            "Today" -> {
-                                dashboardViewModel.getDashBoardCountsToday()
+                            override fun onNothingSelected(p0: AdapterView<*>?) {
                             }
-                            "All Time" -> {
-                                dashboardViewModel.getDashBoardCounts()
-                            }
+
                         }
-                    }
-
-                    override fun onNothingSelected(p0: AdapterView<*>?) {
-                    }
-
+                } else {
+                    binding.imgSyncCalls.visibility = View.VISIBLE
+                    binding.clDashBoard.visibility = View.GONE
                 }
-        } else {
-            binding.imgSyncCalls.visibility = View.VISIBLE
-            binding.clDashBoard.visibility = View.GONE
+
+
+            }, 600)
+        } catch (e: Exception) {
+
         }
-
-
-        observeViewModel()
-
-        binding.ibBack.setOnClickListener {
-            activity?.onBackPressed()
-        }
-
     }
 
     private fun observeViewModel() {
@@ -149,9 +173,19 @@ class ReportsFragment : Fragment() {
                 binding.totalCallTime.text = it
             }
         }
-
-
     }
 
+    private fun showProgressBar() {
+        binding.apply {
+            clDashBoard.visibility = View.GONE
+            pbProgress.visibility = View.VISIBLE
+        }
+    }
 
+    private fun hideProgressBar() {
+        binding.apply {
+            clDashBoard.visibility = View.VISIBLE
+            pbProgress.visibility = View.GONE
+        }
+    }
 }

@@ -2,11 +2,10 @@ package com.eazybe.callLogger.api
 
 import com.eazybe.callLogger.api.models.requests.*
 import com.eazybe.callLogger.api.models.responses.*
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Query
+import retrofit2.http.*
 
 /**
  *Request method and URL specified in the annotation
@@ -61,4 +60,23 @@ interface CallLoggerAPIInterface {
     suspend fun getAllCustomerFollowups(
         @Query("user_mobile_No") userMobile: String?
     ): Response<AllCustomerFollowUpResponse>
+
+    @POST("savesyncitems")
+    suspend fun saveSyncItems(
+        @Body saveSyncedCallsRequest: List<SaveSyncCallsRequestItem>
+    ): Response<SaveSyncItemResponse>
+
+    @GET("getyncitems")
+    suspend fun getLastSynced(
+        @Query("workspace_id") workspaceId: String?
+    ):Response<GetLastSyncedResponse>
+
+
+    @PATCH("updatepersonaldetails")
+    @Multipart
+    suspend fun updateUserDetails(
+        @Part profile_pic: MultipartBody.Part?,
+        @Part("workspace_id") workspaceId: Int,
+        @Part("name") name: RequestBody
+    ): Response<UpdateUserDetailsResponse>
 }

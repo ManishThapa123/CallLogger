@@ -1,0 +1,15 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-calllogger-dev-152744-authRole",
+      "UnauthRoleArn": "arn:aws:iam::489442235815:role/amplify-calllogger-dev-152744-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::489442235815:role/amplify-calllogger-dev-152744-authRole",
+      "Region": "ap-south-1",
+      "DeploymentBucketName": "amplify-calllogger-dev-152744-deployment",
+      "UnauthRoleName": "amplify-calllogger-dev-152744-unauthRole",
+      "StackName": "amplify-calllogger-dev-152744",
+      "StackId": "arn:aws:cloudformation:ap-south-1:489442235815:stack/amplify-calllogger-dev-152744/dc29ab70-0e59-11ed-94ae-06ce8139113e",
+      "AmplifyAppId": "d1gniljs24pmaw"
+    }
+  }
+}

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.CallLogs.Conversation.ConversationFragment">
+    tools:context=".ui.Conversation.ConversationFragment">
 
     <ImageView
         android:layout_width="wrap_content"
