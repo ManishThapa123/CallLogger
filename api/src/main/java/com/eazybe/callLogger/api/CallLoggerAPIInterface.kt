@@ -2,10 +2,15 @@ package com.eazybe.callLogger.api
 
 import com.eazybe.callLogger.api.models.requests.*
 import com.eazybe.callLogger.api.models.responses.*
+import com.eazybe.callLogger.api.models.responses.QuickReplies.CreateQuickReplyResponse
+import com.eazybe.callLogger.api.models.responses.QuickReplies.QuickRepliesResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
+import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.*
+
 
 /**
  *Request method and URL specified in the annotation
@@ -54,7 +59,6 @@ interface CallLoggerAPIInterface {
         @Body googleSignUpRequest: GoogleSignUpRequest
     ): Response<VerifyOTPResponse>
 
-
     //Follow Up API
     @GET("allCustomerFollowups")
     suspend fun getAllCustomerFollowups(
@@ -79,4 +83,31 @@ interface CallLoggerAPIInterface {
         @Part("workspace_id") workspaceId: Int,
         @Part("name") name: RequestBody
     ): Response<UpdateUserDetailsResponse>
+
+    @GET("fetchuserquickreplymessagesnew")
+    suspend fun fetchUserQuickReply(
+        @Query("workspace_id") workSpaceId: String?
+    ): Response<QuickRepliesResponse>
+
+
+    @Streaming
+    @GET
+    suspend fun downloadFileWithDynamicUrl(@Url fileUrl: String?):
+            Response<ResponseBody>
+
+    @POST("createNewQuickReplyMessage")
+    @Multipart
+    suspend fun createNewQuickReplyMessage(
+        @Part quickReplyFile: MultipartBody.Part?,
+        @Query("quickReplyTitle") quickReplyTitle: String,
+        @Query("quick_reply_message") quickReplyMessage: String,
+        @Query("workspace_id") workspaceId: String
+    ): Response<CreateQuickReplyResponse>
+
+    @POST("createNewQuickReplyMessage")
+    suspend fun createNewQuickReplyMessageWithoutPhoto(
+        @Query("quickReplyTitle") quickReplyTitle: String,
+        @Query("quick_reply_message") quickReplyMessage: String,
+        @Query("workspace_id") workspaceId: String
+    ): Response<CreateQuickReplyResponse>
 }

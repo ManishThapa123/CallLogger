@@ -14,10 +14,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
 import com.eazybe.callLogger.databinding.ActivityMainBinding
 import com.eazybe.callLogger.databinding.NavigationHeaderBinding
 import com.eazybe.callLogger.extensions.toast
@@ -29,8 +27,6 @@ import com.eazybe.callLogger.ui.AddOrganization.AddOrganizationActivity
 import com.eazybe.callLogger.ui.CallLogs.CallLogsFragment1
 import com.eazybe.callLogger.ui.CallLogs.CallLogsFragment2
 import com.eazybe.callLogger.ui.CallLogs.CallLogsViewModel
-import com.eazybe.callLogger.ui.CallLogs.CallLogsViewPagerAdapter
-import com.eazybe.callLogger.ui.Dashboard.DashboardActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.content_main.*
 
@@ -114,9 +110,9 @@ class MainActivity : AppCompatActivity(), ScreenshotInterface {
         binding.navView.setNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.dashBoard -> {
-                    val intent = Intent(this, DashboardActivity::class.java)
-                    startActivity(intent)
-                    binding.drawerLayout.close()
+//                    val intent = Intent(this, DashboardActivity::class.java)
+//                    startActivity(intent)
+//                    binding.drawerLayout.close()
                 }
 
                 R.id.navOrg -> {

@@ -1,5 +1,6 @@
 package com.eazybe.callLogger.ui.CallLogs
 
+import a.a.b.a.f.f
 import android.content.Context
 import android.media.projection.MediaProjection
 import android.util.Log
@@ -81,14 +82,20 @@ class CallLogsViewModel @Inject constructor(
     private val _getSyncDateFromAPI = MutableLiveData<Boolean>()
     val getSyncDateFromAPI: LiveData<Boolean> = _getSyncDateFromAPI
 
-    private val _alreadySynced = MutableLiveData<Boolean>()
-    val alreadySynced: LiveData<Boolean> = _alreadySynced
+    private val _alreadySynced = MutableLiveData<String>()
+    val alreadySynced: LiveData<String> = _alreadySynced
+
+    private val _displayPopUp = MutableLiveData<Boolean>()
+    val displayPopUp: LiveData<Boolean> = _displayPopUp
 
     private val _lastSyncedTime = MutableLiveData<String?>()
     val lastSyncedTime: LiveData<String?> = _lastSyncedTime
 
     private val _showExpiryTime = MutableLiveData<String?>()
     val showExpiryTime: LiveData<String?> = _showExpiryTime
+
+    private val _showExpiryTimeInPlan = MutableLiveData<String?>()
+    val showExpiryTimeInPlan: LiveData<String?> = _showExpiryTimeInPlan
 
     private val _updateExpiryTime = MutableLiveData<String?>()
     val updateExpiryTime: LiveData<String?> = _updateExpiryTime
@@ -194,7 +201,7 @@ class CallLogsViewModel @Inject constructor(
     }
 
     //to get the synced time from the time the user has started syncing the call logs.
-    fun getSyncedTimeAndSaveInPreference() = viewModelScope.launch {
+    fun getSyncedTimeAndSaveInPreference(firstTime: Boolean = false) = viewModelScope.launch {
 
         val prefSavedUserData = preferenceManager.getClientRegistrationDataEmail()
         val convertedUserData = clientDetailEmailAdapter.fromJson(prefSavedUserData!!)
@@ -219,6 +226,9 @@ class CallLogsViewModel @Inject constructor(
                             preferenceManager.saveExpiryState("Trial_Active")
                             preferenceManager.saveExpiryTime(timeRemaining)
                             _showExpiryTime.value = timeRemaining
+
+                            if (firstTime)
+                                _displayPopUp.value = true
                             //introduce a new variable
                             //unpaid_syncing
                         }
@@ -250,7 +260,7 @@ class CallLogsViewModel @Inject constructor(
 
             } else {
                 _lastSyncedTime.value = "Not_Synced"
-                //Sync not started show default time or something.
+                //Sync not started
             }
         }
     }
@@ -304,7 +314,6 @@ class CallLogsViewModel @Inject constructor(
         return preferenceManager.getCallLogAccessState()
     }
 
-
     fun saveSyncItems() = viewModelScope.launch {
 
         //first check it if already exists or not.
@@ -317,7 +326,39 @@ class CallLogsViewModel @Inject constructor(
 
         baseRepository.getLastSynced("${convertedUserData?.id}")?.let { response ->
             if (response.type == true) {
-                _alreadySynced.value = true
+
+                when ("${response.syncData?.get(0)?.isActive}") {
+                    "0" -> {
+                        preferenceManager.saveSyncState(true)
+
+                        val timeRemaining = calculateTimeRemaining(
+                            "${response.syncData?.get(0)?.syncStartedAt}",
+                            "${response.syncData?.get(0)?.vailidity}")
+
+                        if (timeRemaining.toInt() >= 0) {
+                            _alreadySynced.value = "Trial_Active"
+                            _showExpiryTimeInPlan.value = timeRemaining
+
+                        }
+                        else {
+                            _alreadySynced.value = "Trial_Expired"
+
+                        }
+                    }
+                    "1" -> {
+                        _alreadySynced.value = "Paid_Expired"
+                    }
+                    "2" -> {
+                        _alreadySynced.value = "Syncing"
+
+                    }
+                }
+
+
+
+
+
+
             } else {
                 baseRepository.saveSyncItems(
                     SaveSyncCallsRequestItem(

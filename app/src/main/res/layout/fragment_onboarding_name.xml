@@ -107,7 +107,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dimens_8"
                     android:fontFamily="@font/poppins"
-                    android:text="Change Picture"
+                    android:text="Upload Picture"
                     android:textColor="@color/purple"
                     app:layout_constraintBottom_toBottomOf="@id/imgPerson"
                     app:layout_constraintStart_toEndOf="@id/imgPerson"

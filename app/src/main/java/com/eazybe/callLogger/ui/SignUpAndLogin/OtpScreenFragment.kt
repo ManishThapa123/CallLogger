@@ -90,6 +90,17 @@ class OtpScreenFragment : Fragment() {
             }
         }
 
+        registrationAndLoginViewModel.responseFailedOTP.observe({lifecycle}){
+            binding.pbProgress.visibility = View.GONE
+            GlobalMethods.showMotionToast(
+                requireActivity(),
+                "Whoops!",
+                "Incorrect OTP.",
+                "failure",
+                requireContext()
+            )
+        }
+
         registrationAndLoginViewModel.configureAmplify.observe({lifecycle}){convertedUserData ->
 
             if (convertedUserData != null){
@@ -111,11 +122,11 @@ class OtpScreenFragment : Fragment() {
 
             registrationAndLoginViewModel.checkNameAndOrganization()
 
-
         }
 
         registrationAndLoginViewModel.redirectToHomeActivity.observe({lifecycle}){
             binding.pbProgress.visibility = View.GONE
+
             if (it){
                 val intent = Intent(requireContext(), BaseActivity::class.java)
                 intent.flags =
@@ -144,7 +155,18 @@ class OtpScreenFragment : Fragment() {
             }
             signUpBtn.setOnClickListener {
                 binding.pbProgress.visibility = View.VISIBLE
+                if (pinView.value.length == 6)
                 registrationAndLoginViewModel.verifyEmailOtp(userEmail!!, pinView.value.toInt())
+                else{
+                    binding.pbProgress.visibility = View.GONE
+                    GlobalMethods.showMotionToast(
+                        requireActivity(),
+                        "Invalid OTP!",
+                        "Please make sure that the OTP is correct.",
+                        "failure",
+                        requireContext()
+                    )
+                }
 
             }
         }

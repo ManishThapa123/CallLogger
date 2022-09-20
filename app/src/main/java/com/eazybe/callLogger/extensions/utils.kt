@@ -9,12 +9,17 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Handler
 import android.os.Looper
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.HapticFeedbackConstants
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.ColorInt
+import androidx.core.content.ContextCompat
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -172,6 +177,25 @@ fun getProgressDrawable(context: Context): CircularProgressDrawable {
         centerRadius = 50f
         start()
     }
+
+}
+fun CharSequence.colorizeText(
+    textPartToColorize: CharSequence,
+    @ColorInt color: Int
+): CharSequence = SpannableString(this).apply {
+    val startIndexOfText = this.indexOf(textPartToColorize.toString())
+    setSpan(
+        ForegroundColorSpan(color),
+        startIndexOfText,
+        startIndexOfText.plus(textPartToColorize.length),
+        0
+    )
+}
+
+fun TextView.addRightDrawable(drawable: Int, padding: Int = 32) {
+    val imgDrawable = ContextCompat.getDrawable(context, drawable)
+    compoundDrawablePadding = padding
+    setCompoundDrawablesWithIntrinsicBounds(null, null, imgDrawable, null)
 }
 
 

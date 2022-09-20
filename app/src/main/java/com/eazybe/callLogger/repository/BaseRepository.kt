@@ -3,9 +3,13 @@ package com.eazybe.callLogger.repository
 import com.eazybe.callLogger.api.CallLoggerAPIInterface
 import com.eazybe.callLogger.api.models.requests.*
 import com.eazybe.callLogger.api.models.responses.*
+import com.eazybe.callLogger.api.models.responses.QuickReplies.CreateQuickReplyResponse
+import com.eazybe.callLogger.api.models.responses.QuickReplies.QuickRepliesResponse
 import com.eazybe.callLogger.helper.PreferenceManager
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
+import retrofit2.Response
 import javax.inject.Inject
 
 class BaseRepository @Inject constructor(
@@ -75,9 +79,42 @@ class BaseRepository @Inject constructor(
     suspend fun updateUserDetails(
         file: MultipartBody.Part?,
         workspace_id: Int,
-        name: RequestBody): UpdateUserDetailsResponse? {
+        name: RequestBody
+    ): UpdateUserDetailsResponse? {
 
-        val userDetails = apiService.updateUserDetails(file,workspace_id,name)
+        val userDetails = apiService.updateUserDetails(file, workspace_id, name)
         return userDetails.body()
+    }
+
+    suspend fun fetchUserQuickReply(
+        workspaceId: String
+    ): QuickRepliesResponse? {
+        val quickReplies = apiService.fetchUserQuickReply(workspaceId)
+        return quickReplies.body()
+    }
+
+    suspend fun downloadFileWithDynamicUrl(url: String): Response<ResponseBody> {
+        return apiService.downloadFileWithDynamicUrl(url)
+    }
+
+    suspend fun createNewQuickReplyMessage(
+        profilePic: MultipartBody.Part?,
+        quickReplyTitle: String,
+        quickReplyText: String,
+        workspaceId: String
+    ): CreateQuickReplyResponse?{
+
+        val quickReply = apiService.createNewQuickReplyMessage(profilePic,quickReplyTitle,quickReplyText,workspaceId)
+        return quickReply.body()
+    }
+
+    suspend fun createNewQuickReplyMessageWithoutPhoto(
+        quickReplyTitle: String,
+        quickReplyText: String,
+        workspaceId: String
+    ): CreateQuickReplyResponse?{
+
+        val quickReply = apiService.createNewQuickReplyMessageWithoutPhoto(quickReplyTitle,quickReplyText,workspaceId)
+        return quickReply.body()
     }
 }

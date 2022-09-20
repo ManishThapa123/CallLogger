@@ -30,7 +30,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_semibold"
-                android:text="Join an existing organisation"
+                android:text="Join an organisation"
                 android:textColor="#3D4043"
                 android:textSize="@dimen/dimens_20"
                 android:textStyle="bold" />
@@ -82,28 +82,30 @@
         android:layout_height="54dp"
         android:layout_marginStart="@dimen/dimens_24"
         android:layout_marginEnd="@dimen/dimens_24"
-
-        android:backgroundTint="@color/grey"
+        android:backgroundTint="@color/purple"
         android:text="Join now"
         android:drawableEnd="@drawable/ic_clip"
         android:textAllCaps="false"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginBottom="@dimen/dimens_20"
+        android:layout_marginBottom="@dimen/dimens_12"
         app:layout_constraintEnd_toEndOf="parent"
         android:textSize="18sp"
         android:paddingStart="@dimen/dimens_24"
         app:cornerRadius="@dimen/dimens_16"
        app:layout_constraintBottom_toTopOf="@+id/txtSkip"/>
 
-    <TextView
+    <com.google.android.material.button.MaterialButton
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="54dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:text="Skip for Now"
-        android:layout_marginBottom="@dimen/dimens_24"
+        android:textAllCaps="false"
+        app:cornerRadius="@dimen/dimens_16"
+        android:backgroundTint="@color/grey"
+        android:layout_marginBottom="@dimen/dimens_40"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:textColor="@color/grey"
+        android:textColor="@color/white"
         android:fontFamily="@font/poppins_semibold"
         android:textSize="@dimen/dimens_16"
         android:id="@+id/txtSkip"/>

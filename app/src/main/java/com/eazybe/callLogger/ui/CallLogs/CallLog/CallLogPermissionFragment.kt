@@ -31,6 +31,7 @@ class CallLogPermissionFragment : Fragment() {
 
     private var simCardOneName: String? = ""
     private var simCardTwoName: String? = ""
+    private var checkedIDDefault: String? = ""
     private var section: String? = null
     private var simCardCount: Int? = 0
     private var subscriptionInfoTelecom: ArrayList<String> = ArrayList()
@@ -148,17 +149,17 @@ class CallLogPermissionFragment : Fragment() {
             simCardOneName = "${simCardInfo[0].carrierName}"
             simCardTwoName = "${simCardInfo[1].carrierName}"
             Log.d("Sim Card", simCardCount.toString())
-
             simVisibleCount(2)
+            checkedIDDefault = "${binding.doubleSimRadio.checkedRadioButtonId()}"
         }
 
 
         binding.doubleSimRadio.setOnCheckedChangeListener { radioGroup, radioButton, checked, checkedId ->
-            Log.d("ID is", "$checkedId, $checked, ${(radioButton as GravityImageRadioButton).text()}")
-            if ((radioButton).text() == simCardOneName){
-                selectedSIM = 1
-            }else if ((radioButton).text() == simCardTwoName){
-                selectedSIM = 2
+            Log.d("ID is", "$checkedId, $checked, ${(radioButton as GravityImageRadioButton).text()}, $checkedIDDefault")
+            selectedSIM = if ("$checkedId" == "$checkedIDDefault"){
+                1
+            }else{
+                2
             }
         }
 
@@ -175,14 +176,18 @@ class CallLogPermissionFragment : Fragment() {
         when (simCount) {
             1 -> {
                 binding.doubleSimRadio.visibility = View.INVISIBLE
+                binding.lLSimText.visibility = View.INVISIBLE
                 binding.singleSimRadio.visibility = View.VISIBLE
                 binding.sim1Single.setText("$simCardOneName")
+                binding.sim1Single.isChecked = true
             }
             2 -> {
                 binding.singleSimRadio.visibility = View.INVISIBLE
                 binding.doubleSimRadio.visibility = View.VISIBLE
+                binding.lLSimText.visibility = View.VISIBLE
                 binding.sim1.setText("$simCardOneName")
                 binding.sim2.setText("$simCardTwoName")
+                binding.sim1.isChecked = true
             }
         }
 
@@ -199,7 +204,6 @@ class CallLogPermissionFragment : Fragment() {
 
     private fun observeViewModel() {
 
-
         simCardViewModel.apply {
 
             goToCallLogsFragment.observe({ lifecycle }) {
@@ -208,8 +212,8 @@ class CallLogPermissionFragment : Fragment() {
 //                    val dialog = PermissionDialogFragment()
 //                    dialog.show(parentFragmentManager, "permission_fragment")
                     findNavController().navigate(R.id.gotoCallLogFragment)
-                    val dialog = PermissionDialogFragment()
-                    dialog.show(parentFragmentManager, "permission_fragment")
+//                    val dialog = PermissionDialogFragment()
+//                    dialog.show(parentFragmentManager, "permission_fragment")
                 }
             }
 

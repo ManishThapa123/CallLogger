@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dimens_20">
+
+    <LinearLayout
+        android:id="@+id/lLHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/txtTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center|start"
+            android:layout_weight="0.7"
+            android:fontFamily="@font/poppins_semibold"
+            android:text="Title"
+            android:textColor="@color/black"
+            android:textSize="@dimen/dimens_16" />
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/green_lighter"
+            android:id="@+id/btnSend"
+            android:textColor="@color/green_light"
+            android:textAllCaps="false"
+            android:textSize="@dimen/dimens_12"
+            android:drawableStart="@drawable/ic_whatsapp"
+            android:drawableTint="@color/green_light"
+            android:text="Send" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/quickReplyName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimens_12"
+        android:fontFamily="@font/poppins"
+        android:visibility="gone"
+        android:text="Hi @LeadName"
+        app:layout_constraintTop_toBottomOf="@+id/lLHeader" />
+
+    <TextView
+        android:id="@+id/quickReplyBody"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimens_4"
+        android:textSize="@dimen/dimens_12"
+        android:fontFamily="@font/poppins"
+        android:text="We’d love for you to checkout our demo houses for you to decide better on what property to opt for your inve..."
+        app:layout_constraintTop_toBottomOf="@+id/quickReplyName" />
+
+    <LinearLayout
+        android:id="@+id/lLAttachment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimens_8"
+        android:gravity="bottom"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/quickReplyBody">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/paper_clip" />
+
+        <ImageView
+            android:layout_width="@dimen/dimens_28"
+            android:layout_height="@dimen/dimens_28"
+            android:layout_marginStart="@dimen/dimens_8"
+            android:src="@drawable/ic_folder_vector"
+            android:id="@+id/imgAttatchment"
+            />
+
+        <TextView
+            android:id="@+id/txtAttachment"
+            android:layout_width="match_parent"
+            android:textSize="@dimen/dimens_10"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dimens_8"
+            android:fontFamily="@font/poppins"
+            android:text="Attachment" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

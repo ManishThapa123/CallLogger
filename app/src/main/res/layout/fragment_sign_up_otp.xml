@@ -30,9 +30,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_semibold"
-                android:text="Welcome"
+                android:text="Sign up/Sign in to Eazybe"
                 android:textColor="#3D4043"
-                android:textSize="@dimen/dimens_28"
+                android:textSize="@dimen/dimens_22"
                 android:textStyle="bold" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -116,12 +116,27 @@
 
             </RelativeLayout>
 
-            <com.google.android.gms.common.SignInButton
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="wrap_content"
                 android:id="@+id/googleSignInButton"
-                android:layout_width="200dp"
                 android:layout_height="wrap_content"
+                android:textAllCaps="false"
+                android:textColor="@color/black"
+                app:iconSize="@dimen/dimens_24"
+                android:elevation="@dimen/dimens_12"
+                android:textSize="13dp"
+                android:layout_marginTop="@dimen/dimen_32"
+                android:backgroundTint="@color/white"
                 android:layout_gravity="center"
-                android:layout_marginTop="@dimen/dimen_32" />
+                app:icon="@drawable/ic_google"
+                app:cornerRadius="@dimen/dimens_4"
+                app:iconPadding="@dimen/dimens_8"
+                android:padding="@dimen/dimens_10"
+                app:iconTint="#ffffff"
+                app:iconTintMode="multiply"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:text="Continue with Google"/>
+
         </LinearLayout>
     </RelativeLayout>
 
@@ -137,5 +152,16 @@
         android:textColor="@color/black"
         android:textSize="@dimen/dimens_14"
         app:layout_constraintBottom_toBottomOf="parent" />
+
+
+    <ProgressBar
+        android:layout_width="@dimen/dimens_60"
+        android:id="@+id/pbProgress"
+        android:visibility="gone"
+        android:layout_height="@dimen/dimens_60"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

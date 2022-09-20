@@ -20,6 +20,33 @@
         android:textSize="@dimen/dimens_20"
         android:textStyle="bold" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/dimens_12"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/welcomeTxt"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/lLSimText"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:fontFamily="@font/poppins"
+            android:text= "SIM 1"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:fontFamily="@font/poppins"
+            android:text= "SIM 2"/>
+    </LinearLayout>
+
 <xyz.teamgravity.imageradiobutton.GravityRadioGroup
     android:layout_width="wrap_content"
     android:id="@+id/doubleSimRadio"
@@ -28,9 +55,9 @@
     android:visibility="gone"
     app:layout_constraintStart_toStartOf="parent"
     android:orientation="horizontal"
-    android:layout_marginTop="@dimen/dimens_8"
+
     app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/welcomeTxt">
+    app:layout_constraintTop_toBottomOf="@+id/lLSimText">
     <xyz.teamgravity.imageradiobutton.GravityImageRadioButton
         android:id="@+id/sim1"
         android:layout_width="0dp"
@@ -53,6 +80,7 @@
         app:girbUnpressedTextColor="@color/grayish" />
 </xyz.teamgravity.imageradiobutton.GravityRadioGroup>
 
+
     <xyz.teamgravity.imageradiobutton.GravityRadioGroup
         android:layout_width="wrap_content"
         android:id="@+id/singleSimRadio"
@@ -64,16 +92,31 @@
         android:layout_marginTop="@dimen/dimens_8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/welcomeTxt">
-        <xyz.teamgravity.imageradiobutton.GravityImageRadioButton
-            android:id="@+id/sim1Single"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="@dimen/dimens_50"
-            app:girbImage="@drawable/sim_card_black"
-            app:girbPressedTextColor="@color/black"
-            app:girbText="sim card 1"
-            app:girbUnpressedTextColor="@color/grayish" />
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:fontFamily="@font/poppins"
+                android:text= "SIM 1"/>
+
+            <xyz.teamgravity.imageradiobutton.GravityImageRadioButton
+                android:id="@+id/sim1Single"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:padding="@dimen/dimens_50"
+                app:girbImage="@drawable/sim_card_black"
+                app:girbPressedTextColor="@color/black"
+                app:girbText="sim card 1"
+                app:girbUnpressedTextColor="@color/grayish" />
+        </LinearLayout>
+
+
 
     </xyz.teamgravity.imageradiobutton.GravityRadioGroup>
 

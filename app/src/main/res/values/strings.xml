@@ -10,8 +10,8 @@
     <string name="manage_clipboard_items">Manage Clipboard Items</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
-    <string name="billing_text">To continue syncing your logs and reports to workspace. Please upgrade on <b>workspace.eazybe.com/billing </b></string>
-    <string name="eazybe_link">To get a detailed analysis &amp; generate reports. Please visit <b><u>workspace.eazybe.com/calls-analysis</u></b></string>
+    <string name="billing_text">To continue syncing your logs and reports to workspace. Please upgrade on <b>workspace.eazybe.com</b></string>
+    <string name="eazybe_link">To get a detailed analysis &amp; generate reports. Please visit <b><u>workspace.eazybe.com</u></b></string>
     <string name="call_sync_text">Your call logs will be synced to the workspace for the next 14 days for free. You can also view this on <b><u>workspace.eazybe.com</u></b></string>
 
 

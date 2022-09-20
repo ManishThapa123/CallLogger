@@ -132,7 +132,7 @@ class CallLogsHelper @Inject constructor(
                     Log.d("subscription_Id", "$subscribedSimID and number = $number")
 
                     when (type) {
-                        "1" -> {
+                        "1", "101" -> {
                             incomingCallList!!.add(
                                 SampleEntity(
                                     name,
@@ -145,7 +145,7 @@ class CallLogsHelper @Inject constructor(
                                 )
                             )
                         }
-                        "2" -> {
+                        "2", "100" -> {
                             outGoingCallList!!.add(
                                 SampleEntity(
                                     name,
@@ -158,7 +158,7 @@ class CallLogsHelper @Inject constructor(
                                 )
                             )
                         }
-                        "3" -> {
+                        "3"-> {
                             missedCallList!!.add(
                                 SampleEntity(
                                     name,
@@ -180,9 +180,7 @@ class CallLogsHelper @Inject constructor(
                                     duration,
                                     type,
                                     subscribedSimID,
-                                    callLogId
-                                )
-                            )
+                                    callLogId))
                         }
                     }
                 }
@@ -191,6 +189,7 @@ class CallLogsHelper @Inject constructor(
 
         Log.d("MY_APP_CALL_LIST", "${allCallLogsList!!.size}")
         cursor.close()
+
     }
 
     fun createDate(int: Int): String {
@@ -216,6 +215,10 @@ class CallLogsHelper @Inject constructor(
                 allCallData(allCallsList!!)
             }
         }
+    }
+
+    fun getCallLogDetailsForDashboard(){
+        loadCallLogs()
     }
 
     fun getMissedCallLogs(): ArrayList<SampleEntity>? {
@@ -340,7 +343,7 @@ class CallLogsHelper @Inject constructor(
     }
 
     fun getTotalOutGoingCallsCount(forToday: Boolean = false): Int {
-//        if (outGoingCallList == null)
+        if (outGoingCallList == null)
             loadCallLogs()
 
         var output = 0
@@ -361,7 +364,7 @@ class CallLogsHelper @Inject constructor(
     }
 
     fun getTotalOutGoingCallsDuration(forToday: Boolean = false): String {
-//        if (outGoingCallList == null)
+        if (outGoingCallList == null)
             loadCallLogs()
 
         var output = 0L
@@ -382,7 +385,7 @@ class CallLogsHelper @Inject constructor(
     }
 
     fun getTotalIncomingCallsCount(forToday: Boolean = false): Int {
-//        if (incomingCallList == null)
+        if (incomingCallList == null)
             loadCallLogs()
 
         var output = 0
@@ -403,7 +406,7 @@ class CallLogsHelper @Inject constructor(
     }
 
     fun getTotalIncomingCallsDuration(forToday: Boolean = false): String {
-//        if (incomingCallList == null)
+        if (incomingCallList == null)
             loadCallLogs()
 
         var output = 0L
@@ -534,9 +537,9 @@ class CallLogsHelper @Inject constructor(
     fun highestCaller(
         forToday: Boolean = false,
         highestCallerName: (String) -> Unit) {
-        if (allCallLogsList == null) {
+
             loadCallLogs()
-        }
+
 
         if (forToday) {
             var todaysCallList: ArrayList<SampleEntity> = ArrayList()
@@ -643,8 +646,7 @@ class CallLogsHelper @Inject constructor(
             for (callLogInfo in outGoingCallList!!) {
                 if (GlobalMethods.convertMillisToDate(callLogInfo.time!!) == GlobalMethods.convertMillisToDate(
                         createDate(0)
-                    )
-                ) {
+                    )) {
                     if (callLogInfo.callDuration!!.toInt() == 0) {
                         output++
                     }
@@ -927,7 +929,7 @@ class CallLogsHelper @Inject constructor(
                             ?.let { subscribedSimID.contains(it) } == true)
                     ) {
                         when (type) {
-                            "2" -> {
+                            "2", "100" -> {
                                 neverPickedUpList!!.add(
                                     SampleEntity(
                                         name,
@@ -1018,7 +1020,7 @@ class CallLogsHelper @Inject constructor(
         mSelectionArgs.forEach {
             Log.d("SelectionDate:", it!!)
         }
-
+        android.os.Handler(Looper.getMainLooper()).postDelayed({
         val cursor = context.contentResolver.query(
             CallLog.Calls.CONTENT_URI,
             projection, mSelectionClause, mSelectionArgs, CallLog.Calls.DEFAULT_SORT_ORDER
@@ -1041,12 +1043,6 @@ class CallLogsHelper @Inject constructor(
             val subscribedSimID = cursor.getString(subscribedSimIDColIdx)
             val callLogId = cursor.getString(callLogIdColIdx)
 
-//
-//          GlobalMethods.showToast(context,"Sim Component name is $subscribedSimNAME and sim id is $subscribedSimID" )
-//            Log.d("subscribedSimID1", subscribedSimID)
-//            Log.d("subscribedSimID2", "${preferenceManager.getSIMSubscriptionId()}, ${preferenceManager.getSIMSubscriptionIdSub()}")
-//            Log.d("calllogid", callLogId)
-//            Log.d("subscribedSimICCID", "${preferenceManager.getSIMSubscriptionId()?.substring(0,18)}")
 
             if (!subscribedSimID.isNullOrEmpty()) {
                 if (subscribedSimID == preferenceManager.getSIMSubscriptionId() ||
@@ -1069,7 +1065,7 @@ class CallLogsHelper @Inject constructor(
                     Log.d("subscription_Id", "$subscribedSimID and number = $number")
 
                     when (type) {
-                        "1" -> {
+                        "1", "101"  -> {
                             incomingCallList!!.add(
                                 SampleEntity(
                                     name,
@@ -1082,7 +1078,7 @@ class CallLogsHelper @Inject constructor(
                                 )
                             )
                         }
-                        "2" -> {
+                        "2", "100" -> {
                             outGoingCallList!!.add(
                                 SampleEntity(
                                     name,
@@ -1136,6 +1132,7 @@ class CallLogsHelper @Inject constructor(
         }
         Log.d("MY_APP_CALL_LIST", "${allCallLogsList!!.size}")
         cursor.close()
+        }, 2000)
     }
 
 

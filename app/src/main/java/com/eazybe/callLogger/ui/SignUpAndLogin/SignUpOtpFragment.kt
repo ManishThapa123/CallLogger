@@ -121,11 +121,13 @@ class SignUpOtpFragment : Fragment() {
          */
         registrationAndLoginViewModel.gmailVerified.observe({ lifecycle }) {
 
+            binding.pbProgress.visibility = View.VISIBLE
             //Hit the Create user api and save the user id and his registration date to the preference,
             //Then navigate the use to the Base activity.
             if (it) {
                 registrationAndLoginViewModel.createOrUpdateCallyzerUser()
             } else {
+                binding.pbProgress.visibility = View.GONE
                 GlobalMethods.showMotionToast(
                     requireActivity(),
                     "Whoops!",
@@ -150,10 +152,24 @@ class SignUpOtpFragment : Fragment() {
         }
 
         registrationAndLoginViewModel.userRegisteredResponse.observe({ lifecycle }) {
-            val intent = Intent(requireContext(), BaseActivity::class.java)
-            intent.flags =
-                Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-            startActivity(intent)
+
+            registrationAndLoginViewModel.checkNameAndOrganization()
+
+        }
+
+        registrationAndLoginViewModel.redirectToHomeActivity.observe({lifecycle}){
+            binding.pbProgress.visibility = View.GONE
+
+            if (it){
+                val intent = Intent(requireContext(), BaseActivity::class.java)
+                intent.flags =
+                    Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                startActivity(intent)
+            }else{
+                val action =
+                    SignUpOtpFragmentDirections.actionSignUpOtpFragmentToOnboardingFragmentName()
+                findNavController().navigate(action)
+            }
         }
     }
 

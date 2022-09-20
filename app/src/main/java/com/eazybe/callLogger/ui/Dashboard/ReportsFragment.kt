@@ -12,7 +12,6 @@ import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.eazybe.callLogger.databinding.ReportsFragmentBinding
-import com.robinhood.ticker.TickerUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.reports_fragment.*
 
@@ -22,13 +21,14 @@ class ReportsFragment : Fragment() {
     private lateinit var binding: ReportsFragmentBinding
     private val dashboardViewModel: DashboardViewModel by viewModels()
     private val dateArray = arrayOf("Today", "All Time")
-    private var selectedSpinner : String? = null
+    private var selectedSpinner: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         observeViewModel()
 
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -39,7 +39,7 @@ class ReportsFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        when(selectedSpinner){
+        when (selectedSpinner) {
             "Today" -> {
                 dashboardViewModel.getDashBoardCountsToday()
             }
@@ -60,11 +60,20 @@ class ReportsFragment : Fragment() {
                     binding.imgSyncCalls.visibility = View.GONE
                     binding.clDashBoard.visibility = View.VISIBLE
                     val arrayAdapter =
-                        ArrayAdapter(requireContext(), R.layout.simple_spinner_dropdown_item, dateArray)
+                        ArrayAdapter(
+                            requireContext(),
+                            R.layout.simple_spinner_dropdown_item,
+                            dateArray
+                        )
                     binding.dateDropDown.adapter = arrayAdapter
                     binding.dateDropDown.onItemSelectedListener =
                         object : AdapterView.OnItemSelectedListener {
-                            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                            override fun onItemSelected(
+                                p0: AdapterView<*>?,
+                                p1: View?,
+                                p2: Int,
+                                p3: Long
+                            ) {
                                 when (dateArray[p2]) {
                                     "Today" -> {
                                         dashboardViewModel.getDashBoardCountsToday()
@@ -87,7 +96,7 @@ class ReportsFragment : Fragment() {
                 }
 
 
-            }, 600)
+            }, 300)
         } catch (e: Exception) {
 
         }
@@ -95,31 +104,39 @@ class ReportsFragment : Fragment() {
 
     private fun observeViewModel() {
         dashboardViewModel.apply {
+
+            loading.observe({lifecycle}){
+                if (it){
+                    binding.pbProgress2.visibility = View.VISIBLE
+                }else{
+                    binding.pbProgress2.visibility = View.GONE
+                }
+            }
             totalWorkingHours.observe({ lifecycle }) {
-                binding.workingTime.setCharacterLists(TickerUtils.provideNumberList())
+//                binding.workingTime.setCharacterLists(TickerUtils.provideNumberList())
                 binding.workingTime.text = it
 
             }
             topCaller.observe({ lifecycle }) {
-                binding.topCallerName.setCharacterLists(TickerUtils.provideAlphabeticalList())
+//                binding.topCallerName.setCharacterLists(TickerUtils.provideAlphabeticalList())
                 binding.topCallerName.text = it
             }
             totalPhoneCalls.observe({ lifecycle }) {
-                binding.totalPhoneCalls.setCharacterLists(TickerUtils.provideNumberList())
+//                binding.totalPhoneCalls.setCharacterLists(TickerUtils.provideNumberList())
                 if (it.toInt() > 1)
                     binding.totalPhoneCalls.text = it + " calls"
                 else
                     binding.totalPhoneCalls.text = it + " call"
             }
             neverAttendedCalls.observe({ lifecycle }) {
-                binding.neverAttended.setCharacterLists(TickerUtils.provideNumberList())
+//                binding.neverAttended.setCharacterLists(TickerUtils.provideNumberList())
                 if (it.toInt() > 1)
                     binding.neverAttended.text = it + " calls"
                 else
                     binding.neverAttended.text = it + " call"
             }
             notPickedUpByClient.observe({ lifecycle }) {
-                binding.notPickedUpByClient.setCharacterLists(TickerUtils.provideNumberList())
+//                binding.notPickedUpByClient.setCharacterLists(TickerUtils.provideNumberList())
                 if (it.toInt() > 1)
                     binding.notPickedUpByClient.text = it + " calls"
                 else
@@ -127,34 +144,34 @@ class ReportsFragment : Fragment() {
             }
 
             totalOutgoingCallsCount.observe({ lifecycle }) {
-                binding.totalOutgoingCalls.setCharacterLists(TickerUtils.provideNumberList())
-                binding.totalOutgoingCalls.setCharacterLists(TickerUtils.provideAlphabeticalList())
+//                binding.totalOutgoingCalls.setCharacterLists(TickerUtils.provideNumberList())
+//                binding.totalOutgoingCalls.setCharacterLists(TickerUtils.provideAlphabeticalList())
                 if (it.toInt() > 1)
                     binding.totalOutgoingCalls.text = it + " calls"
                 else
                     binding.totalOutgoingCalls.text = it + " call"
             }
             totalOutGoingCallsDuration.observe({ lifecycle }) {
-                binding.totalOutgoingDuration.setCharacterLists(TickerUtils.provideNumberList())
-                binding.totalOutgoingDuration.setCharacterLists(TickerUtils.provideAlphabeticalList())
+//                binding.totalOutgoingDuration.setCharacterLists(TickerUtils.provideNumberList())
+//                binding.totalOutgoingDuration.setCharacterLists(TickerUtils.provideAlphabeticalList())
                 binding.totalOutgoingDuration.text = it
             }
             totalIncomingCallsCount.observe({ lifecycle }) {
-                binding.totalIncomingCalls.setCharacterLists(TickerUtils.provideNumberList())
-                binding.totalIncomingCalls.setCharacterLists(TickerUtils.provideAlphabeticalList())
+//                binding.totalIncomingCalls.setCharacterLists(TickerUtils.provideNumberList())
+//                binding.totalIncomingCalls.setCharacterLists(TickerUtils.provideAlphabeticalList())
                 if (it.toInt() > 1)
                     binding.totalIncomingCalls.text = it + " calls"
                 else
                     binding.totalIncomingCalls.text = it + " call"
             }
             totalIncomingCallsDuration.observe({ lifecycle }) {
-                binding.totalIncomingDuration.setCharacterLists(TickerUtils.provideNumberList())
-                binding.totalIncomingDuration.setCharacterLists(TickerUtils.provideAlphabeticalList())
+//                binding.totalIncomingDuration.setCharacterLists(TickerUtils.provideNumberList())
+//                binding.totalIncomingDuration.setCharacterLists(TickerUtils.provideAlphabeticalList())
                 binding.totalIncomingDuration.text = it
             }
             highestCallerCount.observe({ lifecycle }) {
-                binding.topCallerCallsCount.setCharacterLists(TickerUtils.provideNumberList())
-                binding.topCallerCallsCount.setCharacterLists(TickerUtils.provideAlphabeticalList())
+//                binding.topCallerCallsCount.setCharacterLists(TickerUtils.provideNumberList())
+//                binding.topCallerCallsCount.setCharacterLists(TickerUtils.provideAlphabeticalList())
                 if (it.toInt() > 1)
                     binding.topCallerCallsCount.text = it + " calls"
                 else
@@ -162,14 +179,12 @@ class ReportsFragment : Fragment() {
 
             }
             highestDurationCall.observe({ lifecycle }) {
-                binding.highestCallDuration.setCharacterLists(TickerUtils.provideNumberList())
-                binding.highestCallDuration.setCharacterLists(TickerUtils.provideAlphabeticalList())
+//                binding.highestCallDuration.setCharacterLists(TickerUtils.provideNumberList())
+//                binding.highestCallDuration.setCharacterLists(TickerUtils.provideAlphabeticalList())
                 binding.highestCallDuration.text = it
             }
 
             totalCallsDuration.observe({ lifecycle }) {
-                binding.totalCallTime.setCharacterLists(TickerUtils.provideNumberList())
-                binding.totalCallTime.setCharacterLists(TickerUtils.provideAlphabeticalList())
                 binding.totalCallTime.text = it
             }
         }
@@ -178,14 +193,14 @@ class ReportsFragment : Fragment() {
     private fun showProgressBar() {
         binding.apply {
             clDashBoard.visibility = View.GONE
-            pbProgress.visibility = View.VISIBLE
+            pbProgress2.visibility = View.VISIBLE
         }
     }
 
     private fun hideProgressBar() {
         binding.apply {
             clDashBoard.visibility = View.VISIBLE
-            pbProgress.visibility = View.GONE
+            pbProgress2.visibility = View.GONE
         }
     }
 }

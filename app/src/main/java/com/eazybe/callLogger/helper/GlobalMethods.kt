@@ -4,24 +4,36 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.*
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.net.ConnectivityManager
 import android.net.ConnectivityManager.*
 import android.net.NetworkCapabilities.*
 import android.net.Uri
-import android.os.Build
+import android.os.*
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.FileProvider
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.text.HtmlCompat
 import com.amplifyframework.core.model.temporal.Temporal
+import com.eazybe.callLogger.BuildConfig
 import com.eazybe.callLogger.R
 import com.eazybe.callLogger.interfaces.ScreenshotInterface
 import com.judemanutd.autostarter.AutoStartPermissionHelper
+import com.squareup.picasso.MemoryPolicy
+import com.squareup.picasso.Picasso
+import com.squareup.picasso.Picasso.LoadedFrom
+import com.squareup.picasso.Target
 import dagger.hilt.android.internal.Contexts.getApplication
+import okhttp3.ResponseBody
 import www.sanju.motiontoast.MotionToast
 import www.sanju.motiontoast.MotionToastStyle
+import java.io.*
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
@@ -30,7 +42,9 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.concurrent.TimeUnit
 
+
 @SuppressLint("StaticFieldLeak")
+@Suppress("DEPRECATION")
 object GlobalMethods {
 
     var ssInterface: ScreenshotInterface? = null
@@ -131,30 +145,40 @@ object GlobalMethods {
      */
     fun openNumberInWhatsapp(phoneNumberWithCountryCode: String, context: Context) {
 
-        val url = "https://api.whatsapp.com/send?phone=" + "${phoneNumberWithCountryCode}&text=Hello"
-        try {
-
-            val intent = Intent(Intent.ACTION_VIEW).apply {
-                this.data = Uri.parse(url)
-                this.`package` = "com.whatsapp"
-            }
-            try {
-                context.startActivity(intent)
-            } catch (ex : ActivityNotFoundException){
-                Toast.makeText(
-                   context,
-                    "Whatsapp is not installed.",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        } catch (e: PackageManager.NameNotFoundException) {
+        if (phoneNumberWithCountryCode.length < 10){
             Toast.makeText(
                 context,
-                "Whatsapp is not installed in your phone.",
+                "Incorrect Number.",
                 Toast.LENGTH_SHORT
             ).show()
-            e.printStackTrace()
+        }else{
+            val url = if (phoneNumberWithCountryCode.contains("+"))
+                "https://api.whatsapp.com/send?phone=" + "${phoneNumberWithCountryCode}&text=Hello"
+            else
+                "https://api.whatsapp.com/send?phone=" + "+91${phoneNumberWithCountryCode}&text=Hello"
+            try {
+
+                val intent = Intent(Intent.ACTION_VIEW).apply {
+                    this.data = Uri.parse(url)
+                    this.`package` = "com.whatsapp"
+
+                }
+
+                try {
+                    context.startActivity(intent)
+                } catch (ex : ActivityNotFoundException){
+
+                }
+            } catch (e: PackageManager.NameNotFoundException) {
+                Toast.makeText(
+                    context,
+                    "Whatsapp is not installed in your phone.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                e.printStackTrace()
+            }
         }
+
     }
 
     /**
@@ -448,5 +472,207 @@ object GlobalMethods {
         return false
     }
 
+    fun getMimeType(url: String?): String? {
+        var type: String? = null
+        val extension = MimeTypeMap.getFileExtensionFromUrl(url)
+        if (extension != null) {
+            type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
+        }
+        return type
+    }
+    fun sendQuickReplyTextToWhatsApp(title: String, textToSend: String, activity: Activity){
+
+        val data = HtmlCompat.fromHtml(
+            "<p>$title</p>" +
+                    "$textToSend <br>" +
+                    "</p>", HtmlCompat.FROM_HTML_MODE_LEGACY)
+        try {
+            val sendIntent = Intent(Intent.ACTION_SEND)
+            sendIntent.type = "image/*"
+            sendIntent.type = "text/plain"
+            sendIntent.putExtra(Intent.EXTRA_TEXT, data.toString())
+//            sendIntent.putExtra(Intent.EXTRA_SUBJECT, title)
+            sendIntent.setPackage("com.whatsapp")
+            sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            activity.startActivity(Intent.createChooser(sendIntent, "Share via"))
+        } catch (e: java.lang.Exception) {
+            Toast.makeText(activity, "WhatsApp Not Found.", Toast.LENGTH_SHORT).show()
+            e.printStackTrace()
+//                    Toast.makeText(context, ""+e, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    fun sendQuickReplyTextAndPDFToWhatsApp(title: String, textToSend: String, activity: Activity,
+                                           fileAttachment: String, context: Context, fileName: String){
+        val pdfFile = File(activity.getExternalFilesDir(null)?.absolutePath.toString(),
+            "Eazybe Files/$fileName")
+        val uriFile = uriFromFile(context, pdfFile)
+        val sendIntent = Intent(Intent.ACTION_SEND)
+        try {
+
+            sendIntent.type = "application/pdf"
+            sendIntent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+            sendIntent.putExtra(Intent.EXTRA_STREAM, uriFile)
+            sendIntent.putExtra(Intent.EXTRA_TEXT, textToSend)
+            sendIntent.setPackage("com.whatsapp")
+            sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            activity.startActivity(Intent.createChooser(sendIntent, "Share via"))
+        } catch (e: java.lang.Exception) {
+            Toast.makeText(activity, "WhatsApp Not Found.", Toast.LENGTH_SHORT).show()
+            e.printStackTrace()
+        }
+
+    }
+
+    fun sendQuickReplyTextAndFileToWhatsApp(title: String, textToSend: String, activity: Activity,
+                                           fileAttachment: String, context: Context, fileName: String){
+        val file = File(activity.getExternalFilesDir(null)?.absolutePath.toString(),
+            "Eazybe Files/$fileName")
+        val uriFile = uriFromFile(context, file)
+        val sendIntent = Intent(Intent.ACTION_SEND)
+        try {
+
+            sendIntent.type = "*/*"
+            sendIntent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+            sendIntent.putExtra(Intent.EXTRA_STREAM, uriFile)
+            sendIntent.putExtra(Intent.EXTRA_TEXT, textToSend)
+            sendIntent.setPackage("com.whatsapp")
+            sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            activity.startActivity(Intent.createChooser(sendIntent, "Share via"))
+        } catch (e: java.lang.Exception) {
+            Toast.makeText(activity, "WhatsApp Not Found.", Toast.LENGTH_SHORT).show()
+            e.printStackTrace()
+        }
+
+    }
+
+    fun sendQuickReplyTextAndImage(title: String, textToSend: String, activity: Activity,
+                                   context: Context, fileAttachment: String, fileName: String){
+        Picasso.get().load(fileAttachment).memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
+            .into(object : Target {
+                override fun onBitmapLoaded(bitmap: Bitmap?, from: LoadedFrom?) {
+                    val sendIntent = Intent(Intent.ACTION_SEND)
+
+                    try {
+                        val bitmapURI = getLocalBitmapUri(bitmap!!, activity)
+                        sendIntent.type = "image/*"
+                        sendIntent.putExtra(Intent.EXTRA_STREAM, bitmapURI)
+                        sendIntent.putExtra(Intent.EXTRA_TEXT, textToSend)
+                        sendIntent.setPackage("com.whatsapp")
+                        sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        activity.startActivity(Intent.createChooser(sendIntent, "Share via"))
+                    } catch (e: java.lang.Exception) {
+                        Toast.makeText(activity, "WhatsApp Not Found.", Toast.LENGTH_SHORT).show()
+                        e.printStackTrace()
+                    }
+                }
+
+                override fun onBitmapFailed(e: java.lang.Exception?, errorDrawable: Drawable?) {
+                Log.d("Failed","BitmapFailed")
+                }
+
+                override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
+                    Log.d("Prepare","BitmapFailed")
+                }
+
+            })
+    }
+
+    fun checkIfFileExists(fileAttachment: String, context: Context): Boolean {
+//        val extStorageDirectory = context.filesDir.absolutePath+"/" + "Eazybe Files" + "/" + fileAttachment
+        val extStorageDirectory =   context.getExternalFilesDir(null)?.absolutePath.toString()+"/"+ "Eazybe Files/$fileAttachment"
+        val file = File(extStorageDirectory)
+        return file.exists()
+
+
+    }
+
+     fun writeResponseBodyToDisk(body: ResponseBody?, fileName: String, fileUrl: String, context: Context, activity: Activity): Boolean {
+
+        return try {
+
+            val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
+            StrictMode.setThreadPolicy(policy)
+
+//            val extStorageDirectory = context.filesDir.absolutePath
+            val extStorageDirectory = context.getExternalFilesDir(null)?.absolutePath.toString()
+
+
+            val folder = File(extStorageDirectory, "Eazybe Files")
+
+            if (!folder.exists() || !folder.isDirectory)
+                folder.mkdirs()
+//            val pathWhereToSaveFile = context.filesDir.absolutePath+fileName
+//            val pathWhereToSaveFile = folder.path +"/" + fileName
+            val pathWhereToSaveFile =  File(extStorageDirectory, "Eazybe Files/$fileName")
+
+//            val pathWhereToSaveFile = File(
+//                context.getExternalFilesDir("Eazybe Files"),
+//                fileName)
+
+//            File(extStorageDirectory, "Eazybe Files/$fileName")
+
+            var inputStream: InputStream? = null
+            var outputStream: OutputStream? = null
+
+            try {
+                val fileReader = ByteArray(4096)
+//                val fileSize = body?.contentLength()
+//                var fileSizeDownloaded: Long = 0
+                inputStream = body?.byteStream()
+                outputStream = FileOutputStream(pathWhereToSaveFile)
+                while (true) {
+                    val read: Int = inputStream!!.read(fileReader)
+                    if (read == -1) {
+                        break
+
+                    }
+                    outputStream.write(fileReader, 0, read)
+//                    fileSizeDownloaded += read.toLong()
+//                    Log.d(TAG, "file download: $fileSizeDownloaded of $fileSize")
+                }
+                outputStream.flush()
+                true
+            } catch (e: IOException) {
+                false
+            } finally {
+                    inputStream?.close()
+                    outputStream?.close()
+
+
+            }
+        } catch (e: IOException) {
+            false
+        }
+    }
+
+    private fun uriFromFile(context:Context, file:File):Uri {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", file)
+        } else {
+            Uri.fromFile(file)
+        }
+    }
+
+    private fun getLocalBitmapUri(bmp: Bitmap, context: Context): Uri? {
+        var bmpUri: Uri? = null
+        try {
+            val file = File(
+                context.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                "EazybePicture" + System.currentTimeMillis() + ".JPG")
+            val out = FileOutputStream(file)
+            bmp.compress(Bitmap.CompressFormat.PNG, 90, out)
+            out.close()
+            bmpUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", file)
+            } else {
+                Uri.fromFile(file)
+            }
+        } catch (e: IOException) {
+            Toast.makeText(context, "" + e, Toast.LENGTH_SHORT).show()
+        }
+        return bmpUri
+    }
 
 }

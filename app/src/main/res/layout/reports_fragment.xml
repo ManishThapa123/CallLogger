@@ -10,7 +10,6 @@
     app:layout_constraintTop_toTopOf="parent"
     tools:context=".ui.Dashboard.ReportsFragment">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,6 +28,8 @@
             android:id="@+id/clDashBoard"
             android:visibility="gone"
             android:layout_height="wrap_content">
+
+
 
             <TextView
                 android:id="@+id/header_title"
@@ -130,7 +131,7 @@
                                 android:textSize="@dimen/dimens_14" />
                         </LinearLayout>
 
-                        <com.robinhood.ticker.TickerView
+                        <TextView
                             android:id="@+id/totalIncomingCalls"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -140,12 +141,10 @@
                             android:layout_marginBottom="@dimen/dimens_8"
                             android:text="0"
                             android:textColor="@color/black"
-                            android:textSize="@dimen/dimens_24"
-                            app:ticker_animationDuration="700"
-                            app:ticker_defaultPreferredScrollingDirection="up" />
+                            android:textSize="@dimen/dimens_24" />
 
 
-                        <com.robinhood.ticker.TickerView
+                        <TextView
                             android:id="@+id/totalIncomingDuration"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -155,8 +154,7 @@
                             android:text="12 hrs 41 mins"
                             android:textColor="#4F71B1"
                             android:textSize="@dimen/dimens_12"
-                            app:ticker_animationDuration="700"
-                            app:ticker_defaultPreferredScrollingDirection="up" />
+                            />
 
                     </LinearLayout>
 
@@ -201,7 +199,7 @@
                                 android:textSize="@dimen/dimens_14" />
                         </LinearLayout>
 
-                        <com.robinhood.ticker.TickerView
+                        <TextView
                             android:id="@+id/totalOutgoingCalls"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -212,11 +210,10 @@
                             android:text="0"
                             android:textColor="@color/black"
                             android:textSize="@dimen/dimens_24"
-                            app:ticker_animationDuration="700"
-                            app:ticker_defaultPreferredScrollingDirection="up" />
+                             />
 
 
-                        <com.robinhood.ticker.TickerView
+                        <TextView
                             android:id="@+id/totalOutgoingDuration"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -226,8 +223,7 @@
                             android:text="12 hrs 41mins"
                             android:textColor="#4F71B1"
                             android:textSize="@dimen/dimens_12"
-                            app:ticker_animationDuration="700"
-                            app:ticker_defaultPreferredScrollingDirection="up" />
+                             />
 
                     </LinearLayout>
 
@@ -288,7 +284,7 @@
                                 android:textSize="@dimen/dimens_14" />
                         </LinearLayout>
 
-                        <com.robinhood.ticker.TickerView
+                        <TextView
                             android:id="@+id/neverAttended"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -299,8 +295,7 @@
                             android:text="0"
                             android:textColor="@color/black"
                             android:textSize="@dimen/dimens_24"
-                            app:ticker_animationDuration="700"
-                            app:ticker_defaultPreferredScrollingDirection="up" />
+                             />
 
                     </LinearLayout>
 
@@ -347,7 +342,7 @@
                                 android:textSize="@dimen/dimens_14" />
                         </LinearLayout>
 
-                        <com.robinhood.ticker.TickerView
+                        <TextView
                             android:id="@+id/notPickedUpByClient"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -358,8 +353,7 @@
                             android:text="0"
                             android:textColor="@color/black"
                             android:textSize="@dimen/dimens_24"
-                            app:ticker_animationDuration="700"
-                            app:ticker_defaultPreferredScrollingDirection="up" />
+                             />
                     </LinearLayout>
 
 
@@ -419,7 +413,7 @@
                                 android:textSize="@dimen/dimens_14" />
                         </LinearLayout>
 
-                        <com.robinhood.ticker.TickerView
+                        <TextView
                             android:id="@+id/totalPhoneCalls"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -429,8 +423,7 @@
                             android:text="0"
                             android:textColor="@color/black"
                             android:textSize="@dimen/dimens_24"
-                            app:ticker_animationDuration="700"
-                            app:ticker_defaultPreferredScrollingDirection="up" />
+                             />
 
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
@@ -487,7 +480,7 @@
                             android:textColor="@color/blackish"
                             android:textSize="@dimen/dimens_18" />
 
-                        <com.robinhood.ticker.TickerView
+                        <TextView
                             android:id="@+id/topCallerName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -497,10 +490,9 @@
                             android:text="Manish Thapa"
                             android:textColor="#5F72BD"
                             android:textSize="@dimen/dimens_24"
-                            app:ticker_animationDuration="700"
-                            app:ticker_defaultPreferredScrollingDirection="up" />
+                             />
 
-                        <com.robinhood.ticker.TickerView
+                        <TextView
                             android:id="@+id/topCallerCallsCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -511,8 +503,7 @@
                             android:text="0 calls"
                             android:textColor="@color/black"
                             android:textSize="@dimen/dimens_16"
-                            app:ticker_animationDuration="700"
-                            app:ticker_defaultPreferredScrollingDirection="up" />
+                             />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
             </LinearLayout>
@@ -555,7 +546,7 @@
                             android:textColor="@color/blackish"
                             android:textSize="@dimen/dimens_18" />
 
-                        <com.robinhood.ticker.TickerView
+                        <TextView
                             android:id="@+id/workingTime"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -565,8 +556,7 @@
                             android:text="0 hr 0 mins"
                             android:textColor="#5F72BD"
                             android:textSize="@dimen/dimens_24"
-                            app:ticker_animationDuration="700"
-                            app:ticker_defaultPreferredScrollingDirection="up" />
+                             />
 
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
@@ -610,7 +600,7 @@
                             android:textColor="@color/blackish"
                             android:textSize="@dimen/dimens_18" />
 
-                        <com.robinhood.ticker.TickerView
+                        <TextView
                             android:id="@+id/totalCallTime"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -620,8 +610,7 @@
                             android:text="0 hr 0 mins"
                             android:textColor="#5F72BD"
                             android:textSize="@dimen/dimens_24"
-                            app:ticker_animationDuration="700"
-                            app:ticker_defaultPreferredScrollingDirection="up" />
+                             />
 
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
@@ -665,7 +654,7 @@
                             android:textColor="@color/blackish"
                             android:textSize="@dimen/dimens_18" />
 
-                        <com.robinhood.ticker.TickerView
+                        <TextView
                             android:id="@+id/highestCallDuration"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -675,12 +664,22 @@
                             android:text="0 hr 0 mins"
                             android:textColor="#5F72BD"
                             android:textSize="@dimen/dimens_24"
-                            app:ticker_animationDuration="700"
-                            app:ticker_defaultPreferredScrollingDirection="up" />
+                             />
 
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
             </LinearLayout>
+            <ProgressBar
+                android:id="@+id/pbProgress2"
+                android:layout_width="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="300dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_height="wrap_content"
+                android:progressTint="@color/purple_500"
+                android:visibility="gone"
+                android:layout_gravity="center"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ImageView

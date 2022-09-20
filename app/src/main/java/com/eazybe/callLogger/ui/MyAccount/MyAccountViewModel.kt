@@ -35,7 +35,6 @@ class MyAccountViewModel @Inject constructor(
     private val _whatsAppExpiry = MutableLiveData<String?>()
     val whatsAppExpiry: LiveData<String?> = _whatsAppExpiry
 
-
     private val _updateUserResponse = MutableLiveData<UpdateUserDetailsResponse>()
     val updateUserResponse: LiveData<UpdateUserDetailsResponse> = _updateUserResponse
 
@@ -55,7 +54,7 @@ class MyAccountViewModel @Inject constructor(
 
             when (callExpiry) {
                 "Trial_Expired" -> {
-                    _callExpiry.value = "Expired"
+                    _callExpiry.value = "Trial_Expired"
                 }
                 "Paid_Expired" -> {
                     _callExpiry.value = "Paid_Expired"
@@ -71,7 +70,7 @@ class MyAccountViewModel @Inject constructor(
                 }
             }
         } else
-            _callExpiry.value = "Expired"
+            _callExpiry.value = "Not_Started"
 
         if (!whatsAppExpiry.isNullOrEmpty())
             if (whatsAppExpiry.toInt() >= 0)
@@ -91,13 +90,16 @@ class MyAccountViewModel @Inject constructor(
                 ?.let {
                     if (it.type == true) {
                         userData?.name = it.data?.name
+
+                        if (!it.profilePic.isNullOrEmpty())
                         userData?.profilePic = it.profilePic
+
+
                         val dataInString = clientDetailEmailAdapter.toJson(userData)
                         preferenceManager.saveClientRegistrationDataEmail(dataInString)
 
                         _updateUserResponse.value = it
                     }
                 }
-
         }
 }

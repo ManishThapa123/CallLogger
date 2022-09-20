@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.MyAccount.QuickReplies.CreateQuickReplyFragment">
+
+    <ImageButton
+        android:id="@+id/ibBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dimen_32"
+        android:layout_marginTop="@dimen/dimens_16"
+        android:background="@null"
+        android:src="@drawable/ic_back_arrow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/black" />
+
+    <TextView
+        android:id="@+id/createQuickReplyTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dimens_4"
+        android:layout_marginTop="@dimen/dimens_16"
+        android:fontFamily="@font/poppins_medium"
+        android:text="Create Quick Reply"
+        android:textAlignment="textStart"
+        android:textColor="@color/black"
+        android:textSize="@dimen/dimens_18"
+        app:layout_constraintStart_toEndOf="@id/ibBack"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/quickReplyNameHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dimens_4"
+        android:layout_marginTop="@dimen/dimens_16"
+        android:fontFamily="@font/poppins_medium"
+        android:text="Quick Reply Name"
+        android:textAlignment="textStart"
+        android:textColor="#41416E"
+        android:textSize="@dimen/dimens_14"
+        app:layout_constraintStart_toStartOf="@id/ibBack"
+        app:layout_constraintTop_toBottomOf="@id/createQuickReplyTxt" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/txtInputQuickReply"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimens_8"
+        android:layout_marginEnd="@dimen/dimen_32"
+        android:hint="Enter Quick Reply Name"
+        app:boxCornerRadiusBottomEnd="@dimen/dimens_14"
+        app:boxCornerRadiusBottomStart="@dimen/dimens_14"
+        app:boxCornerRadiusTopEnd="@dimen/dimens_14"
+        app:boxCornerRadiusTopStart="@dimen/dimens_14"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/ibBack"
+        app:layout_constraintTop_toBottomOf="@id/quickReplyNameHeader">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/txtQuickReply"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/poppins"
+            android:gravity="start|center"
+            android:textSize="@dimen/dimens_12" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/quickReplyMessageHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dimens_4"
+        android:layout_marginTop="@dimen/dimens_16"
+        android:fontFamily="@font/poppins_medium"
+        android:text="Message"
+        android:textAlignment="textStart"
+        android:textColor="#41416E"
+        android:textSize="@dimen/dimens_14"
+        app:layout_constraintStart_toStartOf="@id/ibBack"
+        app:layout_constraintTop_toBottomOf="@id/txtInputQuickReply" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/txtInputMessage"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimens_8"
+        android:layout_marginEnd="@dimen/dimen_32"
+        android:hint="Enter Message"
+        app:boxCornerRadiusBottomEnd="@dimen/dimens_14"
+        app:boxCornerRadiusBottomStart="@dimen/dimens_14"
+        app:boxCornerRadiusTopEnd="@dimen/dimens_14"
+        app:boxCornerRadiusTopStart="@dimen/dimens_14"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/ibBack"
+        app:layout_constraintTop_toBottomOf="@id/quickReplyMessageHeader">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/txtMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/poppins"
+            android:gravity="start|top"
+            android:inputType="textMultiLine"
+            android:lines="4"
+            android:maxLines="8"
+            android:textSize="@dimen/dimens_12" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/quickReplyAttachmentHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dimens_4"
+        android:layout_marginTop="@dimen/dimens_16"
+        android:fontFamily="@font/poppins_medium"
+        android:text="Attachment"
+        android:textAlignment="textStart"
+        android:textColor="#41416E"
+        android:textSize="@dimen/dimens_14"
+        app:layout_constraintStart_toStartOf="@id/ibBack"
+        app:layout_constraintTop_toBottomOf="@id/txtInputMessage" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dimens_4"
+        android:layout_marginTop="@dimen/dimens_8"
+        android:layout_marginEnd="@dimen/dimen_32"
+        app:cardCornerRadius="@dimen/dimens_8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/ibBack"
+        app:layout_constraintTop_toBottomOf="@id/quickReplyAttachmentHeader">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/dotted_card"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/dimens_12"
+            android:paddingTop="@dimen/dimens_8"
+            android:gravity="end"
+            android:paddingEnd="@dimen/dimens_12"
+            android:paddingBottom="@dimen/dimens_8">
+
+            <TextView
+                android:id="@+id/txtAttachmentName"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins"
+                android:maxLines="1"
+                android:text="Attachment" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAttachmentBrowse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimens_4"
+                android:textSize="12dp"
+                android:backgroundTint="@color/purple"
+                android:text="Browse"
+                android:textAllCaps="false"
+                app:cornerRadius="@dimen/dimens_12" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnCreate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dimens_36"
+        android:layout_marginEnd="@dimen/dimens_36"
+        android:layout_marginBottom="@dimen/dimens_40"
+        android:backgroundTint="@color/purple"
+        android:paddingTop="@dimen/dimens_12"
+        android:paddingBottom="@dimen/dimens_12"
+        android:text="Create"
+        android:textAllCaps="false"
+        android:textSize="@dimen/dimens_16"
+        app:cornerRadius="@dimen/dimens_12"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+    <ProgressBar
+        android:id="@+id/pbProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:elevation="@dimen/dimen_32"
+        android:progressTint="@color/purple_500"
+        android:visibility="gone" />
+</androidx.constraintlayout.widget.ConstraintLayout>

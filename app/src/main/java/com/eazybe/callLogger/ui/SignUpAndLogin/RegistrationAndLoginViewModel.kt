@@ -100,6 +100,9 @@ class RegistrationAndLoginViewModel @Inject constructor(
     private val _responseFailed = MutableLiveData<Boolean>()
     val responseFailed: LiveData<Boolean> = _responseFailed
 
+    private val _responseFailedOTP = MutableLiveData<Boolean>()
+    val responseFailedOTP: LiveData<Boolean> = _responseFailedOTP
+
     private var orgId: Int? = null
 
 //    fun registerNewUser(
@@ -328,7 +331,10 @@ class RegistrationAndLoginViewModel @Inject constructor(
                     _emailVerified.value = response
                 }, 300)
 
+            }else if (response.otpVerification == false){
+                _responseFailedOTP.value = true
             }
+
         }
     }
 

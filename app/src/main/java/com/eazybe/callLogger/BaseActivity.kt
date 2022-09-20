@@ -6,12 +6,17 @@ import android.content.res.ColorStateList
 import android.media.projection.MediaProjection
 import android.media.projection.MediaProjectionManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.MenuItem
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
@@ -24,6 +29,8 @@ import com.eazybe.callLogger.interfaces.ScreenshotInterface
 import com.eazybe.callLogger.interfaces.UpdateExpiryTime
 import com.eazybe.callLogger.keyboard.view.MyKeyboardView
 import com.eazybe.callLogger.ui.CallLogs.CallLogsViewModel
+import com.eazybe.callLogger.ui.CallLogs.PermissionDialogFragment
+import com.eazybe.callLogger.ui.Plans.PlansFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -38,6 +45,7 @@ class BaseActivity : AppCompatActivity(), ScreenshotInterface, UpdateExpiryTime 
     private var mgr: MediaProjectionManager? = null
     private var mediaProjection: MediaProjection? = null
     private var keyboardView: MyKeyboardView? = null
+    private var animation: Animation? = null
 
     private val requestReadContactsPermission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { permissionGranted: Boolean ->
@@ -79,7 +87,17 @@ class BaseActivity : AppCompatActivity(), ScreenshotInterface, UpdateExpiryTime 
         setupBottomNavigation()
         checkCallLogsPermission()
         setOnClickListener()
+
+
 //        askForMediaProjectionPermission()
+    }
+
+    private fun animateIcon() {
+        animation = AnimationUtils.loadAnimation(this,R.anim.rotate)
+        Handler(Looper.getMainLooper()).postDelayed({
+            binding.syncIcon.startAnimation(animation)
+        },1500)
+
     }
 
     private fun setOnClickListener() {
@@ -92,7 +110,7 @@ class BaseActivity : AppCompatActivity(), ScreenshotInterface, UpdateExpiryTime 
 
         callDetailsViewModel.getSyncDateFromAPI.observe({ lifecycle }) {
             if (it) {
-                callDetailsViewModel.getSyncedTimeAndSaveInPreference()
+                callDetailsViewModel.getSyncedTimeAndSaveInPreference(true)
             }
         }
 
@@ -100,51 +118,133 @@ class BaseActivity : AppCompatActivity(), ScreenshotInterface, UpdateExpiryTime 
         callDetailsViewModel.lastSyncedTime.observe({ lifecycle }) { syncTime ->
             binding.apply {
                 lLTimeLeftText.visibility = View.VISIBLE
+
                 when (syncTime) {
                     "Not_Synced" -> {
                         timeLeftTxt.text = "Sync Call Logs"
+                        lLTimeLeftText.backgroundTintList =
+                            ColorStateList.valueOf(
+                                ContextCompat.getColor(
+                                    this@BaseActivity, R.color.grey_light
+                                )
+                            )
+                        timeLeftTxt.setTextColor(
+                            ContextCompat.getColor(
+                                this@BaseActivity, R.color.green_light
+                            )
+                        )
+                        animateIcon()
                     }
                     "Syncing" -> {
                         binding.timeLeftTxt.text = "Syncing"
+                        lLTimeLeftText.backgroundTintList =
+                            ColorStateList.valueOf(
+                                ContextCompat.getColor(
+                                    this@BaseActivity, R.color.green_lighter
+                                )
+                            )
+                        timeLeftTxt.setTextColor(
+                            ContextCompat.getColor(
+                                this@BaseActivity, R.color.green_light
+                            )
+                        )
+                        animateIcon()
                     }
                     "Paid_Expired" -> {
                         binding.timeLeftTxt.text = "Plan Expired"
                         lLTimeLeftText.backgroundTintList =
                             ColorStateList.valueOf(
                                 ContextCompat.getColor(
-                                    this@BaseActivity, R.color.color_expired))
+                                    this@BaseActivity, R.color.color_expired
+                                )
+                            )
                         timeLeftTxt.setTextColor(
                             ContextCompat.getColor(
-                                this@BaseActivity, R.color.text_expired))
+                                this@BaseActivity, R.color.text_expired
+                            )
+                        )
+                        binding.syncIcon.setImageDrawable(ContextCompat.getDrawable(
+                            this@BaseActivity, R.drawable.ic_not_syncing))
                     }
                     "Trial_Expired" -> {
                         binding.timeLeftTxt.text = "Trial Expired"
                         lLTimeLeftText.backgroundTintList =
                             ColorStateList.valueOf(
                                 ContextCompat.getColor(
-                                    this@BaseActivity, R.color.color_expired))
+                                    this@BaseActivity, R.color.color_expired
+                                )
+                            )
                         timeLeftTxt.setTextColor(
                             ContextCompat.getColor(
-                                this@BaseActivity, R.color.text_expired))
+                                this@BaseActivity, R.color.text_expired
+                            )
+                        )
+                        binding.syncIcon.setImageDrawable(ContextCompat.getDrawable(
+                            this@BaseActivity, R.drawable.ic_not_syncing))
+
                     }
                     "Trial_Active" -> {
-                        callDetailsViewModel.showExpiryTime.observe({lifecycle}){
+                        callDetailsViewModel.showExpiryTime.observe({ lifecycle }) {
                             binding.timeLeftTxt.text = "$it days left"
+
+                            lLTimeLeftText.backgroundTintList =
+                                ColorStateList.valueOf(
+                                    ContextCompat.getColor(
+                                        this@BaseActivity, R.color.green_lighter
+                                    )
+                                )
+                            timeLeftTxt.setTextColor(
+                                ContextCompat.getColor(
+                                    this@BaseActivity, R.color.green_light
+                                )
+                            )
+                            animateIcon()
                         }
                     }
                 }
             }
         }
 
+        callDetailsViewModel.displayPopUp.observe({ lifecycle }) {
+                                val dialog = PermissionDialogFragment()
+                    dialog.show(supportFragmentManager, "permission_fragment")
+        }
 
-        callDetailsViewModel.alreadySynced.observe({ lifecycle }) {
-            GlobalMethods.showMotionToast(
-                this,
-                "Already Synced.",
-                "You have already synced your call logs to the server.",
-                "success",
-                this
-            )
+        callDetailsViewModel.alreadySynced.observe({ lifecycle }) { syncType ->
+            val dialog = PlansFragment()
+            when(syncType){
+                "Trial_Active"->{
+                    callDetailsViewModel.showExpiryTimeInPlan.observe({lifecycle}){ time ->
+                        val bundle = bundleOf("title" to "Trial_Active",
+                            "days" to time)
+                        dialog.arguments = bundle
+                    }
+
+                }
+                "Trial_Expired"->{
+                    val bundle = bundleOf("title" to "Trial_Expired")
+                    dialog.arguments = bundle
+                }
+                "Paid_Expired"->{
+                    val bundle = bundleOf("title" to "Paid_Expired")
+                    dialog.arguments = bundle
+                }
+                "Syncing"->{
+                    val bundle = bundleOf("title" to "Syncing")
+                    dialog.arguments = bundle
+                }
+            }
+
+
+            dialog.show(supportFragmentManager, "permission_fragment")
+
+//            GlobalMethods.showMotionToast(
+//                this,
+//                "Already Synced.",
+//                "You have already synced your call logs to the server.",
+//                "success",
+//                this
+//            )
         }
     }
 

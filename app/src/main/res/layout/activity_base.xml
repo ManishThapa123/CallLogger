@@ -9,6 +9,7 @@
         android:id="@+id/clMain"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dimens_6"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
@@ -18,18 +19,19 @@
             android:layout_centerInParent="true"
             android:layout_marginStart="20dp"
             android:layout_marginBottom="10dp"
-            android:padding="1dp"
+            android:padding="2dp"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_eazybe_logo"
+            android:src="@drawable/eazybe_outlined"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/black" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/lLTimeLeftText"
             android:backgroundTint="#84E4D9"
-            android:visibility="gone"
+            android:visibility="visible"
             android:gravity="center"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="@dimen/dimens_4"
@@ -58,8 +60,8 @@
             <ImageView
                 android:layout_width="@dimen/dimens_20"
                 android:layout_height="20dp"
-                android:src="@drawable/baseline_sync"
-                app:tint="#128C7E" />
+                android:id="@+id/syncIcon"
+                android:src="@drawable/baseline_sync" />
         </LinearLayout>
 
         <ImageButton

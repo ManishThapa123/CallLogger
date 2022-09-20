@@ -17,9 +17,34 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_myAccountFragment_to_quickRepliesFragment"
+            app:destination="@id/quickRepliesFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/editProfileFragment"
         android:name="com.eazybe.callLogger.ui.MyAccount.EditProfileFragment"
         android:label="EditProfileFragment" />
+    <fragment
+        android:id="@+id/quickRepliesFragment"
+        android:name="com.eazybe.callLogger.ui.MyAccount.QuickReplies.QuickRepliesFragment"
+        android:label="quick_replies_fragment"
+        tools:layout="@layout/quick_replies_fragment" >
+        <action
+            android:id="@+id/action_quickRepliesFragment_to_createQuickReplyFragment"
+            app:destination="@id/createQuickReplyFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/createQuickReplyFragment"
+        android:name="com.eazybe.callLogger.ui.MyAccount.QuickReplies.CreateQuickReplyFragment"
+        android:label="fragment_create_quick_reply"
+        tools:layout="@layout/fragment_create_quick_reply" />
 </navigation>

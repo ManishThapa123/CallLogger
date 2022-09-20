@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@null"
+    tools:context=".ui.Plans.PlansFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dimens_16"
+        android:background="@drawable/plans_background"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <ImageView
+            android:id="@+id/imgCross"
+            android:layout_width="@dimen/dimens_24"
+            android:layout_height="@dimen/dimens_24"
+            android:layout_gravity="end"
+            android:layout_margin="@dimen/dimens_12"
+            android:src="@drawable/ic_cross_vector"
+            app:tint="@color/black" />
+
+        <LinearLayout
+            android:id="@+id/lLsyncing"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/baseline_sync"
+                app:tint="@color/green_light" />
+
+            <TextView
+                android:id="@+id/syncText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimens_8"
+                android:fontFamily="@font/poppins"
+                android:text="Syncing ~ 14 days left "
+                android:textColor="#3D4043"
+                android:textSize="18dp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/lLNotSyncing"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_not_syncing" />
+
+            <TextView
+                android:id="@+id/notSyncText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimens_8"
+                android:fontFamily="@font/poppins"
+                android:text="Not Syncing ~ Trial Expired❗"
+                android:textColor="#3D4043"
+                android:textSize="18dp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/plansText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/dimens_20"
+            android:fontFamily="@font/poppins"
+            android:gravity="center"
+            android:paddingStart="@dimen/dimens_20"
+            android:paddingEnd="@dimen/dimens_20"
+            android:text="Your trial has expired to continue syncing calls, messages and reports. Please upgrade." />
+
+        <TextView
+            android:id="@+id/billingText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/dimens_40"
+            android:fontFamily="@font/poppins"
+            android:gravity="center"
+            android:paddingStart="@dimen/dimens_40"
+            android:paddingEnd="@dimen/dimens_40"
+            android:text="Please visit workspace.eazybe.com/billing to upgrade" />
+
+        <TextView
+            android:id="@+id/contactUsText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="@dimen/dimens_40"
+            android:fontFamily="@font/poppins"
+            android:gravity="center"
+            android:paddingStart="@dimen/dimens_20"
+            android:paddingEnd="@dimen/dimens_16"
+            android:paddingBottom="@dimen/dimens_16"
+            android:text="Need Help? Contact us."
+            android:textSize="@dimen/dimens_12" />
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
