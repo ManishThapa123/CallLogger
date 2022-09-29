@@ -3,7 +3,6 @@
   "serviceConfiguration": {
     "apiName": "calllogger",
     "serviceName": "AppSync",
-    "gqlSchemaPath": "C:\\Users\\user\\AndroidStudioProjects\\CallLogger\\amplify\\backend\\api\\calllogger\\schema.graphql",
     "defaultAuthType": {
       "mode": "API_KEY",
       "expirationTime": 7

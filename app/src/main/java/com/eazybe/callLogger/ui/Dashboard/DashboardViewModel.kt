@@ -5,9 +5,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.eazybe.callLogger.api.models.entities.SampleEntity
 import com.eazybe.callLogger.helper.CallLogsHelper
 import com.eazybe.callLogger.helper.GlobalMethods
 import com.eazybe.callLogger.helper.PreferenceManager
+import com.simplemobiletools.commons.extensions.toInt
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -59,154 +61,185 @@ class DashboardViewModel @Inject constructor(
 
     fun getDashBoardCounts() = viewModelScope.launch {
         _loading.value = true
-        var totalOutGoings: Int? = 0
-        var totalIncomings: Int? = 0
-        var totalMissed: Int? = 0
+
+        val missedCallList: ArrayList<SampleEntity> = ArrayList()
+        val outGoingCallList: ArrayList<SampleEntity> = ArrayList()
+        val incomingCallList: ArrayList<SampleEntity> = ArrayList()
+        val rejectedCallList: ArrayList<SampleEntity> = ArrayList()
 
 
-        callLogsHelper.getAllCallLogs {
-            val totalOutGoingCallsCount = callLogsHelper.getTotalOutGoingCallsCount()
-            _totalOutgoingCallsCount.value = "$totalOutGoingCallsCount"
-            totalOutGoings = totalOutGoingCallsCount
-            Log.d("totalOutGoingCallsCount", "$totalOutGoingCallsCount")
+        callLogsHelper.getAllCallLogs { allCallLogs ->
 
-            val totalOutGoingCallsDuration = callLogsHelper.getTotalOutGoingCallsDuration()
-            _totalOutGoingCallsDuration.value =
-                GlobalMethods.convertSeconds(totalOutGoingCallsDuration.toInt())
-            Log.d("totalOutGoingCallsDuration", totalOutGoingCallsDuration)
-            val totalIncomingCallsCount = callLogsHelper.getTotalIncomingCallsCount()
-            _totalIncomingCallsCount.value = "$totalIncomingCallsCount"
-            totalIncomings = totalIncomingCallsCount
+            val distinctCallLogs: ArrayList<SampleEntity> = ArrayList()
+            if (!allCallLogs.isNullOrEmpty()){
+                if (allCallLogs.size == 1){
+                    distinctCallLogs.addAll(allCallLogs)
+                }else{
+                    distinctCallLogs.addAll(allCallLogs.distinct() as ArrayList<SampleEntity>)
+                }
 
-            Log.d("totalIncomingCallsCount", "$totalIncomingCallsCount")
-
-            val totalIncomingCallsDuration = callLogsHelper.getTotalIncomingCallsDuration()
-            _totalIncomingCallsDuration.value =
-                GlobalMethods.convertSeconds(totalIncomingCallsDuration.toInt())
-            Log.d("totalIncomingCallsDuration", totalIncomingCallsDuration)
-
-            val totalCallDuration = callLogsHelper.getTotalCallsDuration()
-            _totalCallsDuration.value = GlobalMethods.convertSeconds(totalCallDuration.toInt())
-
-            Log.d("totalCallsDuration", totalCallDuration)
-
-            callLogsHelper.highestCallDuration {
-                Log.d("highestDurationCall", "${it.callDuration}, ${it.userName}")
-                _highestDurationCall.value = GlobalMethods.convertSeconds(it.callDuration!!.toInt())
             }
+            //To get all calls Count
+            _totalPhoneCalls.value = "${distinctCallLogs.size}"
 
-            callLogsHelper.highestCallerCallCount {
-                Log.d("highestCallerCount", it)
-                _highestCallerCount.value = it
-            }
-            callLogsHelper.getHighestCallLogsCount {
-                it.forEach { callDetailsWithCount ->
-                    Log.d(
-                        "allCallsHighest",
-                        "${callDetailsWithCount.callDetails?.userName} and ${callDetailsWithCount.count}"
-                    )
+            distinctCallLogs.forEach { callLog ->
+                when(callLog.callType){
+                    "1", "101" ->{
+                        incomingCallList.add(callLog)
+                    }
+                    "2", "100" -> {
+                        outGoingCallList.add(callLog)
+                    }
+                    "3"-> {
+                        missedCallList.add(callLog)
+                    }
+                    "5", "10" -> {
+                        rejectedCallList.add(callLog)
+                    }
                 }
             }
+            //fixed
+            val totalOutGoingCallsCount = outGoingCallList.size
+            _totalOutgoingCallsCount.value = "$totalOutGoingCallsCount"
+
+
+            //fixed
+            val totalOutGoingCallsDuration = callLogsHelper.getOutGoingCallsDuration(outGoingCallList)
+            _totalOutGoingCallsDuration.value =
+                GlobalMethods.convertSeconds(totalOutGoingCallsDuration.toInt())
+
+            //fixed
+            val totalIncomingCallsCount = incomingCallList.size
+            _totalIncomingCallsCount.value = "$totalIncomingCallsCount"
+
+
+            //fixed
+            val totalIncomingCallsDuration = callLogsHelper.getIncomingCallsDuration(incomingCallList)
+            _totalIncomingCallsDuration.value =
+                GlobalMethods.convertSeconds(totalIncomingCallsDuration.toInt())
+            //fixed
+            val totalCallDuration = callLogsHelper.getAllCallsDurations(allCallLogs)
+            _totalCallsDuration.value = GlobalMethods.convertSeconds(totalCallDuration.toInt())
+            //fixed
+            val highestCallerCount = callLogsHelper.getHighestCallerCount(allCallLogs)
+            _highestCallerCount.value = highestCallerCount
+            //fixed
+            val highestCallDuration = callLogsHelper.getHighestCallDuration(allCallLogs)
+            _highestDurationCall.value = GlobalMethods.convertSeconds(highestCallDuration.callDuration!!.toInt())
+
             //Highest Caller for today.
-            callLogsHelper.highestCaller { highestCaller ->
-                Log.d("highest", highestCaller)
-                _topCaller.value = if (highestCaller == "null")
-                    "Unknown"
-                else
-                    highestCaller
-            }
+            val highestCaller = callLogsHelper.getHighestCaller(allCallLogs)
+            _topCaller.value = if (highestCaller == "null")
+                "Unknown"
+            else
+                highestCaller
+
+            //To get neverAttended calls Count
+            _neverAttendedCalls.value = "${missedCallList.size}"
+
+            //To get notPickedUpByClient calls Count
+            val notPickedUpByClient = callLogsHelper.notPickedUpByClientCount(outGoingCallList)
+            _notPickedUpByClient.value = "$notPickedUpByClient"
+
             //Total Working hours for today.
-            _totalWorkingHours.value =
-                GlobalMethods.convertSeconds(callLogsHelper.getAllCallsDuration().toInt())
+            val totalWorkingTime =  GlobalMethods.convertSeconds(callLogsHelper.getWorkingTime(allCallLogs).toInt())
+            _totalWorkingHours.value = totalWorkingTime
 
-            var totalPhoneCalls = ""
-            totalPhoneCalls = "${it.size}"
 
-            _neverAttendedCalls.value = "${callLogsHelper.getNeverAttendedCallsCount()}"
-            totalMissed = callLogsHelper.getNeverAttendedCallsCount()
-
-            _notPickedUpByClient.value = "${callLogsHelper.getTotalNotPickedUpByClientCount()}"
-
-            _totalPhoneCalls.value = "${totalOutGoings!! + totalIncomings!! + totalMissed!!}"
             _loading.value = false
-
         }
     }
 
     fun getDashBoardCountsToday() = viewModelScope.launch {
         _loading.value = true
-        var totalOutGoings: Int? = 0
-        var totalIncomings: Int? = 0
-        var totalMissed: Int? = 0
 
-        callLogsHelper.getAllCallLogs {
-            val totalOutGoingCallsCount = callLogsHelper.getTotalOutGoingCallsCount(true)
-            _totalOutgoingCallsCount.value = "$totalOutGoingCallsCount"
-            totalOutGoings = totalOutGoingCallsCount
 
-            val totalOutGoingCallsDuration = callLogsHelper.getTotalOutGoingCallsDuration(true)
-            _totalOutGoingCallsDuration.value =
-                GlobalMethods.convertSeconds(totalOutGoingCallsDuration.toInt())
+         val missedCallList: ArrayList<SampleEntity> = ArrayList()
+         val outGoingCallList: ArrayList<SampleEntity> = ArrayList()
+         val incomingCallList: ArrayList<SampleEntity> = ArrayList()
+         val rejectedCallList: ArrayList<SampleEntity> = ArrayList()
 
-            val totalIncomingCallsCount = callLogsHelper.getTotalIncomingCallsCount(true)
-            _totalIncomingCallsCount.value = "$totalIncomingCallsCount"
-            totalIncomings = totalIncomingCallsCount
+        callLogsHelper.getAllCallLogs(true) { allCallLogs ->
 
-            val totalIncomingCallsDuration = callLogsHelper.getTotalIncomingCallsDuration(true)
-            _totalIncomingCallsDuration.value =
-                GlobalMethods.convertSeconds(totalIncomingCallsDuration.toInt())
-
-            val totalCallDuration = callLogsHelper.getTotalCallsDuration(true)
-            _totalCallsDuration.value = GlobalMethods.convertSeconds(totalCallDuration.toInt())
-
-            Log.d("totalCallsDurationToday", totalCallDuration)
-            Log.d("totalOutGoingCallsCountToday", "$totalOutGoingCallsCount")
-            Log.d("totalOutGoingCallsDurationToday", totalOutGoingCallsDuration)
-            Log.d("totalIncomingCallsCountToday", "$totalIncomingCallsCount")
-            Log.d("totalIncomingCallsDurationToday", totalIncomingCallsDuration)
-
-            callLogsHelper.highestCallerCallCount(true) {
-                Log.d("highestCallerCountToday", it)
-                _highestCallerCount.value = it
-            }
-            callLogsHelper.highestCallDuration(true) {
-                Log.d("highestDurationCallToday", "${it.callDuration}, ${it.userName}")
-                _highestDurationCall.value = GlobalMethods.convertSeconds(it.callDuration!!.toInt())
+            val distinctCallLogs: ArrayList<SampleEntity> = ArrayList()
+            if (!allCallLogs.isNullOrEmpty()){
+                if (allCallLogs.size == 1){
+                    distinctCallLogs.addAll(allCallLogs)
+                }else{
+                    distinctCallLogs.addAll(allCallLogs.distinct() as ArrayList<SampleEntity>)
+                }
 
             }
-            //Total Working hours for today.
-            _totalWorkingHours.value =
-                GlobalMethods.convertSeconds(callLogsHelper.getAllCallsDuration(true).toInt())
-            //Highest Caller for today.
-            callLogsHelper.highestCaller(true) { highestCaller ->
-                Log.d("highest", highestCaller)
-                _topCaller.value = if (highestCaller == "null")
-                    "Unknown"
-                else
-                    highestCaller
-            }
-            //Highest Call logs count for today.
-            callLogsHelper.getHighestCallLogsCount(true) {
-                it.forEach { callDetailsWithCount ->
-                    Log.d(
-                        "allCallsHighest",
-                        "${callDetailsWithCount.callDetails?.userName} and ${callDetailsWithCount.count}"
-                    )
+
+            //To get all calls Count
+            _totalPhoneCalls.value = "${distinctCallLogs.size}"
+
+            distinctCallLogs.forEach { callLog ->
+                when(callLog.callType){
+                    "1", "101" ->{
+                        incomingCallList.add(callLog)
+                    }
+                    "2", "100" -> {
+                        outGoingCallList.add(callLog)
+                    }
+                    "3"-> {
+                        missedCallList.add(callLog)
+                    }
+                    "5", "10" -> {
+                        rejectedCallList.add(callLog)
+                    }
                 }
             }
 
-            //To get neverAttended calls Count
-            _neverAttendedCalls.value = "${callLogsHelper.getNeverAttendedCallsCount(true)}"
-            totalMissed = callLogsHelper.getNeverAttendedCallsCount(true)
-            //To get notPickedUpByClient calls Count
-            _notPickedUpByClient.value = "${callLogsHelper.getTotalNotPickedUpByClientCount(true)}"
+            //fixed
+            val totalOutGoingCallsCount = outGoingCallList.size
+            _totalOutgoingCallsCount.value = "$totalOutGoingCallsCount"
 
-            //To get all calls Count
-            _totalPhoneCalls.value = "${totalOutGoings!! + totalIncomings!! + totalMissed!!}"
+
+            //fixed
+            val totalOutGoingCallsDuration = callLogsHelper.getOutGoingCallsDuration(outGoingCallList)
+            _totalOutGoingCallsDuration.value =
+                GlobalMethods.convertSeconds(totalOutGoingCallsDuration.toInt())
+
+            //fixed
+            val totalIncomingCallsCount = incomingCallList.size
+            _totalIncomingCallsCount.value = "$totalIncomingCallsCount"
+
+
+            //fixed
+            val totalIncomingCallsDuration = callLogsHelper.getIncomingCallsDuration(incomingCallList)
+            _totalIncomingCallsDuration.value =
+                GlobalMethods.convertSeconds(totalIncomingCallsDuration.toInt())
+            //fixed
+            val totalCallDuration = callLogsHelper.getAllCallsDurations(allCallLogs)
+            _totalCallsDuration.value = GlobalMethods.convertSeconds(totalCallDuration.toInt())
+            //fixed
+            val highestCallerCount = callLogsHelper.getHighestCallerCount(allCallLogs)
+            _highestCallerCount.value = highestCallerCount
+            //fixed
+            val highestCallDuration = callLogsHelper.getHighestCallDuration(allCallLogs)
+            _highestDurationCall.value = GlobalMethods.convertSeconds(highestCallDuration.callDuration!!.toInt())
+
+            //Highest Caller for today.
+            val highestCaller = callLogsHelper.getHighestCaller(allCallLogs)
+            _topCaller.value = if (highestCaller == "null")
+                "Unknown"
+            else
+                highestCaller
+
+            //To get neverAttended calls Count
+            _neverAttendedCalls.value = "${missedCallList.size}"
+
+            //To get notPickedUpByClient calls Count
+            val notPickedUpByClient = callLogsHelper.notPickedUpByClientCount(outGoingCallList)
+            _notPickedUpByClient.value = "$notPickedUpByClient"
+
+            //Total Working hours for today.
+            val totalWorkingTime =  GlobalMethods.convertSeconds(callLogsHelper.getWorkingTime(allCallLogs).toInt())
+            _totalWorkingHours.value = totalWorkingTime
+
+
             _loading.value = false
-//        callLogsHelper.getAllCallLogs(true) {
-//            _totalPhoneCalls.value = "${it.size}"
-//        }
         }
 
     }

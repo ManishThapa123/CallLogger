@@ -104,6 +104,8 @@ query SearchCallLogs(
       }
       Calltime
       CreatedByUser
+      ChatterNumber
+      Url
       createdAt
       updatedAt
       _version
@@ -180,6 +182,189 @@ query SearchChatters(
     }
   }
 }
+query SearchWhatsappUsers(
+  $filter: SearchableWhatsappUserFilterInput
+  $sort: [SearchableWhatsappUserSortInput]
+  $limit: Int
+  $nextToken: String
+  $from: Int
+  $aggregates: [SearchableWhatsappUserAggregationInput]
+) {
+  searchWhatsappUsers(
+    filter: $filter
+    sort: $sort
+    limit: $limit
+    nextToken: $nextToken
+    from: $from
+    aggregates: $aggregates
+  ) {
+    items {
+      id
+      Userid
+      Name
+      Whatsappno
+      Photo
+      LastSync
+      messages {
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    nextToken
+    total
+    aggregateItems {
+      name
+      result {
+        ... on SearchableAggregateScalarResult {
+          value
+        }
+        ... on SearchableAggregateBucketResult {
+          buckets {
+            key
+            doc_count
+          }
+        }
+      }
+    }
+  }
+}
+query SearchWhatsappMessages(
+  $filter: SearchableWhatsappMessagesFilterInput
+  $sort: [SearchableWhatsappMessagesSortInput]
+  $limit: Int
+  $nextToken: String
+  $from: Int
+  $aggregates: [SearchableWhatsappMessagesAggregationInput]
+) {
+  searchWhatsappMessages(
+    filter: $filter
+    sort: $sort
+    limit: $limit
+    nextToken: $nextToken
+    from: $from
+    aggregates: $aggregates
+  ) {
+    items {
+      id
+      MessageId
+      Userid
+      Message
+      File
+      Chatid
+      Sentbyid
+      Ack
+      Datetime
+      Direction
+      user {
+        id
+        Userid
+        Name
+        Whatsappno
+        Photo
+        LastSync
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      chatter {
+        id
+        Name
+        Chatid
+        CreatedByUserAndNumber
+        Photo
+        Number
+        CreatedByUser
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      LastMessage
+      CreatedByUser
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    nextToken
+    total
+    aggregateItems {
+      name
+      result {
+        ... on SearchableAggregateScalarResult {
+          value
+        }
+        ... on SearchableAggregateBucketResult {
+          buckets {
+            key
+            doc_count
+          }
+        }
+      }
+    }
+  }
+}
+query SearchWhatsappChatters(
+  $filter: SearchableWhatsappChatterFilterInput
+  $sort: [SearchableWhatsappChatterSortInput]
+  $limit: Int
+  $nextToken: String
+  $from: Int
+  $aggregates: [SearchableWhatsappChatterAggregationInput]
+) {
+  searchWhatsappChatters(
+    filter: $filter
+    sort: $sort
+    limit: $limit
+    nextToken: $nextToken
+    from: $from
+    aggregates: $aggregates
+  ) {
+    items {
+      id
+      Name
+      Chatid
+      CreatedByUserAndNumber
+      Photo
+      Number
+      messages {
+        nextToken
+        startedAt
+      }
+      CreatedByUser
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    nextToken
+    total
+    aggregateItems {
+      name
+      result {
+        ... on SearchableAggregateScalarResult {
+          value
+        }
+        ... on SearchableAggregateBucketResult {
+          buckets {
+            key
+            doc_count
+          }
+        }
+      }
+    }
+  }
+}
 query GetUser($Userid: ID!) {
   getUser(Userid: $Userid) {
     id
@@ -199,6 +384,8 @@ query GetUser($Userid: ID!) {
         Direction
         Calltime
         CreatedByUser
+        ChatterNumber
+        Url
         createdAt
         updatedAt
         _version
@@ -331,6 +518,8 @@ query GetCallLogs($id: ID!) {
     }
     Calltime
     CreatedByUser
+    ChatterNumber
+    Url
     createdAt
     updatedAt
     _version
@@ -381,6 +570,8 @@ query ListCallLogs(
       }
       Calltime
       CreatedByUser
+      ChatterNumber
+      Url
       createdAt
       updatedAt
       _version
@@ -440,6 +631,8 @@ query SyncCallLogs(
       }
       Calltime
       CreatedByUser
+      ChatterNumber
+      Url
       createdAt
       updatedAt
       _version
@@ -469,6 +662,8 @@ query GetChatter($ChatterId: ID!) {
         Direction
         Calltime
         CreatedByUser
+        ChatterNumber
+        Url
         createdAt
         updatedAt
         _version
@@ -545,6 +740,395 @@ query SyncChatters(
         nextToken
         startedAt
       }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    nextToken
+    startedAt
+  }
+}
+query GetWhatsappUser($Userid: ID!) {
+  getWhatsappUser(Userid: $Userid) {
+    id
+    Userid
+    Name
+    Whatsappno
+    Photo
+    LastSync
+    messages {
+      items {
+        id
+        MessageId
+        Userid
+        Message
+        File
+        Chatid
+        Sentbyid
+        Ack
+        Datetime
+        Direction
+        LastMessage
+        CreatedByUser
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+query ListWhatsappUsers(
+  $Userid: ID
+  $filter: ModelWhatsappUserFilterInput
+  $limit: Int
+  $nextToken: String
+  $sortDirection: ModelSortDirection
+) {
+  listWhatsappUsers(
+    Userid: $Userid
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    sortDirection: $sortDirection
+  ) {
+    items {
+      id
+      Userid
+      Name
+      Whatsappno
+      Photo
+      LastSync
+      messages {
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    nextToken
+    startedAt
+  }
+}
+query SyncWhatsappUsers(
+  $filter: ModelWhatsappUserFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncWhatsappUsers(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      Userid
+      Name
+      Whatsappno
+      Photo
+      LastSync
+      messages {
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    nextToken
+    startedAt
+  }
+}
+query GetWhatsappMessages($id: ID!) {
+  getWhatsappMessages(id: $id) {
+    id
+    MessageId
+    Userid
+    Message
+    File
+    Chatid
+    Sentbyid
+    Ack
+    Datetime
+    Direction
+    user {
+      id
+      Userid
+      Name
+      Whatsappno
+      Photo
+      LastSync
+      messages {
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    chatter {
+      id
+      Name
+      Chatid
+      CreatedByUserAndNumber
+      Photo
+      Number
+      messages {
+        nextToken
+        startedAt
+      }
+      CreatedByUser
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    LastMessage
+    CreatedByUser
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+query ListWhatsappMessages(
+  $filter: ModelWhatsappMessagesFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listWhatsappMessages(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      MessageId
+      Userid
+      Message
+      File
+      Chatid
+      Sentbyid
+      Ack
+      Datetime
+      Direction
+      user {
+        id
+        Userid
+        Name
+        Whatsappno
+        Photo
+        LastSync
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      chatter {
+        id
+        Name
+        Chatid
+        CreatedByUserAndNumber
+        Photo
+        Number
+        CreatedByUser
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      LastMessage
+      CreatedByUser
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    nextToken
+    startedAt
+  }
+}
+query SyncWhatsappMessages(
+  $filter: ModelWhatsappMessagesFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncWhatsappMessages(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      MessageId
+      Userid
+      Message
+      File
+      Chatid
+      Sentbyid
+      Ack
+      Datetime
+      Direction
+      user {
+        id
+        Userid
+        Name
+        Whatsappno
+        Photo
+        LastSync
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      chatter {
+        id
+        Name
+        Chatid
+        CreatedByUserAndNumber
+        Photo
+        Number
+        CreatedByUser
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      LastMessage
+      CreatedByUser
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    nextToken
+    startedAt
+  }
+}
+query GetWhatsappChatter($CreatedByUserAndNumber: ID!) {
+  getWhatsappChatter(CreatedByUserAndNumber: $CreatedByUserAndNumber) {
+    id
+    Name
+    Chatid
+    CreatedByUserAndNumber
+    Photo
+    Number
+    messages {
+      items {
+        id
+        MessageId
+        Userid
+        Message
+        File
+        Chatid
+        Sentbyid
+        Ack
+        Datetime
+        Direction
+        LastMessage
+        CreatedByUser
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+    CreatedByUser
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+query ListWhatsappChatters(
+  $CreatedByUserAndNumber: ID
+  $filter: ModelWhatsappChatterFilterInput
+  $limit: Int
+  $nextToken: String
+  $sortDirection: ModelSortDirection
+) {
+  listWhatsappChatters(
+    CreatedByUserAndNumber: $CreatedByUserAndNumber
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    sortDirection: $sortDirection
+  ) {
+    items {
+      id
+      Name
+      Chatid
+      CreatedByUserAndNumber
+      Photo
+      Number
+      messages {
+        nextToken
+        startedAt
+      }
+      CreatedByUser
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    nextToken
+    startedAt
+  }
+}
+query SyncWhatsappChatters(
+  $filter: ModelWhatsappChatterFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncWhatsappChatters(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      Name
+      Chatid
+      CreatedByUserAndNumber
+      Photo
+      Number
+      messages {
+        nextToken
+        startedAt
+      }
+      CreatedByUser
       createdAt
       updatedAt
       _version

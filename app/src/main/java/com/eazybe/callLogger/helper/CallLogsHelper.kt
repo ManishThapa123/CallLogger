@@ -202,6 +202,7 @@ class CallLogsHelper @Inject constructor(
         if (forToday) {
             refreshCallLogs("All") { allCallsList ->
                 val todaysCallList: ArrayList<SampleEntity> = ArrayList()
+                todaysCallList.clear()
                 for (callLogInfo in allCallsList!!) {
                     if (GlobalMethods.convertMillisToDate(callLogInfo.time!!) == GlobalMethods.convertMillisToDate(
                             createDate(0))) {
@@ -363,6 +364,14 @@ class CallLogsHelper @Inject constructor(
         return output
     }
 
+    fun getOutGoingCallsDuration(outGoingCalls: ArrayList<SampleEntity>) : String{
+        var output = 0L
+        for (callLogInfo in outGoingCalls) {
+            output += callLogInfo.callDuration?.toLong()!!
+        }
+        return "$output"
+    }
+
     fun getTotalOutGoingCallsDuration(forToday: Boolean = false): String {
         if (outGoingCallList == null)
             loadCallLogs()
@@ -403,6 +412,14 @@ class CallLogsHelper @Inject constructor(
             }
         }
         return output
+    }
+
+    fun getIncomingCallsDuration(incomingCalls: ArrayList<SampleEntity>) : String{
+        var output = 0L
+        for (callLogInfo in incomingCalls) {
+            output += callLogInfo.callDuration?.toLong()!!
+        }
+        return "$output"
     }
 
     fun getTotalIncomingCallsDuration(forToday: Boolean = false): String {
@@ -450,6 +467,42 @@ class CallLogsHelper @Inject constructor(
             }
         }
         return "$output"
+    }
+
+    fun getAllCallsDurations(allCalls: ArrayList<SampleEntity>):String{
+        var output = 0L
+        val allCallLogsReversed = allCalls.reversed()
+        if (allCallLogsReversed.isNotEmpty()) {
+            for (callLogInfo in allCallLogsReversed) {
+                if (callLogInfo.callType!!.toInt() != CallLog.Calls.MISSED_TYPE) {
+                    output += callLogInfo.callDuration?.toLong()!!
+                }
+            }
+        }
+        return "$output"
+    }
+
+    fun getWorkingTime(allCalls: ArrayList<SampleEntity>): String{
+        var output = 0L
+        val totalCallsDuration = getAllCallsDurations(allCalls).toLong()
+        val allCallLogsReversed = allCalls.reversed()
+        val connectedCalls: ArrayList<SampleEntity> = ArrayList()
+        val notConnectedCalls: ArrayList<SampleEntity> = ArrayList()
+        for (callLogInfo in allCallLogsReversed) {
+        when{
+            callLogInfo.callDuration!!.toInt() == 0 -> {
+                notConnectedCalls.add(callLogInfo)
+            }
+            callLogInfo.callDuration!!.toInt() != 0 -> {
+                connectedCalls.add(callLogInfo)
+            }
+        }
+        }
+        val uniqueNotConnectedCalls = notConnectedCalls.distinct().size.toLong() //name //call type
+        val processedTime = ((1.5 * 60) * connectedCalls.size.toLong())
+        val connectedCallsTotal = totalCallsDuration + processedTime
+        val totalWorkingTime = connectedCallsTotal + uniqueNotConnectedCalls*60
+        return "${totalWorkingTime.toLong()}"
     }
 
     fun getAllCallsDuration(forToday: Boolean = false): String {
@@ -534,6 +587,14 @@ class CallLogsHelper @Inject constructor(
         return "$output"
     }
 
+    fun getHighestCaller(allCalls: ArrayList<SampleEntity>): String{
+        val item = allCalls.groupBy { it }
+            .maxByOrNull { it.value.size }
+            ?.key
+
+        return item?.userName.toString()
+    }
+
     fun highestCaller(
         forToday: Boolean = false,
         highestCallerName: (String) -> Unit) {
@@ -560,6 +621,18 @@ class CallLogsHelper @Inject constructor(
 
             highestCallerName(item?.userName.toString())
         }
+    }
+
+    fun getHighestCallerCount(allCalls: ArrayList<SampleEntity>): String{
+        var output = 0
+        val item = allCalls.groupBy { it }.maxByOrNull { it.value.size }?.key
+
+        for (callLog in allCalls){
+            if (callLog.userName.toString() == item?.userName.toString()){
+                output ++
+            }
+        }
+        return "$output"
     }
 
     fun highestCallerCallCount(
@@ -597,6 +670,11 @@ class CallLogsHelper @Inject constructor(
             }
             highestCallerCount("$output")
         }
+    }
+
+    fun getHighestCallDuration(allCalls: ArrayList<SampleEntity>): SampleEntity{
+        val highestCalledTime = allCalls.maxByOrNull { it.callDuration?.toLong()!! }
+        return highestCalledTime ?: SampleEntity("","","","0","","","")
     }
 
     fun highestCallDuration(forToday: Boolean = false,
@@ -637,6 +715,17 @@ class CallLogsHelper @Inject constructor(
         return output
     }
 
+    fun notPickedUpByClientCount(outGoingCalls: ArrayList<SampleEntity>): Int{
+        var output = 0
+
+        for (callLogInfo in outGoingCalls) {
+            if (callLogInfo.callDuration!!.toInt() == 0) {
+                output++
+            }
+        }
+        return output
+    }
+
     fun getTotalNotPickedUpByClientCount(forToday: Boolean = false): Int {
         if (outGoingCallList == null)
             loadCallLogs()
@@ -662,6 +751,7 @@ class CallLogsHelper @Inject constructor(
         }
         return output
     }
+
     /**
      * In order to get the count of the never attended calls.
      */
@@ -926,8 +1016,7 @@ class CallLogsHelper @Inject constructor(
                         subscribedSimID == preferenceManager.getSIMSubscriptionIdSub() ||
                         (subscribedSimID.length > 1 && preferenceManager.getSIMSubscriptionId()
                             ?.substring(0, 18)
-                            ?.let { subscribedSimID.contains(it) } == true)
-                    ) {
+                            ?.let { subscribedSimID.contains(it) } == true)) {
                         when (type) {
                             "2", "100" -> {
                                 neverPickedUpList!!.add(
@@ -984,15 +1073,8 @@ class CallLogsHelper @Inject constructor(
         val subscribedSimIDCol = CallLog.Calls.PHONE_ACCOUNT_ID
         val callLogIdCol = CallLog.Calls._ID
         val projection =
-            arrayOf(
-                numberCol,
-                durationCol,
-                typeCol,
-                nameCol,
-                dateCol,
-                subscribedSimIDCol,
-                callLogIdCol
-            )
+            arrayOf(numberCol, durationCol, typeCol, nameCol,
+                dateCol, subscribedSimIDCol, callLogIdCol)
         val mSelectionClause = CallLog.Calls.DATE + " BETWEEN ? AND ?"
 
         /**
@@ -1005,7 +1087,6 @@ class CallLogsHelper @Inject constructor(
             fromDate = preferenceManager.getFirstTimeRegisterMillis()
 
         } else {
-//            fromDate = "1636455990849"
             fromDate = createDate(0)
             preferenceManager.saveFirstTimeRegisterMillis(fromDate!!)
             Log.d("fromDate2", fromDate!!)
@@ -1023,8 +1104,7 @@ class CallLogsHelper @Inject constructor(
         android.os.Handler(Looper.getMainLooper()).postDelayed({
         val cursor = context.contentResolver.query(
             CallLog.Calls.CONTENT_URI,
-            projection, mSelectionClause, mSelectionArgs, CallLog.Calls.DEFAULT_SORT_ORDER
-        )
+            projection, mSelectionClause, mSelectionArgs, CallLog.Calls.DEFAULT_SORT_ORDER)
 
         val numberColIdx = cursor!!.getColumnIndex(numberCol)
         val durationColIdx = cursor.getColumnIndex(durationCol)
@@ -1058,9 +1138,7 @@ class CallLogsHelper @Inject constructor(
                             duration,
                             type,
                             subscribedSimID,
-                            callLogId
-                        )
-                    )
+                            callLogId))
                     Log.d("MY_APP_CALL_LOGS", "$number $duration $type $name")
                     Log.d("subscription_Id", "$subscribedSimID and number = $number")
 
@@ -1121,20 +1199,14 @@ class CallLogsHelper @Inject constructor(
                 }
             }
         }
-
-//        Log.d("LastCallTime", "${GlobalMethods.convertMillisToDateAndTime(allCallLogsList!!.first().time.toString())}")
-
-
         when (callType) {
             "All" -> callData(allCallLogsList)
             "Outgoing" -> callData(outGoingCallList)
             "Incoming" -> callData(incomingCallList)
         }
         Log.d("MY_APP_CALL_LIST", "${allCallLogsList!!.size}")
-        cursor.close()
-        }, 2000)
+        cursor.close() }, 500)
     }
-
 
     /**
      * This Function Will return list of SubscriptionInfo.

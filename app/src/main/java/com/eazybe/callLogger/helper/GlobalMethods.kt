@@ -5,31 +5,36 @@ import android.app.Activity
 import android.content.*
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.net.ConnectivityManager
 import android.net.ConnectivityManager.*
 import android.net.NetworkCapabilities.*
 import android.net.Uri
-import android.os.*
+import android.os.Build
+import android.os.Environment
+import android.os.StrictMode
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.webkit.MimeTypeMap
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.HtmlCompat
 import com.amplifyframework.core.model.temporal.Temporal
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
 import com.eazybe.callLogger.BuildConfig
 import com.eazybe.callLogger.R
 import com.eazybe.callLogger.interfaces.ScreenshotInterface
 import com.judemanutd.autostarter.AutoStartPermissionHelper
-import com.squareup.picasso.MemoryPolicy
-import com.squareup.picasso.Picasso
-import com.squareup.picasso.Picasso.LoadedFrom
-import com.squareup.picasso.Target
 import dagger.hilt.android.internal.Contexts.getApplication
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
 import www.sanju.motiontoast.MotionToast
 import www.sanju.motiontoast.MotionToastStyle
@@ -74,6 +79,7 @@ object GlobalMethods {
             context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(root.windowToken, 0)
     }
+
     fun showKeyboard(context: Context, root: View) {
         val inputMethodManager =
             context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -145,13 +151,13 @@ object GlobalMethods {
      */
     fun openNumberInWhatsapp(phoneNumberWithCountryCode: String, context: Context) {
 
-        if (phoneNumberWithCountryCode.length < 10){
+        if (phoneNumberWithCountryCode.length < 10) {
             Toast.makeText(
                 context,
                 "Incorrect Number.",
                 Toast.LENGTH_SHORT
             ).show()
-        }else{
+        } else {
             val url = if (phoneNumberWithCountryCode.contains("+"))
                 "https://api.whatsapp.com/send?phone=" + "${phoneNumberWithCountryCode}&text=Hello"
             else
@@ -166,7 +172,7 @@ object GlobalMethods {
 
                 try {
                     context.startActivity(intent)
-                } catch (ex : ActivityNotFoundException){
+                } catch (ex: ActivityNotFoundException) {
 
                 }
             } catch (e: PackageManager.NameNotFoundException) {
@@ -237,7 +243,7 @@ object GlobalMethods {
         return convertMillisToDateAndTime("${calendar.timeInMillis}")
     }
 
-    fun convertSyncedDateToMillis(date: String): String {
+    fun convertSyncedDateToMillis(date: Date): String {
         //"2022-8-11 13:04:05"
         //"2022-08-17T09:17:56.757Z
 //        val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
@@ -247,12 +253,13 @@ object GlobalMethods {
 //        val updatedDate = date.dropLast(4)
 //        val newDate = updatedDate+"000Z"
 
-        val localDate =
-            LocalDateTime.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"))
+        val milliSeconds = date.time
+//        val localDate =
+//            LocalDateTime.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"))
+//
+//        val milliSec = localDate.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 
-        val milliSec = localDate.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-
-        return "$milliSec"
+        return "$milliSeconds"
     }
 
     fun convertSyncedDateToMillisGetSync(date: String): String {
@@ -426,15 +433,24 @@ object GlobalMethods {
      */
 
     fun getMilliFromDate(dateFormat: String?): String {
-        var date = Date()
-        val formatter = SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault())
-        try {
-            date = formatter.parse(dateFormat!!)!!
-        } catch (e: ParseException) {
-            e.printStackTrace()
+
+        return if (!dateFormat.isNullOrEmpty()) {
+            var date = Date()
+            val formatter = SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault())
+            try {
+                date = formatter.parse(dateFormat)!!
+            } catch (e: ParseException) {
+                e.printStackTrace()
+            }
+            Log.d("registeredDate", "Today is ${date.time}")
+            "${date.time}"
+        } else {
+            val calendar: Calendar = Calendar.getInstance()
+            calendar.add(Calendar.DATE, 0)
+            "${calendar.timeInMillis}"
         }
-        Log.d("registeredDate", "Today is ${date.time}")
-        return "${date.time}"
+
+
     }
 
     fun copyTextToClipboard(textToCopy: String, context: Context) {
@@ -480,12 +496,14 @@ object GlobalMethods {
         }
         return type
     }
-    fun sendQuickReplyTextToWhatsApp(title: String, textToSend: String, activity: Activity){
+
+    fun sendQuickReplyTextToWhatsApp(title: String, textToSend: String, activity: Activity) {
 
         val data = HtmlCompat.fromHtml(
             "<p>$title</p>" +
                     "$textToSend <br>" +
-                    "</p>", HtmlCompat.FROM_HTML_MODE_LEGACY)
+                    "</p>", HtmlCompat.FROM_HTML_MODE_LEGACY
+        )
         try {
             val sendIntent = Intent(Intent.ACTION_SEND)
             sendIntent.type = "image/*"
@@ -503,10 +521,14 @@ object GlobalMethods {
     }
 
 
-    fun sendQuickReplyTextAndPDFToWhatsApp(title: String, textToSend: String, activity: Activity,
-                                           fileAttachment: String, context: Context, fileName: String){
-        val pdfFile = File(activity.getExternalFilesDir(null)?.absolutePath.toString(),
-            "Eazybe Files/$fileName")
+    fun sendQuickReplyTextAndPDFToWhatsApp(
+        title: String, textToSend: String, activity: Activity,
+        fileAttachment: String, context: Context, fileName: String
+    ) {
+        val pdfFile = File(
+            activity.getExternalFilesDir(null)?.absolutePath.toString(),
+            "Eazybe Files/$fileName"
+        )
         val uriFile = uriFromFile(context, pdfFile)
         val sendIntent = Intent(Intent.ACTION_SEND)
         try {
@@ -525,10 +547,14 @@ object GlobalMethods {
 
     }
 
-    fun sendQuickReplyTextAndFileToWhatsApp(title: String, textToSend: String, activity: Activity,
-                                           fileAttachment: String, context: Context, fileName: String){
-        val file = File(activity.getExternalFilesDir(null)?.absolutePath.toString(),
-            "Eazybe Files/$fileName")
+    fun sendQuickReplyTextAndFileToWhatsApp(
+        title: String, textToSend: String, activity: Activity,
+        fileAttachment: String, context: Context, fileName: String
+    ) {
+        val file = File(
+            activity.getExternalFilesDir(null)?.absolutePath.toString(),
+            "Eazybe Files/$fileName"
+        )
         val uriFile = uriFromFile(context, file)
         val sendIntent = Intent(Intent.ACTION_SEND)
         try {
@@ -547,48 +573,120 @@ object GlobalMethods {
 
     }
 
-    fun sendQuickReplyTextAndImage(title: String, textToSend: String, activity: Activity,
-                                   context: Context, fileAttachment: String, fileName: String){
-        Picasso.get().load(fileAttachment).memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
-            .into(object : Target {
-                override fun onBitmapLoaded(bitmap: Bitmap?, from: LoadedFrom?) {
-                    val sendIntent = Intent(Intent.ACTION_SEND)
+    fun sendQuickReplyTextAndImage(
+        title: String, textToSend: String, activity: Activity,
+        context: Context, fileAttachment: String, fileName: String, pbProgress: ProgressBar
+    ) {
 
-                    try {
-                        val bitmapURI = getLocalBitmapUri(bitmap!!, activity)
-                        sendIntent.type = "image/*"
-                        sendIntent.putExtra(Intent.EXTRA_STREAM, bitmapURI)
-                        sendIntent.putExtra(Intent.EXTRA_TEXT, textToSend)
-                        sendIntent.setPackage("com.whatsapp")
-                        sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        activity.startActivity(Intent.createChooser(sendIntent, "Share via"))
-                    } catch (e: java.lang.Exception) {
-                        Toast.makeText(activity, "WhatsApp Not Found.", Toast.LENGTH_SHORT).show()
-                        e.printStackTrace()
+
+        CoroutineScope(Dispatchers.IO).launch {
+            Glide.with(context).asBitmap().load(fileAttachment)
+                .listener(object : RequestListener<Bitmap> {
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: com.bumptech.glide.request.target.Target<Bitmap>?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        pbProgress.visibility = View.GONE
+                        return false
                     }
-                }
 
-                override fun onBitmapFailed(e: java.lang.Exception?, errorDrawable: Drawable?) {
-                Log.d("Failed","BitmapFailed")
-                }
+                    override fun onResourceReady(
+                        resource: Bitmap?,
+                        model: Any?,
+                        target: com.bumptech.glide.request.target.Target<Bitmap>?,
+                        dataSource: DataSource?,
+                        isFirstResource: Boolean
+                    ): Boolean {
 
-                override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
-                    Log.d("Prepare","BitmapFailed")
-                }
+                        val sendIntent = Intent(Intent.ACTION_SEND)
 
-            })
+                        try {
+                            val bitmapURI = getLocalBitmapUri(resource!!, activity)
+                            sendIntent.type = "image/*"
+                            sendIntent.putExtra(Intent.EXTRA_STREAM, bitmapURI)
+                            sendIntent.putExtra(Intent.EXTRA_TEXT, textToSend)
+                            sendIntent.setPackage("com.whatsapp")
+                            sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            pbProgress.visibility = View.GONE
+                            activity.startActivity(Intent.createChooser(sendIntent, "Share via"))
+                        } catch (e: java.lang.Exception) {
+                            try {
+                                val bitmapURI = getLocalBitmapUri(resource!!, activity)
+                                sendIntent.type = "image/*"
+                                sendIntent.putExtra(Intent.EXTRA_STREAM, bitmapURI)
+                                sendIntent.putExtra(Intent.EXTRA_TEXT, textToSend)
+                                sendIntent.setPackage("com.whatsapp")
+                                sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                pbProgress.visibility = View.GONE
+                                activity.startActivity(
+                                    Intent.createChooser(
+                                        sendIntent,
+                                        "Share via"
+                                    )
+                                )
+                            } catch (e: java.lang.Exception) {
+                                Toast.makeText(activity, "WhatsApp Not Found.", Toast.LENGTH_SHORT)
+                                    .show()
+                                pbProgress.visibility = View.GONE
+                                e.printStackTrace()
+                            }
+                        }
+                        return true
+                    }
+
+                }).submit()
+        }
+
+
+//        Picasso.get().load(fileAttachment).memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
+//            .into(object : Target {
+//                override fun onBitmapLoaded(bitmap: Bitmap?, from: LoadedFrom?) {
+//                    val sendIntent = Intent(Intent.ACTION_SEND)
+//
+//                    try {
+//                        val bitmapURI = getLocalBitmapUri(bitmap!!, activity)
+//                        sendIntent.type = "image/*"
+//                        sendIntent.putExtra(Intent.EXTRA_STREAM, bitmapURI)
+//                        sendIntent.putExtra(Intent.EXTRA_TEXT, textToSend)
+//                        sendIntent.setPackage("com.whatsapp")
+//                        sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+//                        activity.startActivity(Intent.createChooser(sendIntent, "Share via"))
+//                    } catch (e: java.lang.Exception) {
+//                        Toast.makeText(activity, "WhatsApp Not Found.", Toast.LENGTH_SHORT).show()
+//                        e.printStackTrace()
+//                    }
+//                }
+//
+//                override fun onBitmapFailed(e: java.lang.Exception?, errorDrawable: Drawable?) {
+//                Log.d("Failed","BitmapFailed")
+//                }
+//
+//                override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
+//                    Log.d("Prepare","BitmapFailed")
+//                }
+//
+//            })
     }
 
     fun checkIfFileExists(fileAttachment: String, context: Context): Boolean {
 //        val extStorageDirectory = context.filesDir.absolutePath+"/" + "Eazybe Files" + "/" + fileAttachment
-        val extStorageDirectory =   context.getExternalFilesDir(null)?.absolutePath.toString()+"/"+ "Eazybe Files/$fileAttachment"
+        val extStorageDirectory =
+            context.getExternalFilesDir(null)?.absolutePath.toString() + "/" + "Eazybe Files/$fileAttachment"
         val file = File(extStorageDirectory)
         return file.exists()
 
 
     }
 
-     fun writeResponseBodyToDisk(body: ResponseBody?, fileName: String, fileUrl: String, context: Context, activity: Activity): Boolean {
+    fun writeResponseBodyToDisk(
+        body: ResponseBody?,
+        fileName: String,
+        fileUrl: String,
+        context: Context,
+        activity: Activity
+    ): Boolean {
 
         return try {
 
@@ -605,7 +703,7 @@ object GlobalMethods {
                 folder.mkdirs()
 //            val pathWhereToSaveFile = context.filesDir.absolutePath+fileName
 //            val pathWhereToSaveFile = folder.path +"/" + fileName
-            val pathWhereToSaveFile =  File(extStorageDirectory, "Eazybe Files/$fileName")
+            val pathWhereToSaveFile = File(extStorageDirectory, "Eazybe Files/$fileName")
 
 //            val pathWhereToSaveFile = File(
 //                context.getExternalFilesDir("Eazybe Files"),
@@ -637,8 +735,8 @@ object GlobalMethods {
             } catch (e: IOException) {
                 false
             } finally {
-                    inputStream?.close()
-                    outputStream?.close()
+                inputStream?.close()
+                outputStream?.close()
 
 
             }
@@ -647,7 +745,7 @@ object GlobalMethods {
         }
     }
 
-    private fun uriFromFile(context:Context, file:File):Uri {
+    private fun uriFromFile(context: Context, file: File): Uri {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", file)
         } else {
@@ -660,7 +758,8 @@ object GlobalMethods {
         try {
             val file = File(
                 context.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-                "EazybePicture" + System.currentTimeMillis() + ".JPG")
+                "EazybePicture" + System.currentTimeMillis() + ".JPG"
+            )
             val out = FileOutputStream(file)
             bmp.compress(Bitmap.CompressFormat.PNG, 90, out)
             out.close()

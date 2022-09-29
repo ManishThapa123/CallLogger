@@ -34,8 +34,7 @@ class RegistrationAndLoginViewModel @Inject constructor(
     private val callLogsHelper: CallLogsHelper,
     private val amplifyHelper: AmplifyHelper,
     private val clientDetailAdapter: JsonAdapter<UserData>,
-    private val clientDetailEmailAdapter: JsonAdapter<WorkspaceDetails>
-) :
+    private val clientDetailEmailAdapter: JsonAdapter<WorkspaceDetails>) :
     ViewModel() {
 
     private val _addOrgCodeResponse = MutableLiveData<Boolean>()
@@ -386,7 +385,6 @@ class RegistrationAndLoginViewModel @Inject constructor(
                     _updateUserResponse.value = it
                 }
             }
-
         }
 
     fun checkNameAndOrganization() {
@@ -404,12 +402,11 @@ class RegistrationAndLoginViewModel @Inject constructor(
             clientDetailEmailAdapter.fromJson(preferenceManager.getClientRegistrationDataEmail()!!)
 
         baseRepository.updateUserOrganization(
-            UpdateOrgRequest(orgId = orgCode, userId = userData?.id)
-        ).let {
+            UpdateOrgRequest(orgId = orgCode, userId = userData?.id)).let {
             if (it?.type == false && it.message == "User Already With An Organization") {
                 _userAlreadyHasOrgCode.value = true
             } else if (it?.type == true) {
-                userData?.orgId = orgCode
+                userData?.orgId = "$orgCode"
                 val dataInString = clientDetailEmailAdapter.toJson(userData)
                 preferenceManager.saveClientRegistrationDataEmail(dataInString)
                 preferenceManager.saveOrgState(true)
@@ -417,5 +414,4 @@ class RegistrationAndLoginViewModel @Inject constructor(
             }
         }
     }
-
 }

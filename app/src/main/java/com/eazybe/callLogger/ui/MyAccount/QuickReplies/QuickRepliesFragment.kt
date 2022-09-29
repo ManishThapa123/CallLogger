@@ -145,16 +145,17 @@ class QuickRepliesFragment : Fragment() {
                             userQuickRepliesMessage.quickReplyMessage!!
                         )
                     }
-
                 }
                 ".png", ".jpg", "jpeg", "webp" -> {
+                    binding.pbProgress.visibility = View.VISIBLE
                     sendQuickReplyTextAndImage(
                         "${userQuickRepliesMessage.quickReplyTitle}",
                         "${userQuickRepliesMessage.quickReplyMessage}",
                         requireActivity(),
                         requireContext(),
                         "${userQuickRepliesMessage.fileUrl}",
-                        "${userQuickRepliesMessage.fileName}"
+                        "${userQuickRepliesMessage.fileName}",
+                        binding.pbProgress
                     )
                 }
 
@@ -214,6 +215,10 @@ class QuickRepliesFragment : Fragment() {
                     QuickRepliesFragmentDirections.actionQuickRepliesFragmentToCreateQuickReplyFragment()
                 findNavController().navigate(action)
             }
+            ibBack.setOnClickListener {
+                activity?.onBackPressed()
+            }
+
         }
     }
 

@@ -18,6 +18,8 @@ subscription OnCreateUser {
         Direction
         Calltime
         CreatedByUser
+        ChatterNumber
+        Url
         createdAt
         updatedAt
         _version
@@ -53,6 +55,8 @@ subscription OnUpdateUser {
         Direction
         Calltime
         CreatedByUser
+        ChatterNumber
+        Url
         createdAt
         updatedAt
         _version
@@ -88,6 +92,8 @@ subscription OnDeleteUser {
         Direction
         Calltime
         CreatedByUser
+        ChatterNumber
+        Url
         createdAt
         updatedAt
         _version
@@ -150,6 +156,8 @@ subscription OnCreateCallLogs {
     }
     Calltime
     CreatedByUser
+    ChatterNumber
+    Url
     createdAt
     updatedAt
     _version
@@ -203,6 +211,8 @@ subscription OnUpdateCallLogs {
     }
     Calltime
     CreatedByUser
+    ChatterNumber
+    Url
     createdAt
     updatedAt
     _version
@@ -256,6 +266,8 @@ subscription OnDeleteCallLogs {
     }
     Calltime
     CreatedByUser
+    ChatterNumber
+    Url
     createdAt
     updatedAt
     _version
@@ -282,6 +294,8 @@ subscription OnCreateChatter {
         Direction
         Calltime
         CreatedByUser
+        ChatterNumber
+        Url
         createdAt
         updatedAt
         _version
@@ -317,6 +331,8 @@ subscription OnUpdateChatter {
         Direction
         Calltime
         CreatedByUser
+        ChatterNumber
+        Url
         createdAt
         updatedAt
         _version
@@ -352,6 +368,8 @@ subscription OnDeleteChatter {
         Direction
         Calltime
         CreatedByUser
+        ChatterNumber
+        Url
         createdAt
         updatedAt
         _version
@@ -361,6 +379,405 @@ subscription OnDeleteChatter {
       nextToken
       startedAt
     }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+subscription OnCreateWhatsappUser {
+  onCreateWhatsappUser {
+    id
+    Userid
+    Name
+    Whatsappno
+    Photo
+    LastSync
+    messages {
+      items {
+        id
+        MessageId
+        Userid
+        Message
+        File
+        Chatid
+        Sentbyid
+        Ack
+        Datetime
+        Direction
+        LastMessage
+        CreatedByUser
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+subscription OnUpdateWhatsappUser {
+  onUpdateWhatsappUser {
+    id
+    Userid
+    Name
+    Whatsappno
+    Photo
+    LastSync
+    messages {
+      items {
+        id
+        MessageId
+        Userid
+        Message
+        File
+        Chatid
+        Sentbyid
+        Ack
+        Datetime
+        Direction
+        LastMessage
+        CreatedByUser
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+subscription OnDeleteWhatsappUser {
+  onDeleteWhatsappUser {
+    id
+    Userid
+    Name
+    Whatsappno
+    Photo
+    LastSync
+    messages {
+      items {
+        id
+        MessageId
+        Userid
+        Message
+        File
+        Chatid
+        Sentbyid
+        Ack
+        Datetime
+        Direction
+        LastMessage
+        CreatedByUser
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+subscription OnCreateWhatsappMessages {
+  onCreateWhatsappMessages {
+    id
+    MessageId
+    Userid
+    Message
+    File
+    Chatid
+    Sentbyid
+    Ack
+    Datetime
+    Direction
+    user {
+      id
+      Userid
+      Name
+      Whatsappno
+      Photo
+      LastSync
+      messages {
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    chatter {
+      id
+      Name
+      Chatid
+      CreatedByUserAndNumber
+      Photo
+      Number
+      messages {
+        nextToken
+        startedAt
+      }
+      CreatedByUser
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    LastMessage
+    CreatedByUser
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+subscription OnUpdateWhatsappMessages {
+  onUpdateWhatsappMessages {
+    id
+    MessageId
+    Userid
+    Message
+    File
+    Chatid
+    Sentbyid
+    Ack
+    Datetime
+    Direction
+    user {
+      id
+      Userid
+      Name
+      Whatsappno
+      Photo
+      LastSync
+      messages {
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    chatter {
+      id
+      Name
+      Chatid
+      CreatedByUserAndNumber
+      Photo
+      Number
+      messages {
+        nextToken
+        startedAt
+      }
+      CreatedByUser
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    LastMessage
+    CreatedByUser
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+subscription OnDeleteWhatsappMessages {
+  onDeleteWhatsappMessages {
+    id
+    MessageId
+    Userid
+    Message
+    File
+    Chatid
+    Sentbyid
+    Ack
+    Datetime
+    Direction
+    user {
+      id
+      Userid
+      Name
+      Whatsappno
+      Photo
+      LastSync
+      messages {
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    chatter {
+      id
+      Name
+      Chatid
+      CreatedByUserAndNumber
+      Photo
+      Number
+      messages {
+        nextToken
+        startedAt
+      }
+      CreatedByUser
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    LastMessage
+    CreatedByUser
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+subscription OnCreateWhatsappChatter {
+  onCreateWhatsappChatter {
+    id
+    Name
+    Chatid
+    CreatedByUserAndNumber
+    Photo
+    Number
+    messages {
+      items {
+        id
+        MessageId
+        Userid
+        Message
+        File
+        Chatid
+        Sentbyid
+        Ack
+        Datetime
+        Direction
+        LastMessage
+        CreatedByUser
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+    CreatedByUser
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+subscription OnUpdateWhatsappChatter {
+  onUpdateWhatsappChatter {
+    id
+    Name
+    Chatid
+    CreatedByUserAndNumber
+    Photo
+    Number
+    messages {
+      items {
+        id
+        MessageId
+        Userid
+        Message
+        File
+        Chatid
+        Sentbyid
+        Ack
+        Datetime
+        Direction
+        LastMessage
+        CreatedByUser
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+    CreatedByUser
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+subscription OnDeleteWhatsappChatter {
+  onDeleteWhatsappChatter {
+    id
+    Name
+    Chatid
+    CreatedByUserAndNumber
+    Photo
+    Number
+    messages {
+      items {
+        id
+        MessageId
+        Userid
+        Message
+        File
+        Chatid
+        Sentbyid
+        Ack
+        Datetime
+        Direction
+        LastMessage
+        CreatedByUser
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+    CreatedByUser
     createdAt
     updatedAt
     _version

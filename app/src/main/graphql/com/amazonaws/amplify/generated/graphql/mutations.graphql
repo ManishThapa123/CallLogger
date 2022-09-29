@@ -21,6 +21,8 @@ mutation CreateUser(
         Direction
         Calltime
         CreatedByUser
+        ChatterNumber
+        Url
         createdAt
         updatedAt
         _version
@@ -59,6 +61,8 @@ mutation UpdateUser(
         Direction
         Calltime
         CreatedByUser
+        ChatterNumber
+        Url
         createdAt
         updatedAt
         _version
@@ -97,6 +101,8 @@ mutation DeleteUser(
         Direction
         Calltime
         CreatedByUser
+        ChatterNumber
+        Url
         createdAt
         updatedAt
         _version
@@ -162,6 +168,8 @@ mutation CreateCallLogs(
     }
     Calltime
     CreatedByUser
+    ChatterNumber
+    Url
     createdAt
     updatedAt
     _version
@@ -218,6 +226,8 @@ mutation UpdateCallLogs(
     }
     Calltime
     CreatedByUser
+    ChatterNumber
+    Url
     createdAt
     updatedAt
     _version
@@ -274,6 +284,8 @@ mutation DeleteCallLogs(
     }
     Calltime
     CreatedByUser
+    ChatterNumber
+    Url
     createdAt
     updatedAt
     _version
@@ -303,6 +315,8 @@ mutation CreateChatter(
         Direction
         Calltime
         CreatedByUser
+        ChatterNumber
+        Url
         createdAt
         updatedAt
         _version
@@ -341,6 +355,8 @@ mutation UpdateChatter(
         Direction
         Calltime
         CreatedByUser
+        ChatterNumber
+        Url
         createdAt
         updatedAt
         _version
@@ -379,6 +395,8 @@ mutation DeleteChatter(
         Direction
         Calltime
         CreatedByUser
+        ChatterNumber
+        Url
         createdAt
         updatedAt
         _version
@@ -388,6 +406,432 @@ mutation DeleteChatter(
       nextToken
       startedAt
     }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+mutation CreateWhatsappUser(
+  $input: CreateWhatsappUserInput!
+  $condition: ModelWhatsappUserConditionInput
+) {
+  createWhatsappUser(input: $input, condition: $condition) {
+    id
+    Userid
+    Name
+    Whatsappno
+    Photo
+    LastSync
+    messages {
+      items {
+        id
+        MessageId
+        Userid
+        Message
+        File
+        Chatid
+        Sentbyid
+        Ack
+        Datetime
+        Direction
+        LastMessage
+        CreatedByUser
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+mutation UpdateWhatsappUser(
+  $input: UpdateWhatsappUserInput!
+  $condition: ModelWhatsappUserConditionInput
+) {
+  updateWhatsappUser(input: $input, condition: $condition) {
+    id
+    Userid
+    Name
+    Whatsappno
+    Photo
+    LastSync
+    messages {
+      items {
+        id
+        MessageId
+        Userid
+        Message
+        File
+        Chatid
+        Sentbyid
+        Ack
+        Datetime
+        Direction
+        LastMessage
+        CreatedByUser
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+mutation DeleteWhatsappUser(
+  $input: DeleteWhatsappUserInput!
+  $condition: ModelWhatsappUserConditionInput
+) {
+  deleteWhatsappUser(input: $input, condition: $condition) {
+    id
+    Userid
+    Name
+    Whatsappno
+    Photo
+    LastSync
+    messages {
+      items {
+        id
+        MessageId
+        Userid
+        Message
+        File
+        Chatid
+        Sentbyid
+        Ack
+        Datetime
+        Direction
+        LastMessage
+        CreatedByUser
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+mutation CreateWhatsappMessages(
+  $input: CreateWhatsappMessagesInput!
+  $condition: ModelWhatsappMessagesConditionInput
+) {
+  createWhatsappMessages(input: $input, condition: $condition) {
+    id
+    MessageId
+    Userid
+    Message
+    File
+    Chatid
+    Sentbyid
+    Ack
+    Datetime
+    Direction
+    user {
+      id
+      Userid
+      Name
+      Whatsappno
+      Photo
+      LastSync
+      messages {
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    chatter {
+      id
+      Name
+      Chatid
+      CreatedByUserAndNumber
+      Photo
+      Number
+      messages {
+        nextToken
+        startedAt
+      }
+      CreatedByUser
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    LastMessage
+    CreatedByUser
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+mutation UpdateWhatsappMessages(
+  $input: UpdateWhatsappMessagesInput!
+  $condition: ModelWhatsappMessagesConditionInput
+) {
+  updateWhatsappMessages(input: $input, condition: $condition) {
+    id
+    MessageId
+    Userid
+    Message
+    File
+    Chatid
+    Sentbyid
+    Ack
+    Datetime
+    Direction
+    user {
+      id
+      Userid
+      Name
+      Whatsappno
+      Photo
+      LastSync
+      messages {
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    chatter {
+      id
+      Name
+      Chatid
+      CreatedByUserAndNumber
+      Photo
+      Number
+      messages {
+        nextToken
+        startedAt
+      }
+      CreatedByUser
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    LastMessage
+    CreatedByUser
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+mutation DeleteWhatsappMessages(
+  $input: DeleteWhatsappMessagesInput!
+  $condition: ModelWhatsappMessagesConditionInput
+) {
+  deleteWhatsappMessages(input: $input, condition: $condition) {
+    id
+    MessageId
+    Userid
+    Message
+    File
+    Chatid
+    Sentbyid
+    Ack
+    Datetime
+    Direction
+    user {
+      id
+      Userid
+      Name
+      Whatsappno
+      Photo
+      LastSync
+      messages {
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    chatter {
+      id
+      Name
+      Chatid
+      CreatedByUserAndNumber
+      Photo
+      Number
+      messages {
+        nextToken
+        startedAt
+      }
+      CreatedByUser
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+    LastMessage
+    CreatedByUser
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+mutation CreateWhatsappChatter(
+  $input: CreateWhatsappChatterInput!
+  $condition: ModelWhatsappChatterConditionInput
+) {
+  createWhatsappChatter(input: $input, condition: $condition) {
+    id
+    Name
+    Chatid
+    CreatedByUserAndNumber
+    Photo
+    Number
+    messages {
+      items {
+        id
+        MessageId
+        Userid
+        Message
+        File
+        Chatid
+        Sentbyid
+        Ack
+        Datetime
+        Direction
+        LastMessage
+        CreatedByUser
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+    CreatedByUser
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+mutation UpdateWhatsappChatter(
+  $input: UpdateWhatsappChatterInput!
+  $condition: ModelWhatsappChatterConditionInput
+) {
+  updateWhatsappChatter(input: $input, condition: $condition) {
+    id
+    Name
+    Chatid
+    CreatedByUserAndNumber
+    Photo
+    Number
+    messages {
+      items {
+        id
+        MessageId
+        Userid
+        Message
+        File
+        Chatid
+        Sentbyid
+        Ack
+        Datetime
+        Direction
+        LastMessage
+        CreatedByUser
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+    CreatedByUser
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+  }
+}
+mutation DeleteWhatsappChatter(
+  $input: DeleteWhatsappChatterInput!
+  $condition: ModelWhatsappChatterConditionInput
+) {
+  deleteWhatsappChatter(input: $input, condition: $condition) {
+    id
+    Name
+    Chatid
+    CreatedByUserAndNumber
+    Photo
+    Number
+    messages {
+      items {
+        id
+        MessageId
+        Userid
+        Message
+        File
+        Chatid
+        Sentbyid
+        Ack
+        Datetime
+        Direction
+        LastMessage
+        CreatedByUser
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+    CreatedByUser
     createdAt
     updatedAt
     _version

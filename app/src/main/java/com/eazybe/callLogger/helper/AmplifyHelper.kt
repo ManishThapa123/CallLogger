@@ -2,7 +2,6 @@ package com.eazybe.callLogger.helper
 
 import android.content.Context
 import android.util.Log
-import com.amplifyframework.api.graphql.model.ModelPagination
 import com.amplifyframework.api.graphql.model.ModelQuery
 import com.amplifyframework.core.Amplify
 import com.amplifyframework.core.model.query.Page
@@ -14,7 +13,6 @@ import com.amplifyframework.datastore.generated.model.Chatter
 import com.amplifyframework.datastore.generated.model.User
 import com.eazybe.callLogger.api.models.entities.SampleEntity
 import com.eazybe.callLogger.api.models.responses.WorkspaceDetails
-import com.eazybe.callLogger.extensions.toast
 import com.squareup.moshi.JsonAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -41,8 +39,7 @@ class AmplifyHelper @Inject constructor(
         email: String,
         lastSync: String,
         name: String,
-        userData: (DataStoreItemChange<User>) -> Unit
-    ) {
+        userData: (DataStoreItemChange<User>) -> Unit) {
         val localDate =
             LocalDateTime.parse(lastSync, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
 
@@ -99,29 +96,28 @@ class AmplifyHelper @Inject constructor(
             })
     }
 
-    fun saveCallLog(
+    private fun saveCallLog(
         duration: Int,
         userId: String,
         chatId: String,
         direction: String,
-        callTime: Double,
+        callTime: String,
         createdByUser: String,
-        callLogData: (DataStoreItemChange<CallLogs>) -> Unit
-    ) {
+        chatterNumber: String,
+        callLogData: (DataStoreItemChange<CallLogs>) -> Unit) {
 
-        val date = Date()
-        val offsetMillis = TimeZone.getDefault().getOffset(date.time)
-        val offsetSeconds = TimeUnit.MILLISECONDS.toSeconds(offsetMillis.toLong()).toInt()
-        val temporalDateTime: Temporal.DateTime = Temporal.DateTime(date, offsetSeconds)
+        val callTimeTemporal = createTemporalDateTime(callTime.toLong())
+        val temporalDateTime = createTemporalDateTime()
 
         val callLog = CallLogs.builder()
             .duration(duration)
             .userid(userId)
             .chatid(chatId)
-            .datetime(temporalDateTime)
+            .datetime(callTimeTemporal)
             .direction(direction)
-            .calltime(callTime)
+            .calltime(callTime.toDouble())
             .createdByUser(createdByUser)
+            .chatterNumber(chatterNumber)
             .build()
 
         Amplify.DataStore.save(callLog,
@@ -134,6 +130,20 @@ class AmplifyHelper @Inject constructor(
             })
     }
 
+    private fun createTemporalDateTime(callTime: Long? = null): Temporal.DateTime {
+
+        var date: Date? = null
+        date = if (callTime != null) {
+            Date(callTime)
+        } else {
+            Date()
+        }
+
+        val offsetMillis = TimeZone.getDefault().getOffset(date.time)
+        val offsetSeconds = TimeUnit.MILLISECONDS.toSeconds(offsetMillis.toLong()).toInt()
+        return Temporal.DateTime(date, offsetSeconds)
+    }
+
 
     private fun checkOrCreateChatter(
         createdByUser: String, name: String, phoneNumber: String, direction: String,
@@ -142,8 +152,7 @@ class AmplifyHelper @Inject constructor(
         Amplify.API.query(
             ModelQuery.list(
                 Chatter::class.java,
-                Chatter.CREATED_BY_USER.eq(createdByUser).and(Chatter.NUMBER.eq(phoneNumber))
-            ),
+                Chatter.CREATED_BY_USER.eq(createdByUser).and(Chatter.NUMBER.eq(phoneNumber))),
             { response ->
                 val listOfData = response.data.toList()
 
@@ -174,8 +183,7 @@ class AmplifyHelper @Inject constructor(
     }
 
     fun checkUserLastSynced(
-        callDetails: ArrayList<SampleEntity>
-    ) {
+        callDetails: ArrayList<SampleEntity>) {
         //To check whether the chatter has been created or not
         val prefSavedUserData = preferenceManager.getClientRegistrationDataEmail()
         val convertedUserData =
@@ -185,7 +193,6 @@ class AmplifyHelper @Inject constructor(
         var user: User? = null
 
         Amplify.DataStore.query(CallLogs::class.java,
-
             Where.matches(CallLogs.CREATED_BY_USER.eq("${convertedUserData?.id}")).sorted(CallLogs.CALLTIME.descending())
                 .paginated(Page.startingAt(0).withLimit(10)),
             { result ->
@@ -203,6 +210,7 @@ class AmplifyHelper @Inject constructor(
                         }
                     }
                     val lastCallSyncTime = callLogsWithTime.first().calltime.toLong()
+//                    val lastCallSyncTime = GlobalMethods.convertSyncedDateToMillis(callLogsWithTime.first().calltime.toDate()).toLong()
                     Log.i("MyAmplifyAppReadLastSyncTime", "CallLogs $lastCallSyncTime")
 
                     //Also check it it is greater than the syncStartedAtTime
@@ -229,12 +237,11 @@ class AmplifyHelper @Inject constructor(
                                 userId = "${convertedUserData?.id}",
                                 chatId = chatter.id ?: "null",
                                 direction = callLog.callType ?: "0",
-                                callTime = callLog.time?.toDouble() ?: 0.toDouble(),
-                                createdByUser = chatter.createdByUser
-                            ) { dataStoreItem ->
+                                callTime = callLog.time.toString(),
+                                createdByUser = chatter.createdByUser,
+                                chatterNumber = chatter.number) { dataStoreItem ->
                                 Log.d(
-                                    "Call Synced with", "Synced"
-                                )
+                                    "Call Synced with", "Synced")
                             }
                         }
                     }
@@ -267,15 +274,14 @@ class AmplifyHelper @Inject constructor(
                                     "${callLog.userNumber}",
                                     direction = callLog.callType ?: "0"
                                 ) { chatter ->
-
                                     saveCallLog(
                                         callLog.callDuration?.toInt() ?: 0,
                                         userId = "${convertedUserData?.id}",
                                         chatId = chatter.id ?: "null",
                                         direction = callLog.callType ?: "0",
-                                        callTime = callLog.time?.toDouble() ?: 0.toDouble(),
-                                        createdByUser = chatter.createdByUser
-                                    ) { dataStoreItem ->
+                                        callTime = callLog.time.toString(),
+                                        createdByUser = chatter.createdByUser,
+                                        chatterNumber = chatter.number) { dataStoreItem ->
                                         Log.d("Call Synced with", "Synced")
                                     }
                                 }

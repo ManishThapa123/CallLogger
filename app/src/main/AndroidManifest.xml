@@ -42,9 +42,6 @@
             android:name=".ui.SignUpAndLogin.RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.Dashboard.DashboardActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.SplashScreen.SplashActivity"
             android:exported="true">
             <intent-filter>

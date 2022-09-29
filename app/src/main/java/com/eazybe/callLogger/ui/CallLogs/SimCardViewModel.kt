@@ -98,11 +98,11 @@ class SimCardViewModel @Inject constructor(
 
         baseRepository.saveSyncItems(SaveSyncCallsRequestItem("call", convertedUserData!!.id, ""))?.let {
             Log.d("response", "${it.data}")
-
-          val time =  GlobalMethods.convertSyncedDateToMillis(it.data?.get(0)?.syncStartedAt!!)
-
-            Log.d("time", "$time")
-//            preferenceManager.saveLastSyncedTime(it.data?.get(0)?.syncStartedAt!!)
+//
+//          val time =  GlobalMethods.convertSyncedDateToMillis(it.data?.get(0)?.syncStartedAt!!)
+//
+//            Log.d("time", "$time")
+////            preferenceManager.saveLastSyncedTime(it.data?.get(0)?.syncStartedAt!!)
 
             _goToHome.value = true
         }

@@ -33,6 +33,8 @@ public final class CallLogs implements Model {
   public static final QueryField CHATTER = field("CallLogs", "chatterCallLogsId");
   public static final QueryField CALLTIME = field("CallLogs", "Calltime");
   public static final QueryField CREATED_BY_USER = field("CallLogs", "CreatedByUser");
+  public static final QueryField CHATTER_NUMBER = field("CallLogs", "ChatterNumber");
+  public static final QueryField URL = field("CallLogs", "Url");
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="Int", isRequired = true) Integer Duration;
   private final @ModelField(targetType="ID", isRequired = true) String Userid;
@@ -43,6 +45,8 @@ public final class CallLogs implements Model {
   private final @ModelField(targetType="Chatter") @BelongsTo(targetName = "chatterCallLogsId", type = Chatter.class) Chatter chatter;
   private final @ModelField(targetType="Float", isRequired = true) Double Calltime;
   private final @ModelField(targetType="String", isRequired = true) String CreatedByUser;
+  private final @ModelField(targetType="String") String ChatterNumber;
+  private final @ModelField(targetType="AWSURL") String Url;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
   public String getId() {
@@ -85,6 +89,14 @@ public final class CallLogs implements Model {
       return CreatedByUser;
   }
   
+  public String getChatterNumber() {
+      return ChatterNumber;
+  }
+  
+  public String getUrl() {
+      return Url;
+  }
+  
   public Temporal.DateTime getCreatedAt() {
       return createdAt;
   }
@@ -93,7 +105,7 @@ public final class CallLogs implements Model {
       return updatedAt;
   }
   
-  private CallLogs(String id, Integer Duration, String Userid, String Chatid, Temporal.DateTime Datetime, String Direction, User user, Chatter chatter, Double Calltime, String CreatedByUser) {
+  private CallLogs(String id, Integer Duration, String Userid, String Chatid, Temporal.DateTime Datetime, String Direction, User user, Chatter chatter, Double Calltime, String CreatedByUser, String ChatterNumber, String Url) {
     this.id = id;
     this.Duration = Duration;
     this.Userid = Userid;
@@ -104,6 +116,8 @@ public final class CallLogs implements Model {
     this.chatter = chatter;
     this.Calltime = Calltime;
     this.CreatedByUser = CreatedByUser;
+    this.ChatterNumber = ChatterNumber;
+    this.Url = Url;
   }
   
   @Override
@@ -124,6 +138,8 @@ public final class CallLogs implements Model {
               ObjectsCompat.equals(getChatter(), callLogs.getChatter()) &&
               ObjectsCompat.equals(getCalltime(), callLogs.getCalltime()) &&
               ObjectsCompat.equals(getCreatedByUser(), callLogs.getCreatedByUser()) &&
+              ObjectsCompat.equals(getChatterNumber(), callLogs.getChatterNumber()) &&
+              ObjectsCompat.equals(getUrl(), callLogs.getUrl()) &&
               ObjectsCompat.equals(getCreatedAt(), callLogs.getCreatedAt()) &&
               ObjectsCompat.equals(getUpdatedAt(), callLogs.getUpdatedAt());
       }
@@ -142,6 +158,8 @@ public final class CallLogs implements Model {
       .append(getChatter())
       .append(getCalltime())
       .append(getCreatedByUser())
+      .append(getChatterNumber())
+      .append(getUrl())
       .append(getCreatedAt())
       .append(getUpdatedAt())
       .toString()
@@ -162,6 +180,8 @@ public final class CallLogs implements Model {
       .append("chatter=" + String.valueOf(getChatter()) + ", ")
       .append("Calltime=" + String.valueOf(getCalltime()) + ", ")
       .append("CreatedByUser=" + String.valueOf(getCreatedByUser()) + ", ")
+      .append("ChatterNumber=" + String.valueOf(getChatterNumber()) + ", ")
+      .append("Url=" + String.valueOf(getUrl()) + ", ")
       .append("createdAt=" + String.valueOf(getCreatedAt()) + ", ")
       .append("updatedAt=" + String.valueOf(getUpdatedAt()))
       .append("}")
@@ -191,6 +211,8 @@ public final class CallLogs implements Model {
       null,
       null,
       null,
+      null,
+      null,
       null
     );
   }
@@ -205,7 +227,9 @@ public final class CallLogs implements Model {
       user,
       chatter,
       Calltime,
-      CreatedByUser);
+      CreatedByUser,
+      ChatterNumber,
+      Url);
   }
   public interface DurationStep {
     UseridStep duration(Integer duration);
@@ -247,6 +271,8 @@ public final class CallLogs implements Model {
     BuildStep id(String id);
     BuildStep user(User user);
     BuildStep chatter(Chatter chatter);
+    BuildStep chatterNumber(String chatterNumber);
+    BuildStep url(String url);
   }
   
 
@@ -261,6 +287,8 @@ public final class CallLogs implements Model {
     private String CreatedByUser;
     private User user;
     private Chatter chatter;
+    private String ChatterNumber;
+    private String Url;
     @Override
      public CallLogs build() {
         String id = this.id != null ? this.id : UUID.randomUUID().toString();
@@ -275,7 +303,9 @@ public final class CallLogs implements Model {
           user,
           chatter,
           Calltime,
-          CreatedByUser);
+          CreatedByUser,
+          ChatterNumber,
+          Url);
     }
     
     @Override
@@ -339,6 +369,18 @@ public final class CallLogs implements Model {
         return this;
     }
     
+    @Override
+     public BuildStep chatterNumber(String chatterNumber) {
+        this.ChatterNumber = chatterNumber;
+        return this;
+    }
+    
+    @Override
+     public BuildStep url(String url) {
+        this.Url = url;
+        return this;
+    }
+    
     /** 
      * @param id id
      * @return Current Builder instance, for fluent method chaining
@@ -351,7 +393,7 @@ public final class CallLogs implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, Integer duration, String userid, String chatid, Temporal.DateTime datetime, String direction, User user, Chatter chatter, Double calltime, String createdByUser) {
+    private CopyOfBuilder(String id, Integer duration, String userid, String chatid, Temporal.DateTime datetime, String direction, User user, Chatter chatter, Double calltime, String createdByUser, String chatterNumber, String url) {
       super.id(id);
       super.duration(duration)
         .userid(userid)
@@ -361,7 +403,9 @@ public final class CallLogs implements Model {
         .calltime(calltime)
         .createdByUser(createdByUser)
         .user(user)
-        .chatter(chatter);
+        .chatter(chatter)
+        .chatterNumber(chatterNumber)
+        .url(url);
     }
     
     @Override
@@ -407,6 +451,16 @@ public final class CallLogs implements Model {
     @Override
      public CopyOfBuilder chatter(Chatter chatter) {
       return (CopyOfBuilder) super.chatter(chatter);
+    }
+    
+    @Override
+     public CopyOfBuilder chatterNumber(String chatterNumber) {
+      return (CopyOfBuilder) super.chatterNumber(chatterNumber);
+    }
+    
+    @Override
+     public CopyOfBuilder url(String url) {
+      return (CopyOfBuilder) super.url(url);
     }
   }
   

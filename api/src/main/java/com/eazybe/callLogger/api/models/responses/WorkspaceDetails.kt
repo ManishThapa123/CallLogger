@@ -45,7 +45,7 @@ data class WorkspaceDetails(
     @Json(name = "name")
     var name: String?,
     @Json(name = "org_id")
-    var orgId: Int?,
+    var orgId: String?,
     @Json(name = "otp")
     var otp: Any?,
     @Json(name = "parent_id")

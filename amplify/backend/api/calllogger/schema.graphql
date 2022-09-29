@@ -34,6 +34,8 @@ type CallLogs @model @searchable
     chatter:Chatter @belongsTo
     Calltime: Float!
     CreatedByUser: String!
+    ChatterNumber: String
+    Url: AWSURL
 }
 
 type Chatter @model @searchable
@@ -45,5 +47,50 @@ type Chatter @model @searchable
     Photo: AWSURL
     Number: String
     Direction: String
+    CallLogs: [CallLogs]@hasMany(indexName: "CallLogsByChatter", fields: ["id"]) 
+    }
 
-    CallLogs: [CallLogs]@hasMany(indexName: "CallLogsByChatter", fields: ["id"]) }
+enum WhatsappDirection {
+Incoming
+Outgoing
+}
+
+type WhatsappUser @model @searchable {
+id: ID!
+Userid: ID! @primaryKey
+Name: String
+Whatsappno: Float!
+Photo: AWSURL
+LastSync: AWSDateTime!
+messages: [WhatsappMessages] @hasMany(indexName: "messagesByUserId", fields: ["Userid"])
+}
+
+type WhatsappMessages @model @searchable
+{
+id: ID!
+MessageId: ID!
+Userid: ID! @index(name: "messagesByUserId", sortKeyFields: ["LastMessage","Chatid","Sentbyid","Message","Datetime"])
+Message: String
+File: AWSURL
+Chatid: ID! @index(name: "messagesBychatterId", sortKeyFields: ["LastMessage","Userid","Sentbyid","Message","Datetime"])
+Sentbyid: ID!
+Ack: Int!
+Datetime: AWSDateTime!
+Direction: String!
+user: WhatsappUser @belongsTo(fields: ["Userid"])
+chatter: WhatsappChatter @belongsTo(fields: ["Chatid"])
+LastMessage: Int!
+CreatedByUser: String!
+}
+
+type WhatsappChatter @model @searchable
+{
+id: ID!
+Name: String
+Chatid: String!
+CreatedByUserAndNumber: ID! @primaryKey
+Photo: AWSURL
+Number: String
+messages: [WhatsappMessages] @hasMany(indexName: "messagesBychatterId", fields: ["id"]),
+CreatedByUser: String!
+}
