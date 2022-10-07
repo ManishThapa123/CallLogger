@@ -68,6 +68,7 @@ query SearchCallLogs(
     aggregates: $aggregates
   ) {
     items {
+      CalltimeAndChatterNumber
       id
       Duration
       Userid
@@ -376,6 +377,7 @@ query GetUser($Userid: ID!) {
     LastSync
     CallLogs {
       items {
+        CalltimeAndChatterNumber
         id
         Duration
         Userid
@@ -472,8 +474,9 @@ query SyncUsers(
     startedAt
   }
 }
-query GetCallLogs($id: ID!) {
-  getCallLogs(id: $id) {
+query GetCallLogs($CalltimeAndChatterNumber: ID!) {
+  getCallLogs(CalltimeAndChatterNumber: $CalltimeAndChatterNumber) {
+    CalltimeAndChatterNumber
     id
     Duration
     Userid
@@ -528,12 +531,21 @@ query GetCallLogs($id: ID!) {
   }
 }
 query ListCallLogs(
+  $CalltimeAndChatterNumber: ID
   $filter: ModelCallLogsFilterInput
   $limit: Int
   $nextToken: String
+  $sortDirection: ModelSortDirection
 ) {
-  listCallLogs(filter: $filter, limit: $limit, nextToken: $nextToken) {
+  listCallLogs(
+    CalltimeAndChatterNumber: $CalltimeAndChatterNumber
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    sortDirection: $sortDirection
+  ) {
     items {
+      CalltimeAndChatterNumber
       id
       Duration
       Userid
@@ -595,6 +607,7 @@ query SyncCallLogs(
     lastSync: $lastSync
   ) {
     items {
+      CalltimeAndChatterNumber
       id
       Duration
       Userid
@@ -654,6 +667,7 @@ query GetChatter($ChatterId: ID!) {
     Direction
     CallLogs {
       items {
+        CalltimeAndChatterNumber
         id
         Duration
         Userid

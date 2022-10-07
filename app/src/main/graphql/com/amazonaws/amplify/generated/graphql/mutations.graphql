@@ -13,6 +13,7 @@ mutation CreateUser(
     LastSync
     CallLogs {
       items {
+        CalltimeAndChatterNumber
         id
         Duration
         Userid
@@ -53,6 +54,7 @@ mutation UpdateUser(
     LastSync
     CallLogs {
       items {
+        CalltimeAndChatterNumber
         id
         Duration
         Userid
@@ -93,6 +95,7 @@ mutation DeleteUser(
     LastSync
     CallLogs {
       items {
+        CalltimeAndChatterNumber
         id
         Duration
         Userid
@@ -124,6 +127,7 @@ mutation CreateCallLogs(
   $condition: ModelCallLogsConditionInput
 ) {
   createCallLogs(input: $input, condition: $condition) {
+    CalltimeAndChatterNumber
     id
     Duration
     Userid
@@ -182,6 +186,7 @@ mutation UpdateCallLogs(
   $condition: ModelCallLogsConditionInput
 ) {
   updateCallLogs(input: $input, condition: $condition) {
+    CalltimeAndChatterNumber
     id
     Duration
     Userid
@@ -240,6 +245,7 @@ mutation DeleteCallLogs(
   $condition: ModelCallLogsConditionInput
 ) {
   deleteCallLogs(input: $input, condition: $condition) {
+    CalltimeAndChatterNumber
     id
     Duration
     Userid
@@ -307,6 +313,7 @@ mutation CreateChatter(
     Direction
     CallLogs {
       items {
+        CalltimeAndChatterNumber
         id
         Duration
         Userid
@@ -347,6 +354,7 @@ mutation UpdateChatter(
     Direction
     CallLogs {
       items {
+        CalltimeAndChatterNumber
         id
         Duration
         Userid
@@ -387,6 +395,7 @@ mutation DeleteChatter(
     Direction
     CallLogs {
       items {
+        CalltimeAndChatterNumber
         id
         Duration
         Userid

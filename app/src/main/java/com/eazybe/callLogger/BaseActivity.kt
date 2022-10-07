@@ -93,10 +93,10 @@ class BaseActivity : AppCompatActivity(), ScreenshotInterface, UpdateExpiryTime 
     }
 
     private fun animateIcon() {
-        animation = AnimationUtils.loadAnimation(this,R.anim.rotate)
+        animation = AnimationUtils.loadAnimation(this, R.anim.rotate)
         Handler(Looper.getMainLooper()).postDelayed({
             binding.syncIcon.startAnimation(animation)
-        },1500)
+        }, 1500)
 
     }
 
@@ -148,7 +148,6 @@ class BaseActivity : AppCompatActivity(), ScreenshotInterface, UpdateExpiryTime 
                                 this@BaseActivity, R.color.green_light
                             )
                         )
-                        animateIcon()
                     }
                     "Paid_Expired" -> {
                         binding.timeLeftTxt.text = "Plan Expired"
@@ -163,8 +162,11 @@ class BaseActivity : AppCompatActivity(), ScreenshotInterface, UpdateExpiryTime 
                                 this@BaseActivity, R.color.text_expired
                             )
                         )
-                        binding.syncIcon.setImageDrawable(ContextCompat.getDrawable(
-                            this@BaseActivity, R.drawable.ic_not_syncing))
+                        binding.syncIcon.setImageDrawable(
+                            ContextCompat.getDrawable(
+                                this@BaseActivity, R.drawable.ic_not_syncing
+                            )
+                        )
                     }
                     "Trial_Expired" -> {
                         binding.timeLeftTxt.text = "Trial Expired"
@@ -179,8 +181,11 @@ class BaseActivity : AppCompatActivity(), ScreenshotInterface, UpdateExpiryTime 
                                 this@BaseActivity, R.color.text_expired
                             )
                         )
-                        binding.syncIcon.setImageDrawable(ContextCompat.getDrawable(
-                            this@BaseActivity, R.drawable.ic_not_syncing))
+                        binding.syncIcon.setImageDrawable(
+                            ContextCompat.getDrawable(
+                                this@BaseActivity, R.drawable.ic_not_syncing
+                            )
+                        )
 
                     }
                     "Trial_Active" -> {
@@ -206,32 +211,43 @@ class BaseActivity : AppCompatActivity(), ScreenshotInterface, UpdateExpiryTime 
         }
 
         callDetailsViewModel.displayPopUp.observe({ lifecycle }) {
-                                val dialog = PermissionDialogFragment()
-                    dialog.show(supportFragmentManager, "permission_fragment")
+            val dialog = PermissionDialogFragment()
+            dialog.show(supportFragmentManager, "permission_fragment")
         }
 
         callDetailsViewModel.alreadySynced.observe({ lifecycle }) { syncType ->
             val dialog = PlansFragment()
-            when(syncType){
-                "Trial_Active"->{
-                    callDetailsViewModel.showExpiryTimeInPlan.observe({lifecycle}){ time ->
-                        val bundle = bundleOf("title" to "Trial_Active",
-                            "days" to time)
+            when (syncType) {
+                "Trial_Active" -> {
+                    callDetailsViewModel.showExpiryTimeInPlan.observe({ lifecycle }) { time ->
+                        val bundle = bundleOf(
+                            "title" to "Trial_Active",
+                            "days" to time
+                        )
                         dialog.arguments = bundle
                     }
 
                 }
-                "Trial_Expired"->{
+                "Trial_Expired" -> {
                     val bundle = bundleOf("title" to "Trial_Expired")
                     dialog.arguments = bundle
                 }
-                "Paid_Expired"->{
+                "Paid_Expired" -> {
                     val bundle = bundleOf("title" to "Paid_Expired")
                     dialog.arguments = bundle
                 }
-                "Syncing"->{
+                "Syncing" -> {
                     val bundle = bundleOf("title" to "Syncing")
                     dialog.arguments = bundle
+                }
+                "Not_Available" -> {
+                    GlobalMethods.showMotionToast(
+                        this,
+                        "Something went wrong.",
+                        "Failed to retrieve the sync response from the server.",
+                        "failure",
+                        this
+                    )
                 }
             }
 

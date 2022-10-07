@@ -500,8 +500,7 @@ object GlobalMethods {
     fun sendQuickReplyTextToWhatsApp(title: String, textToSend: String, activity: Activity) {
 
         val data = HtmlCompat.fromHtml(
-            "<p>$title</p>" +
-                    "$textToSend <br>" +
+            "<p>$textToSend</p>" +
                     "</p>", HtmlCompat.FROM_HTML_MODE_LEGACY
         )
         try {

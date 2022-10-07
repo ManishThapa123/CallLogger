@@ -55,7 +55,6 @@ class PlansFragment : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setOnClickListener()
         when (title) {
             "Trial_Active" -> {
@@ -79,6 +78,12 @@ class PlansFragment : DialogFragment() {
                 binding.plansText.text = "The data can be synced to your workspace."
             }
             "Whatsapp_Expired" ->{
+                binding.lLsyncing.visibility = View.GONE
+                binding.lLNotSyncing.visibility = View.VISIBLE
+                binding.plansText.text = "Sync has not been started. Please upgrade. "
+                binding.notSyncText.text = "Sync not started... "
+            }
+            "Not_Synced" ->{
                 binding.lLsyncing.visibility = View.GONE
                 binding.lLNotSyncing.visibility = View.VISIBLE
                 binding.plansText.text = "Sync has not been started. Please upgrade. "

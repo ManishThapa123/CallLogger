@@ -228,6 +228,10 @@ class MyAccountFragment : Fragment() {
                     "days" to syncTimeUnpaid)
                 dialog.arguments = bundle
             }
+            null, "Not_Started" -> {
+                val bundle = bundleOf("title" to "Not_Synced")
+                dialog.arguments = bundle
+            }
         }
             dialog.show(parentFragmentManager, "permission_fragment")
         }

@@ -27,8 +27,8 @@ import javax.inject.Inject
 class AmplifyHelper @Inject constructor(
     private val context: Context,
     private val preferenceManager: PreferenceManager,
-    private val clientDetailEmailAdapter: JsonAdapter<WorkspaceDetails>) {
-
+    private val clientDetailEmailAdapter: JsonAdapter<WorkspaceDetails>
+) {
     private val job = Job()
     private val scope = CoroutineScope(Dispatchers.Main + job)
 
@@ -39,7 +39,8 @@ class AmplifyHelper @Inject constructor(
         email: String,
         lastSync: String,
         name: String,
-        userData: (DataStoreItemChange<User>) -> Unit) {
+        userData: (DataStoreItemChange<User>) -> Unit
+    ) {
         val localDate =
             LocalDateTime.parse(lastSync, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
 
@@ -66,7 +67,7 @@ class AmplifyHelper @Inject constructor(
             },
             {
                 Log.e("MyAmplifyApp", "Error creating post", it)
-                createUser(userId, email, lastSync, name){item->
+                createUser(userId, email, lastSync, name) { item ->
                     userData(item)
                 }
             }
@@ -83,7 +84,14 @@ class AmplifyHelper @Inject constructor(
             .createdByUser(createdByUser)
             .name(name)
             .number(phoneNumber)
-            .direction(direction)
+            .direction(
+                when (direction) {
+                    "101" -> "1"
+                    "100" -> "2"
+                    "10" -> "5"
+                    else -> direction
+                }
+            )
             .build()
 
         Amplify.DataStore.save(chatter,
@@ -104,17 +112,27 @@ class AmplifyHelper @Inject constructor(
         callTime: String,
         createdByUser: String,
         chatterNumber: String,
-        callLogData: (DataStoreItemChange<CallLogs>) -> Unit) {
+        callLogData: (DataStoreItemChange<CallLogs>) -> Unit
+    ) {
+
 
         val callTimeTemporal = createTemporalDateTime(callTime.toLong())
         val temporalDateTime = createTemporalDateTime()
 
         val callLog = CallLogs.builder()
+            .calltimeAndChatterNumber("$callTime$chatterNumber")
             .duration(duration)
             .userid(userId)
             .chatid(chatId)
             .datetime(callTimeTemporal)
-            .direction(direction)
+            .direction(
+                when (direction) {
+                    "101" -> "1"
+                    "100" -> "2"
+                    "10" -> "5"
+                    else -> direction
+                }
+            )
             .calltime(callTime.toDouble())
             .createdByUser(createdByUser)
             .chatterNumber(chatterNumber)
@@ -152,18 +170,19 @@ class AmplifyHelper @Inject constructor(
         Amplify.API.query(
             ModelQuery.list(
                 Chatter::class.java,
-                Chatter.CREATED_BY_USER.eq(createdByUser).and(Chatter.NUMBER.eq(phoneNumber))),
+                Chatter.CREATED_BY_USER.eq(createdByUser).and(Chatter.NUMBER.eq(phoneNumber))
+            ),
             { response ->
-                val listOfData = response.data.toList()
+                val listOfData: List<Chatter>? = response.data.toList()
 
-                listOfData.forEach { data ->
+                listOfData?.forEach { data ->
                     Log.d("listOfData", "${data.name} and ${data.createdByUser}")
                 }
                 //problem is here.
 
                 if (listOfData.isNullOrEmpty()) {
                     Log.i("MyAmplifyApi", "UnSuccessful query, Empty.")
-                    createChatter(name, createdByUser, phoneNumber,direction) { chatterData ->
+                    createChatter(name, createdByUser, phoneNumber, direction) { chatterData ->
                         chatterData(chatterData.item())
                     }
                 } else {
@@ -183,7 +202,8 @@ class AmplifyHelper @Inject constructor(
     }
 
     fun checkUserLastSynced(
-        callDetails: ArrayList<SampleEntity>) {
+        callDetails: ArrayList<SampleEntity>
+    ) {
         //To check whether the chatter has been created or not
         val prefSavedUserData = preferenceManager.getClientRegistrationDataEmail()
         val convertedUserData =
@@ -193,7 +213,8 @@ class AmplifyHelper @Inject constructor(
         var user: User? = null
 
         Amplify.DataStore.query(CallLogs::class.java,
-            Where.matches(CallLogs.CREATED_BY_USER.eq("${convertedUserData?.id}")).sorted(CallLogs.CALLTIME.descending())
+            Where.matches(CallLogs.CREATED_BY_USER.eq("${convertedUserData?.id}"))
+                .sorted(CallLogs.CALLTIME.descending())
                 .paginated(Page.startingAt(0).withLimit(10)),
             { result ->
                 Log.i("MyAmplifyAppRead", "CallLogs Retrieve Success")
@@ -216,7 +237,9 @@ class AmplifyHelper @Inject constructor(
                     //Also check it it is greater than the syncStartedAtTime
                     val filteredList = callDetails.filter { it.time!!.toLong() > lastCallSyncTime }
 
-                    val updatedFilteredList = filteredList.filter { it.time!!.toLong() > preferenceManager.getLastSyncedTimeAmplify()!!.toLong() }
+                    val updatedFilteredList = filteredList.filter {
+                        it.time!!.toLong() > preferenceManager.getLastSyncedTimeAmplify()!!.toLong()
+                    }
 
                     updatedFilteredList.forEach { callLog ->
                         if (!pbActive) {
@@ -239,9 +262,11 @@ class AmplifyHelper @Inject constructor(
                                 direction = callLog.callType ?: "0",
                                 callTime = callLog.time.toString(),
                                 createdByUser = chatter.createdByUser,
-                                chatterNumber = chatter.number) { dataStoreItem ->
+                                chatterNumber = chatter.number
+                            ) { dataStoreItem ->
                                 Log.d(
-                                    "Call Synced with", "Synced")
+                                    "Call Synced with", "Synced"
+                                )
                             }
                         }
                     }
@@ -259,7 +284,9 @@ class AmplifyHelper @Inject constructor(
                             cal.time = user?.lastSync!!.toDate()
 //                            val millis: Long = cal.timeInMillis
 
-                            val millis: Long = preferenceManager.getLastSyncedTimeAmplify()?.toLong()?: cal.timeInMillis
+                            val millis: Long =
+                                preferenceManager.getLastSyncedTimeAmplify()?.toLong()
+                                    ?: cal.timeInMillis
                             //check in preference
 
                             Log.i("Millis", "$millis")
@@ -281,7 +308,8 @@ class AmplifyHelper @Inject constructor(
                                         direction = callLog.callType ?: "0",
                                         callTime = callLog.time.toString(),
                                         createdByUser = chatter.createdByUser,
-                                        chatterNumber = chatter.number) { dataStoreItem ->
+                                        chatterNumber = chatter.number
+                                    ) { dataStoreItem ->
                                         Log.d("Call Synced with", "Synced")
                                     }
                                 }

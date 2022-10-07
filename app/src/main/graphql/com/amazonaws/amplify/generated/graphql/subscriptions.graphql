@@ -10,6 +10,7 @@ subscription OnCreateUser {
     LastSync
     CallLogs {
       items {
+        CalltimeAndChatterNumber
         id
         Duration
         Userid
@@ -47,6 +48,7 @@ subscription OnUpdateUser {
     LastSync
     CallLogs {
       items {
+        CalltimeAndChatterNumber
         id
         Duration
         Userid
@@ -84,6 +86,7 @@ subscription OnDeleteUser {
     LastSync
     CallLogs {
       items {
+        CalltimeAndChatterNumber
         id
         Duration
         Userid
@@ -112,6 +115,7 @@ subscription OnDeleteUser {
 }
 subscription OnCreateCallLogs {
   onCreateCallLogs {
+    CalltimeAndChatterNumber
     id
     Duration
     Userid
@@ -167,6 +171,7 @@ subscription OnCreateCallLogs {
 }
 subscription OnUpdateCallLogs {
   onUpdateCallLogs {
+    CalltimeAndChatterNumber
     id
     Duration
     Userid
@@ -222,6 +227,7 @@ subscription OnUpdateCallLogs {
 }
 subscription OnDeleteCallLogs {
   onDeleteCallLogs {
+    CalltimeAndChatterNumber
     id
     Duration
     Userid
@@ -286,6 +292,7 @@ subscription OnCreateChatter {
     Direction
     CallLogs {
       items {
+        CalltimeAndChatterNumber
         id
         Duration
         Userid
@@ -323,6 +330,7 @@ subscription OnUpdateChatter {
     Direction
     CallLogs {
       items {
+        CalltimeAndChatterNumber
         id
         Duration
         Userid
@@ -360,6 +368,7 @@ subscription OnDeleteChatter {
     Direction
     CallLogs {
       items {
+        CalltimeAndChatterNumber
         id
         Duration
         Userid

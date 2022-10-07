@@ -24,6 +24,7 @@ type User @model @searchable
 
 type CallLogs @model @searchable
 {
+    CalltimeAndChatterNumber : ID! @primaryKey
     id: ID!
     Duration: Int!
     Userid: ID!@index(name: "CallLogsByUserId", sortKeyFields: ["Chatid","Datetime"])
@@ -47,7 +48,7 @@ type Chatter @model @searchable
     Photo: AWSURL
     Number: String
     Direction: String
-    CallLogs: [CallLogs]@hasMany(indexName: "CallLogsByChatter", fields: ["id"]) 
+    CallLogs: [CallLogs]@hasMany(indexName: "CallLogsByChatter", fields: ["id"])
     }
 
 enum WhatsappDirection {

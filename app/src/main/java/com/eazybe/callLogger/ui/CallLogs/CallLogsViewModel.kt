@@ -320,39 +320,36 @@ class CallLogsViewModel @Inject constructor(
 
         baseRepository.getLastSynced("${convertedUserData?.id}")?.let { response ->
             if (response.type == true) {
+                if (!response.syncData?.get(0)?.isActive.isNullOrEmpty()){
 
-                when ("${response.syncData?.get(0)?.isActive}") {
-                    "0" -> {
-                        preferenceManager.saveSyncState(true)
+                    when ("${response.syncData?.get(0)?.isActive}") {
+                        "0" -> {
+                            preferenceManager.saveSyncState(true)
 
-                        val timeRemaining = calculateTimeRemaining(
-                            "${response.syncData?.get(0)?.syncStartedAt}",
-                            "${response.syncData?.get(0)?.vailidity}")
+                            val timeRemaining = calculateTimeRemaining(
+                                "${response.syncData?.get(0)?.syncStartedAt}",
+                                "${response.syncData?.get(0)?.vailidity}")
 
-                        if (timeRemaining.toInt() >= 0) {
-                            _alreadySynced.value = "Trial_Active"
-                            _showExpiryTimeInPlan.value = timeRemaining
+                            if (timeRemaining.toInt() >= 0) {
+                                _alreadySynced.value = "Trial_Active"
+                                _showExpiryTimeInPlan.value = timeRemaining
+
+                            } else {
+                                _alreadySynced.value = "Trial_Expired"
+
+                            }
+                        }
+                        "1" -> {
+                            _alreadySynced.value = "Paid_Expired"
+                        }
+                        "2" -> {
+                            _alreadySynced.value = "Syncing"
 
                         }
-                        else {
-                            _alreadySynced.value = "Trial_Expired"
-
-                        }
                     }
-                    "1" -> {
-                        _alreadySynced.value = "Paid_Expired"
-                    }
-                    "2" -> {
-                        _alreadySynced.value = "Syncing"
-
-                    }
+            }else{
+                    _alreadySynced.value = "Not_Available"
                 }
-
-
-
-
-
-
             } else {
                 baseRepository.saveSyncItems(
                     SaveSyncCallsRequestItem(
